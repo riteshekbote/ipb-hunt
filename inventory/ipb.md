@@ -42,5 +42,3 @@ www.survey.ipb.de
 
 | Host | Status | Server/Tech |
 |---|---|---|
-
-## 2026-09-02 19:05:36 UTC
