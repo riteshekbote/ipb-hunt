@@ -1,0 +1,35 @@
+# IPB Internet Provider in Berlin GmbH inventory (discovery seed 2026-09-02)
+# NOTE: hosts below are discovery candidates from passive DNS/CT; confirm in-scope vs program scope before active testing.
+app.ipb.de
+auth.gold.ipb.de
+cic.ipb.de
+cloud.ipb.de
+de-cix.ipb.de
+dns2.ipb.de
+eticket.ipb.de
+event.ipb.de
+focus.gold.ipb.de
+gold.ipb.de
+guest.gold.ipb.de
+hostmaster.ipb.de
+ipb.de
+kinski.ipb.de
+mail.ipb.de
+mirror.ipb.de
+moderated.gold.ipb.de
+my.ipb.de
+nc.ipb.de
+ns6.ipb.de
+piwik.ipb.de
+pluto.portal.ipb.de
+prod.ipb.de
+spam.ipb.de
+spam01.ipb.de
+spam02.ipb.de
+speedtest.ipb.de
+survey.ipb.de
+track.ipb.de
+webcam.ipb.de
+www.cic.ipb.de
+www.ipb.de
+www.survey.ipb.de
