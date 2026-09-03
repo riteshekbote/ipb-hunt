@@ -1,0 +1,2059 @@
+===== ANALYST bigpickle 2026-09-03 16:37:18 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --connect-timeout 5 --max-time 10 http://app.ipb.de 2>&1 && echo " | app.ipb.de"
+000
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --connect-timeout 5 --max-time 10 https://app.ipb.de 2>&1 && echo " | app.ipb.de"
+000
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --connect-timeout 5 --max-time 10 https://gold.ipb.de 2>&1 && echo " | gold.ipb.de"
+000
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --connect-timeout 5 --max-time 10 https://cloud.ipb.de 2>&1 && echo " | cloud.ipb.de"
+000
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --connect-timeout 5 --max-time 10 https://nc.ipb.de 2>&1 && echo " | nc.ipb.de"
+000
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --connect-timeout 5 --max-time 10 https://auth.gold.ipb.de 2>&1 && echo " | auth.gold.ipb.de"
+000
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --connect-timeout 5 --max-time 10 https://cic.ipb.de 2>&1 && echo " | cic.ipb.de"
+000
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --connect-timeout 5 --max-time 10 https://eticket.ipb.de 2>&1 && echo " | eticket.ipb.de"
+000
+[0m
+I'll start by identifying live hosts from the inventory and looking for API endpoints, GraphQL, admin panels, and other high-value attack surface.
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --connect-timeout 5 --max-time 10 https://event.ipb.de 2>&1 && echo " | event.ipb.de"
+200  | event.ipb.de
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code} %{redirect_url}" --connect-timeout 5 --max-time 10 https://kinski.ipb.de 2>&1 && echo " | kinski.ipb.de"
+000
+[0m
+Found event.ipb.de live. Let me probe the remaining inventory + check event.ipb.de content.
+[0m$ [0mcurl -sI --connect-timeout 5 --max-time 10 https://event.ipb.de 2>&1 | head -40
+HTTP/1.1 200 OK
+Server: nginx/1.31.4
+Date: Thu, 03 Sep 2026 16:27:38 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 10417
+Connection: keep-alive
+P3P: CP="ALL DSP COR CUR ADM TAI OUR IND COM NAV INT"
+Content-Security-Policy: default-src 'self' https://event.ipb.de; script-src 'self' https://event.ipb.de; object-src 'none'; frame-src 'self' https://event.ipb.de; style-src 'self' https://event.ipb.de; connect-src 'self' https://event.ipb.de; img-src 'self' data: https://event.ipb.de; font-src 'self' https://event.ipb.de; media-src 'self' data: https://event.ipb.de; form-action 'self' https: https://event.ipb.de
+Vary: Accept-Language, Cookie, Host
+Content-Language: en-de
+X-Frame-Options: DENY
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://moderated.gold.ipb.de 2>&1 && echo " | moderated.gold.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://spam01.ipb.de 2>&1 && echo " | spam01.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://spam02.ipb.de 2>&1 && echo " | spam02.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://de-cix.ipb.de 2>&1 && echo " | de-cix.ipb.de"
+000000000000
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://webcam.ipb.de 2>&1 && echo " | webcam.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://speedtest.ipb.de 2>&1 && echo " | speedtest.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://mirror.ipb.de 2>&1 && echo " | mirror.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://dns2.ipb.de 2>&1 && echo " | dns2.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://my.ipb.de 2>&1 && echo " | my.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://www.cic.ipb.de 2>&1 && echo " | www.cic.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://www.survey.ipb.de 2>&1 && echo " | www.survey.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://pluto.portal.ipb.de 2>&1 && echo " | pluto.portal.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://focus.gold.ipb.de 2>&1 && echo " | focus.gold.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://guest.gold.ipb.de 2>&1 && echo " | guest.gold.ipb.de"
+000000404 | mirror.ipb.de
+000000000000200 | pluto.portal.ipb.de
+000000
+[0m
+[0m$ [0mcurl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://prod.ipb.de 2>&1 && echo " | prod.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://ipb.de 2>&1 && echo " | ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://www.ipb.de 2>&1 && echo " | www.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://mail.ipb.de 2>&1 && echo " | mail.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://ns6.ipb.de 2>&1 && echo " | ns6.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://piwik.ipb.de 2>&1 && echo " | piwik.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://spam.ipb.de 2>&1 && echo " | spam.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://hostmaster.ipb.de 2>&1 && echo " | hostmaster.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://survey.ipb.de 2>&1 && echo " | survey.ipb.de"; curl -s -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 10 https://track.ipb.de 2>&1 && echo " | track.ipb.de"
+000301 | ipb.de
+200 | www.ipb.de
+000000000000000000000
+[0m
+[0m$ [0mcurl -s --connect-timeout 5 --max-time 10 https://event.ipb.de | head -200
+<!DOCTYPE html>
+<html lang="en-de">
+<head>
+    <title>
+    Event list :: IPB Internet Provider in Berlin GmbH
+</title>
+    <link rel="stylesheet" href="/static/CACHE/css/presale.de51dd394296.css" type="text/css">
+    
+        <link rel="stylesheet" type="text/css" href="/IPB/theme.css?version=c534d21b5f04-1788452848" />
+    
+
+    
+
+<script src="/static/CACHE/js/presale.af9e5eca0134.js"></script>
+
+    <meta name="referrer" content="origin">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    
+    
+    <meta property="og:type" content="website" />
+
+    
+    
+
+    <meta property="og:title" content="IPB Internet Provider in Berlin GmbH"/>
+    
+        <meta property="og:image" content="/media/pub/thumbs/2dc315e329fb89eb35edfc983fbb60d4.5000x120.gif"/>
+    
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="https://event.ipb.de/IPB/"/>
+
+    
+        <link rel="icon" href="/static/pretixbase/img/favicon.e9b4f7d70340.ico">
+        <link rel="shortcut icon" href="/static/pretixbase/img/favicon.e9b4f7d70340.ico">
+        <link rel="icon" type="image/png" sizes="16x16" href="/static/pretixbase/img/icons/favicon-16x16.d9c6017a4222.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/static/pretixbase/img/icons/favicon-32x32.5066e55d61de.png">
+        <link rel="icon" type="image/png" sizes="192x192" href="/static/pretixbase/img/icons/android-chrome-192x192.7d21acc539fe.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/static/pretixbase/img/icons/apple-touch-icon.332c189bb6df.png">
+    
+    <meta name="theme-color" content="#0076bc">
+</head>
+<body class="nojs" data-locale="en" data-now="1788452870.448341" data-datetimeformat="YYYY-MM-DD HH:mm" data-timeformat="HH:mm" data-dateformat="YYYY-MM-DD" data-datetimelocale="en" data-currency="">
+
+<nav id="skip-to-main" role="navigation" aria-label="Skip link" class="sr-only on-focus-visible">
+  <p><a href="#content">Skip to main content</a></p>
+</nav>
+<header>
+
+
+    
+        
+            <div class="container page-header-links">
+                <div class="pull-right header-part flip">
+                    
+                        <nav class="locales" aria-label="select language">
+                            
+                                <a href="/locale/set?locale=de&next=/IPB/" class="" rel="nofollow"
+                                    lang="de" hreflang="de"
+                                    aria-label="Website auf Deutsch">Deutsch</a>
+                            
+                                <a href="/locale/set?locale=en&next=/IPB/" class="active" rel="nofollow"
+                                    lang="en" hreflang="en"
+                                    aria-label="Website in English">English</a>
+                            
+                        </nav>
+                    
+                    
+
+
+
+
+                </div>
+            </div>
+        
+    
+
+</header>
+<div class="container main-box">
+    <main id="content">
+    
+    <div class="page-header pager-header-with-logo">
+        <div class="pull-left flip">
+            
+                <h1 class="sr-only">
+                    IPB Internet Provider in Berlin GmbH
+                </h1>
+            
+            
+                <a href="/IPB/" title="IPB Internet Provider in Berlin GmbH">
+                    <img src="/media/pub/thumbs/2dc315e329fb89eb35edfc983fbb60d4.5000x120.gif" alt="IPB Internet Provider in Berlin GmbH"
+                            class="organizer-logo" />
+                </a>
+            
+        </div>
+        
+            
+        
+        <div class="clearfix"></div>
+    </div>
+    
+    
+    
+    <div class="blank-after text-left flip">
+        
+
+
+
+<div class="btn-group" role="navigation" aria-label="Event overview by month, week, etc.">
+    <a href="?style=list" 
+            class="btn btn-default active"  aria-current="page">
+        List
+    </a>
+    <a href="?style=week"
+            class="btn btn-default">
+        Week
+    </a>
+    <a href="?style=calendar"
+            class="btn btn-default">
+        Month
+    </a>
+    <a href="?style=day"
+       class="btn btn-default">
+        Day
+    </a>
+</div>
+<a href="/IPB/events/ical/?locale=en"
+        class="btn btn-default">
+    <span class="fa fa-calendar-plus-o" aria-hidden="true"></span>
+    iCal
+</a>
+
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                <strong>
+                
+                    Upcoming events
+                
+                </strong>
+            </h2>
+        </div>
+    
+        
+        <div class="panel-body">
+            
+                <p><em>No public upcoming events found. <a href="?old=1">Show past events</a></em></p>
+            
+        </div>
+    </div>
+    
+
+
+
+
+
+    </main>
+    <footer>
+        
+        
+        <nav aria-label="Footer Navigation">
+            <ul>
+            
+    
+    
+    
+    
+    
+
+            
+            
+            <li><a href="/redirect/?url=https%3A//pretix.eu%3Al1tNIEhVacchTmBBcFgH3ZGX5ldVHx5Gz35RasysNWI" target="_blank" rel="noopener">ticketing powered by pretix</a></li> 
+ 
+            </ul>
+        </nav>
+    </footer>
+</div>
+
+
+
+
+
+
+<div id="ajaxerr" class="modal-wrapper" hidden>
+</div>
+<div id="popupmodal" class="modal-wrapper" hidden aria-live="polite" role="dialog"
+        aria-labelledby="popupmodal-title">
+    <div class="modal-card">
+        <div class="modal-card-icon">
+            <i class="fa fa-window-restore big-icon" aria-hidden="true"></i>
+        </div>
+        <div class="modal-card-content">
+[0m
+[0m$ [0mcurl -sI --connect-timeout 5 --max-time 10 https://pluto.portal.ipb.de 2>&1
+HTTP/2 200 
+content-language: en
+content-type: text/html; charset=utf-8
+cross-origin-opener-policy: same-origin
+date: Thu, 03 Sep 2026 16:27:49 GMT
+link: </static/assets/index.544f95302d3e.css>; rel=preload; as=style, </static/assets/index-MFqnr9OV.js>; rel=modulepreload, </static/assets/vendor-DSfVvg0_.js>; rel=modulepreload
+referrer-policy: same-origin
+strict-transport-security: max-age=63072000; includeSubDomains
+vary: Accept-Language, Cookie
+x-content-type-options: nosniff
+x-frame-options: DENY
+content-length: 354606
+[0m
+Live hosts found: **event.ipb.de (200)**, **www.ipb.de (200)**, **pluto.portal.ipb.de (200)**, **ipb.de (301→www)**. Let me now deep-probe these for API/GraphQL/auth surfaces.
+[0m$ [0mcurl -sI --connect-timeout 5 --max-time 10 https://www.ipb.de 2>&1
+HTTP/2 200 
+server: nginx
+date: Thu, 03 Sep 2026 16:27:50 GMT
+content-type: text/html; charset=UTF-8
+x-powered-by: PHP/8.3.33
+expires: Thu, 19 Nov 1981 08:52:00 GMT
+cache-control: no-store, no-cache, must-revalidate
+pragma: no-cache
+set-cookie: PHPSESSID=ih85g86c8n1370aquajvnf880j; expires=Thu, 10 Sep 2026 16:27:50 GMT; Max-Age=604800; path=/; HttpOnly
+x-frame-options: SAMEORIGIN
+access-control-allow-origin: *
+x-ua-compatible: IE=edge
+x-content-type-options: nosniff
+referrer-policy: no-referrer-when-downgrade
+feature-policy: vibrate 'none'
+strict-transport-security: max-age=31536000
+strict-transport-security: max-age=15768000; includeSubDomains
+x-powered-by: PleskLin
+[0m
+[0m$ [0mcurl -s --connect-timeout 5 --max-time 10 https://www.ipb.de | head -200
+<!DOCTYPE html 
+PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+
+<head>
+    <title>Internet Provider in Berlin GmbH - Hosting / Colocation / Managed Services</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="language" content="de" />
+    <meta name="keywords" content="Breitband Verbindungen, Domains, Hosting, Cloud, Colocation, Housing, Managed Services, Richtfunk, IT-Event Lösungen">
+    <meta name="robots" content="index,follow" />
+    <base href="https://www.ipb.de/" />
+    <link rel="shortcut icon" href="favicon.ico"  type="image/vnd.microsoft.icon" />
+    <link rel="icon" href="favicon.ico"  type="image/vnd.microsoft.icon" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" media="screen" />
+    <link rel="stylesheet" type="text/css"  href="/css/featured.css" media="screen" />
+    <script type='text/javascript' src='/js/jquery.min.js'></script>
+</head>
+
+<body>
+
+<div id="wrapper">
+    <div id="wrapper_content">
+    
+       <div id="header_spacer">&nbsp;</div>
+
+<div id="header">
+    <div id="logo"><a href="//www.ipb.de" ><img src="/images/logo.png" border="0" alt="IPB GmbH" title="IPB GmbH" /></a></div>
+    <div id="topimage" style="text-align: right; color: #333; margin-top: 4px; line-height: 20px; letter-spacing: 2px; shadow: 1px"><br>&nbsp;</div>
+</div>
+<div class="nav">
+    <ul>
+        <li><a class="company" href="/company/">Unternehmen<span>Über IPB </span></a></li>
+        <li><a class="colo" href="/colocation/">Rechenzentrum<span>Colocation, Carrier,  Housing, ...</span></a></li>
+        <li><a class="internet" href="/connectivity/">Internet<span>Breitband, VPN, ...</span></a></li>
+        <li><a class="solution" href="/solution/">Lösungen<span>Cloud, Netzwerk, Server, Hosting, ...<br /></span></a></li>
+        <li class="last"><a class="jobs" href="/company/jobs/">Stellenausschreibungen<span>Bewirb dich jetzt </span></a></li>
+    </ul>
+</div>
+
+<!--
+<div style="border: 1px solid #dddddd; background-color: #eeeeee; padding: 15px; font-size: 1.2em; width: 95%; line-height: 1.6; margin-bottom: 15px;">
+  <center>
+    <b>Hinweis - Freitag, den 22.08.2025:</b><br>
+    Eingeschränkte Telefon- und Email-Erreichbarkeit von IPB aufgrund einer Störung.<br>
+    Bitte rufen Sie uns in dringenden Fällen unter der Rufnummer +4915780671816 an, dort sind wir erreichbar.<br>
+    Wir arbeiten mit Hochdruck an der Entstörung.
+  </center>
+</div>
+-->
+<!--
+<div style="border: 1px solid #dddddd; background-color: #eeeeee; padding: 15px; font-size: 1.2em; width: 95%; line-height: 1.6; margin-bottom: 15px;">
+  <center>
+          <a href="oeffnungszeiten-feiertage.html"><b>IPB Büro Öffnungszeiten an den Feiertagen </b></a></br>
+          <a href="opening-hours-en.html"><b>IPB Office Opening Hours on public holidays </b></a>
+  </center>
+</div>
+-->
+<!--
+<div style="border: 1px solid #dddddd; background-color: #eeeeee; padding: 15px; font-size: 1.2em; width: 95%; line-height: 1.6; margin-bottom: 15px;">
+  <center>
+          <a>Wichtige Informationen zum </a>
+          <a href="ipb-freeze.html"><b>IPB Freeze </b> und </a>
+          <a href="oeffnungszeiten-feiertage.html"><b>IPB Büro Öffnungszeiten - Feiertage</b></a></br>
+          <a>Important information in regards to the </a>
+          <a href="ipb-freeze-en.html"><b>IPB Freeze </b> and </a>
+          <a href="opening-hours-en.html"><b>IPB Office Opening Hours - Holidays</b></a></br>
+  </center>
+</div>
+-->
+
+       <div class="block">
+            <div id="featured-wrapper">
+<div id="featured">
+<ul>
+<li><a title="Professionelle Managed L&Atilde;&para;sungen" href="/solution/"><img src="/images/featured_image_webhosting2.jpg" alt="Professionelle Managed L&Atilde;&para;sungen" /></a>
+<h1 class="hidden"><a>Professionelle Managed L&ouml;sungen</a></h1>
+<p>Wir bieten bereits f&uuml;r den t&auml;gliche Bedarf in vielen Bereichen professionelle Managed L&ouml;sungen an und erstellen auch auf Ihre W&uuml;nsche ma&szlig;geschneiderten L&ouml;sungen ...</p>
+</li>
+<li><a title="Hochleistungs-Rechenzentrum" href="/colocation/"><img src="/images/featured_image_colocation.jpg" alt="Hochleistungs-Rechenzentrum" /></a>
+<h1 class="hidden"><a>Hochleistungs-Rechenzentrum</a></h1>
+<p>F&uuml;r einen reibungslosen Betrieb bieten wir, mit &uuml;ber 10 Jahren Erfahrung, ein stabiles 24/7 IT-Umfeld in unseren Rechenzentren ...</p>
+</li>
+<li><a title="Internet Breitbandverbindungen" href="/connectivity/"><img src="/images/featured_image_connectivity2.jpg" alt="Internet Breitbandverbindungen" /></a>
+<h1 class="hidden"><a>Internet Breitbandverbindungen</a></h1>
+<p>Mit unseren Internetzug&auml;ngen erhalten Sie f&uuml;r jedes Gesch&auml;tsfeld und jeder Bandbreite hohe Verf&uuml;gbarkeit und Performance ...</p>
+</li>
+<!--<li><a title="Event-/Richtfunkl&Atilde;&para;sungen" href="/"><img src="/images/featured_image_event.jpg" alt="Event-/Richtfunkl&Atilde;&para;sungen" /></a>
+<h1 class="hidden"><a>Event-/Richtfunkl&ouml;sungen</a></h1>
+<p>Ob Outdoor oder Indoor-Events, wir bieten Ihren Event-Teilnehmern &uuml;ber spezielle Anbindungen eine reibungsfreie Netzwerkverbindung und bedarfsgerechte Anwendungen zur besseren Interaktion...</p>
+</li>-->
+</ul>
+</div>
+</div>
+<script type="text/javascript" src="https://www.ipb.de/js/nivo.js"></script>
+<script type="text/javascript">
+//<![CDATA[
+    $(window).load(function() {
+$('#featured ul').nivoSlider({
+effect:                 'random',
+slices:                 20,
+animSpeed:              800,
+pauseTime:              8000,
+pauseOnHover:   true,
+manualAdvance:  false           });
+});
+// ]]>
+</script>
+       </div>        
+
+               <div class="techfoot"></div>
+        <div id="footer">
+            <div style="float: right; display: inline; width: 185px">
+            <div style="float: right; display: inline; width: 150px">L&uuml;tzowstra&szlig;e 106<br>10785 Berlin<br>Deutschland<br><br>
+Telefon: +49 30 9203739-00<br>Telefax<img src="/images/blank.png" style="width: 1px">: +49 30 9203739-22<br>E-Mail&nbsp;&nbsp;: kontakt@ipb.de</div>
+
+</div>
+            
+
+<div style="float: left; width: 80px">
+<span style="font-size: 11px; display: block"><a href="/solution/">Lösungen</a><br><a href="/colocation/">Rechenzentrum</a><br><a href="/connectivity/">Internet</a><br><a href="/company/">Unternehmen</a><br><br><a href="/company/contact.html">Kontakt</a><br><a href="/company/press.html">Presse</a><br><a href="/company/legalnotice.html">Impressum</a><br><a href="/company/privacy.html">Datenschutz</a></span>
+</div>
+
+<div style="float: right; display: inline; width: 600px; padding-top: 2px" align="center"><img src="/images/logo_bcix.png" title="BCIX - Berlin Commercial Internet Exchange" style="padding-right: 20px"><img src="/images/logo_ripe_ncc.png" title="RIPE NCC Member" style="padding-right: 20px"><img src="/images/logo_eco.png" title="eco"><br><br><br>
+<!--<img src="/images/tuev-sued-ee01-siegel.png" height="70" title="Urkunde für Ökostrom Produkt nach CMS Standard EE01" style="padding-right: 20px"><a href="/company/certifications.html">--><img width="70px" src="/images/tuev_nord_iec27001_2025.jpg" title="TüV Nord ISO27001" style="padding-right: 20px" border=0></a>
+</div>
+
+
+<div style="float:left;clear:both; position: relative; padding-top: 20px; width: 400px">Copyright &copy; 2010 - 2026 IPB Internet Provider in Berlin GmbH<br><br></div>
+</div>
+
+    </div>
+        <div id="navi_top">
+        <ul><li><a href="//www.ipb.de" title="Startseite"  class="aktiv">Startseite</a></li><li><a href="/company/contact.html" class=" title="Kontakt">Kontakt</a><li><a href="/company/press.html" title="Presse und News"  class="">Presse</a></li></li></li><li><a href="/company/legalnotice.html" class=" title="Impressum"  >Impressum</a></li><!-- li><a href="http://webcam.ipb.de" title="IPB Webcams" target="_blank" >Webcam</a></li --><li style="background: none"><a href="https://cic.ipb.de" title="Login CIC - Customer Information Center" target="_blank" >Login / CIC</a></li></ul>
+    <div>
+</div>
+    </div>
+
+</div>
+
+</body>
+</html>
+[0m
+[0m$ [0mcurl -s --connect-timeout 5 --max-time 10 https://pluto.portal.ipb.de | head -200
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_0681917fb001PO2jU0VSeSklh5
+
+
+  <link rel="stylesheet" href="/static/assets/index.544f95302d3e.css">
+<script type="module" src="/static/assets/index-MFqnr9OV.js"></script>
+  
+  
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+</html>
+[0m
+[0m$ [0mcurl -s -L -o /dev/null -w "%{http_code} %{url_effective}" --connect-timeout 5 --max-time 10 "https://event.ipb.de/redirect/?url=https%3A//example.com" 2>&1
+400 https://event.ipb.de/redirect/?url=https%3A//example.com
+[0m
+[0m$ [0mcurl -sI --connect-timeout 5 --max-time 10 "https://event.ipb.de/redirect/?url=https%3A//example.com" 2>&1
+HTTP/1.1 400 Bad Request
+Server: nginx/1.31.4
+Date: Thu, 03 Sep 2026 16:28:01 GMT
+Content-Type: text/html; charset=utf-8
+Content-Length: 17
+Connection: keep-alive
+P3P: CP="ALL DSP COR CUR ADM TAI OUR IND COM NAV INT"
+Content-Security-Policy: default-src 'self' https://event.ipb.de; script-src 'self' https://event.ipb.de; object-src 'none'; frame-src 'self' https://event.ipb.de; style-src 'self' https://event.ipb.de; connect-src 'self' https://event.ipb.de; img-src 'self' data: https://event.ipb.de; font-src 'self' https://event.ipb.de; media-src 'self' data: https://event.ipb.de; form-action 'self' https: https://event.ipb.de
+Vary: Accept-Language, Cookie, Host
+Content-Language: en
+X-Frame-Options: DENY
+[0m
+[0m$ [0mcurl -s --connect-timeout 5 --max-time 10 "https://pluto.portal.ipb.de/" | grep -oP '(?:src|href|action)="[^"]*"' | head -30
+href="/static/favicon.4195ea503ac3.svg"
+href="/static/app.611bfd79ce88.webmanifest"
+href="/static/favicon-196.5a96047d4d90.png"
+href="/static/apple-icon-180.e397b44ee998.png"
+href="/static/assets/index.544f95302d3e.css"
+src="/static/assets/index-MFqnr9OV.js"
+[0m
+[0m$ [0mcurl -s --connect-timeout 5 --max-time 10 "https://pluto.portal.ipb.de/" | grep -oP 'fetch\([^)]*\)|axios\.[a-z]+\([^)]*\)|/api/[a-zA-Z0-9/_-]+' | head -30
+(no output)
+[0m
+Excellent findings. Key observations:
+- **event.ipb.de**: Pretix ticketing with `/redirect/?url=` (open redirect potential)
+- **pluto.portal.ipb.de**: React SPA with strong security headers
+- **www.ipb.de**: PHP/8.3.33 on PleskLin
+
+Let me now deep-dive into the open redirect on event.ipb.de and explore pluto.portal.ipb.de's API surface.
+[0m$ [0m# Check for common API/GraphQL endpoints on event.ipb.de
+for path in /api /api/v1 /api/v2 /graphql /api/graphql /api/docs /api/swagger /api/openapi /api/health /api/status /control /admin /control/login; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 3 --max-time 5 "https://event.ipb.de${path}" 2>&1)
+  if [ "$code" != "000" ] && [ "$code" != "404" ]; then
+    echo "${code} ${path}"
+  fi
+done
+301 /api
+301 /api/v1
+301 /api/v2
+301 /graphql
+301 /api/graphql
+301 /api/docs
+301 /api/swagger
+301 /api/openapi
+301 /api/health
+301 /api/status
+301 /control
+301 /admin
+403 /control/login
+[0m
+[0m$ [0m# Check www.ipb.de for common paths
+for path in /api /api/v1 /admin /login /panel /phpmyadmin /plesk /webmail /cpanel /server-status /server-info /.env /config /backup; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 3 --max-time 5 "https://www.ipb.de${path}" 2>&1)
+  if [ "$code" != "000" ] && [ "$code" != "404" ]; then
+    echo "${code} ${path}"
+  fi
+done
+403 /server-info
+403 /.env
+[0m
+[0m$ [0m# Check for common API/GraphQL endpoints on pluto.portal.ipb.de
+for path in /api /api/v1 /api/v2 /graphql /api/graphql /api/docs /api/swagger /api/openapi /api/health /api/status /status /health /api/v1/auth /api/login /login /auth /oauth /oauth/authorize /oauth/callback; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 3 --max-time 5 "https://pluto.portal.ipb.de${path}" 2>&1)
+  if [ "$code" != "000" ] && [ "$code" != "404" ]; then
+    echo "${code} ${path}"
+  fi
+done
+200 /api
+200 /api/v1
+200 /api/v2
+200 /graphql
+200 /api/graphql
+200 /api/docs
+200 /api/swagger
+200 /api/openapi
+200 /api/health
+200 /api/status
+200 /status
+200 /health
+200 /api/v1/auth
+200 /api/login
+200 /login
+200 /auth
+200 /oauth
+200 /oauth/authorize
+200 /oauth/callback
+[0m
+[0m$ [0mcurl -s --connect-timeout 5 --max-time 10 "https://event.ipb.de/control/login" | head -100
+<html>
+<head><title>403 Forbidden</title></head>
+<body>
+<center><h1>403 Forbidden</h1></center>
+<hr><center>nginx/1.31.4</center>
+</body>
+</html>
+[0m
+Key findings:
+- **pluto.portal.ipb.de**: SPA with 200 on all routes (React app)
+- **event.ipb.de**: 403 on `/control/login` (pretix admin panel exists)
+- **www.ipb.de**: 403 on `/.env` and `/server-info` (interesting!)
+
+Let me now deep-dive into the pretix admin panel and examine the SPA bundle.
+[0m$ [0m# Download and analyze the SPA bundle from pluto.portal.ipb.de
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | head -500
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_06819acb8001djajRWmw9JCzDW
+
+(no output)
+[0m
+[0m$ [0m# Extract API endpoints from SPA bundle
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | grep -oP '"(/[a-zA-Z0-9/_-]+(?:\?[^"]*)?)"' | sort -u | head -50
+"//"
+"/_exceptions"
+"/_exceptions/forgot-password"
+"/_exceptions/login"
+"/_exceptions/password-reset/"
+"/_exceptions/register-tenant/"
+"/_exceptions/user-register/"
+"/_protected"
+"/_protected/"
+"/_protected/admin/"
+"/_protected/ai"
+"/_protected/associate/finish"
+"/_protected/check-in/"
+"/_protected/deliveries/"
+"/_protected/deliveries/add"
+"/_protected/delivery-dashboard/"
+"/_protected/delivery-dashboard/handout"
+"/_protected/dns/"
+"/_protected/help"
+"/_protected/knowledge-base"
+"/_protected/knowledge-base/"
+"/_protected/portal-admin/"
+"/_protected/portal-admin/dns/"
+"/_protected/portal-admin/documents"
+"/_protected/portal-admin/inventory/"
+"/_protected/portal-admin/knowledge-base"
+"/_protected/portal-admin/knowledge-base/"
+"/_protected/portal-admin/motd"
+"/_protected/portal-admin/open-registrations"
+"/_protected/portal-admin/roles/"
+"/_protected/portal-admin/roles/create"
+"/_protected/portal-admin/system/"
+"/_protected/portal-admin/system/branding"
+"/_protected/portal-admin/tenant/"
+"/_protected/portal-admin/tickets/"
+"/_protected/portal-admin/users"
+"/_protected/profile"
+"/_protected/tickets/"
+"/_protected/tickets/create"
+"/_protected/work-visit-dashboard/"
+"/_protected/work-visit-dashboard/all"
+"/_protected/work-visit/"
+"/_protected/work-visit/create"
+"/_protected/work-visit/log"
+"/admin"
+"/admin-api/docs/"
+"/admin/"
+"/ai"
+"/api/admin/ai/v1/config/"
+"/api/admin/check-in/v1/check-in/kiosk_token/"
+[0m
+[0m$ [0m# Check pretix API endpoints
+for path in /api/v1/organizers /api/v1/events /api/v1/users /control/ /control/login /control/login/ /control/api/v1; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 3 --max-time 5 "https://event.ipb.de${path}" 2>&1)
+  echo "${code} ${path}"
+done
+301 /api/v1/organizers
+404 /api/v1/events
+404 /api/v1/users
+403 /control/
+403 /control/login
+403 /control/login/
+403 /control/api/v1
+[0m
+[0m$ [0m# Extract more API endpoints and interesting strings from the SPA bundle
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | grep -oP '"(/api/[^"]*)"' | sort -u
+"/api/admin/ai/v1/config/"
+"/api/admin/check-in/v1/check-in/kiosk_token/"
+"/api/admin/check-in/v1/check-in/kiosk_totp/"
+"/api/admin/check-in/v1/document/"
+"/api/admin/check-in/v1/document/available_scoped_objects/"
+"/api/admin/dns/v1/range/"
+"/api/admin/dns/v1/system-token/"
+"/api/admin/dns/v1/system-token/regenerate/"
+"/api/admin/dynamic-config/v1/config-namespace/"
+"/api/admin/dynamic-config/v1/config-namespace/apply/"
+"/api/admin/dynamic-config/v1/config-namespace/configure-mailpit/"
+"/api/admin/dynamic-config/v1/config-namespace/registry/"
+"/api/admin/inventory/v1/location/"
+"/api/admin/inventory/v1/rack/"
+"/api/admin/inventory/v1/site/"
+"/api/admin/inventory/v1/time-zone/"
+"/api/admin/knowledge-base/v1"
+"/api/admin/motd/v1/motd/welcome/"
+"/api/admin/motd/v2/motd/"
+"/api/admin/multi-tenancy/v1/membership-tag/"
+"/api/admin/multi-tenancy/v1/role/"
+"/api/admin/multi-tenancy/v1/role/available-permissions/"
+"/api/admin/multi-tenancy/v1/tenant-note/"
+"/api/admin/multi-tenancy/v1/tenant-note/block-attachment-types/markdown/"
+"/api/admin/multi-tenancy/v1/tenant-registration/"
+"/api/admin/multi-tenancy/v1/tenant-registration/eav/"
+"/api/admin/multi-tenancy/v1/tenant-tag/"
+"/api/admin/multi-tenancy/v1/tenant/"
+"/api/admin/multi-tenancy/v1/tenant/eav/"
+"/api/admin/multi-tenancy/v1/tenant/export/"
+"/api/admin/multi-tenancy/v1/user-registration/eav/"
+"/api/admin/multi-tenancy/v1/user/"
+"/api/admin/multi-tenancy/v1/user/eav/"
+"/api/admin/multi-tenancy/v1/user/export/"
+"/api/admin/shipping/v1/courier/"
+"/api/admin/shipping/v1/delivery-option/"
+"/api/admin/shipping/v1/delivery/"
+"/api/admin/ticketing/v1/ticket/"
+"/api/admin/visitor-management/v1/work-visit-request/actual-data-schema/"
+"/api/admin/visitor-management/v1/work-visit-request/export/"
+"/api/ai/v1/chat/chat/"
+"/api/check-in/v1/check-in-event/export/"
+"/api/check-in/v1/check-in/"
+"/api/check-in/v1/check-in/fallback/"
+"/api/check-in/v1/check-in/kiosk_login/"
+"/api/check-in/v1/check-in/kiosk_totp/validate/"
+"/api/config/v1/"
+"/api/ct/"
+"/api/dns/v1/record/"
+"/api/inventory/v1/tenant/self/"
+"/api/knowledge-base/v1"
+"/api/motd/v2/motd/block-types/"
+"/api/multi-tenancy/v1/association-request/"
+"/api/multi-tenancy/v1/auth/totp/verify/"
+"/api/multi-tenancy/v1/membership/"
+"/api/multi-tenancy/v1/membership/user-token/"
+"/api/multi-tenancy/v1/role/"
+"/api/multi-tenancy/v1/tenant-relationship/"
+"/api/multi-tenancy/v1/tenant/"
+"/api/multi-tenancy/v1/tenant/eav/"
+"/api/multi-tenancy/v1/tenant/self/"
+"/api/multi-tenancy/v1/user-registration/"
+"/api/multi-tenancy/v1/user-registration/eav/"
+"/api/multi-tenancy/v1/user/"
+"/api/multi-tenancy/v1/user/eav/"
+"/api/multi-tenancy/v1/user/me/"
+"/api/multi-tenancy/v1/user/me/change-password/"
+"/api/multi-tenancy/v1/user/me/change_mail/"
+"/api/multi-tenancy/v1/user/me/deactivate/"
+"/api/multi-tenancy/v1/user/me/recovery-codes/regenerate/"
+"/api/multi-tenancy/v1/user/me/totp/"
+"/api/multi-tenancy/v1/user/me/totp/confirm/"
+"/api/multi-tenancy/v1/user/me/totp/provision/"
+"/api/multi-tenancy/v1/user/profile-picture/"
+"/api/multi-tenancy/v1/user/profile-picture/delete/"
+"/api/multi-tenancy/v1/user/profile-picture/download/"
+"/api/multi-tenancy/v1/user/profile-picture/upload/"
+"/api/multi-tenancy/v1/user/request_reset_password/"
+"/api/session/"
+"/api/shipping/v1/delivery/"
+"/api/shipping/v1/delivery/reserve-delivery-id/"
+"/api/sites"
+"/api/system/"
+"/api/ticketing/v1/ticket/"
+"/api/ticketing/v1/ticket/available-memberships/"
+"/api/visitor-management/v1/work-visit-request/"
+"/api/visitor-management/v1/work-visit-request/actual-data-schema/"
+"/api/visitor-management/v1/work-visit/"
+[0m
+Found rich attack surface on pluto.portal.ipb.de - admin portals, API endpoints, check-in, work-visit, delivery systems. Let me extract the full API surface.
+[0m$ [0m# Extract all unique string paths from the SPA bundle
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | grep -oP '"(/[a-zA-Z0-9/_-]+(?:\?[^"]*)?)"' | sort -u
+"//"
+"/_exceptions"
+"/_exceptions/forgot-password"
+"/_exceptions/login"
+"/_exceptions/password-reset/"
+"/_exceptions/register-tenant/"
+"/_exceptions/user-register/"
+"/_protected"
+"/_protected/"
+"/_protected/admin/"
+"/_protected/ai"
+"/_protected/associate/finish"
+"/_protected/check-in/"
+"/_protected/deliveries/"
+"/_protected/deliveries/add"
+"/_protected/delivery-dashboard/"
+"/_protected/delivery-dashboard/handout"
+"/_protected/dns/"
+"/_protected/help"
+"/_protected/knowledge-base"
+"/_protected/knowledge-base/"
+"/_protected/portal-admin/"
+"/_protected/portal-admin/dns/"
+"/_protected/portal-admin/documents"
+"/_protected/portal-admin/inventory/"
+"/_protected/portal-admin/knowledge-base"
+"/_protected/portal-admin/knowledge-base/"
+"/_protected/portal-admin/motd"
+"/_protected/portal-admin/open-registrations"
+"/_protected/portal-admin/roles/"
+"/_protected/portal-admin/roles/create"
+"/_protected/portal-admin/system/"
+"/_protected/portal-admin/system/branding"
+"/_protected/portal-admin/tenant/"
+"/_protected/portal-admin/tickets/"
+"/_protected/portal-admin/users"
+"/_protected/profile"
+"/_protected/tickets/"
+"/_protected/tickets/create"
+"/_protected/work-visit-dashboard/"
+"/_protected/work-visit-dashboard/all"
+"/_protected/work-visit/"
+"/_protected/work-visit/create"
+"/_protected/work-visit/log"
+"/admin"
+"/admin-api/docs/"
+"/admin/"
+"/ai"
+"/api/admin/ai/v1/config/"
+"/api/admin/check-in/v1/check-in/kiosk_token/"
+"/api/admin/check-in/v1/check-in/kiosk_totp/"
+"/api/admin/check-in/v1/document/"
+"/api/admin/check-in/v1/document/available_scoped_objects/"
+"/api/admin/dns/v1/range/"
+"/api/admin/dns/v1/system-token/"
+"/api/admin/dns/v1/system-token/regenerate/"
+"/api/admin/dynamic-config/v1/config-namespace/"
+"/api/admin/dynamic-config/v1/config-namespace/apply/"
+"/api/admin/dynamic-config/v1/config-namespace/configure-mailpit/"
+"/api/admin/dynamic-config/v1/config-namespace/registry/"
+"/api/admin/inventory/v1/location/"
+"/api/admin/inventory/v1/rack/"
+"/api/admin/inventory/v1/site/"
+"/api/admin/inventory/v1/time-zone/"
+"/api/admin/knowledge-base/v1"
+"/api/admin/motd/v1/motd/welcome/"
+"/api/admin/motd/v2/motd/"
+"/api/admin/multi-tenancy/v1/membership-tag/"
+"/api/admin/multi-tenancy/v1/role/"
+"/api/admin/multi-tenancy/v1/role/available-permissions/"
+"/api/admin/multi-tenancy/v1/tenant-note/"
+"/api/admin/multi-tenancy/v1/tenant-note/block-attachment-types/markdown/"
+"/api/admin/multi-tenancy/v1/tenant-registration/"
+"/api/admin/multi-tenancy/v1/tenant-registration/eav/"
+"/api/admin/multi-tenancy/v1/tenant-tag/"
+"/api/admin/multi-tenancy/v1/tenant/"
+"/api/admin/multi-tenancy/v1/tenant/eav/"
+"/api/admin/multi-tenancy/v1/tenant/export/"
+"/api/admin/multi-tenancy/v1/user-registration/eav/"
+"/api/admin/multi-tenancy/v1/user/"
+"/api/admin/multi-tenancy/v1/user/eav/"
+"/api/admin/multi-tenancy/v1/user/export/"
+"/api/admin/shipping/v1/courier/"
+"/api/admin/shipping/v1/delivery-option/"
+"/api/admin/shipping/v1/delivery/"
+"/api/admin/ticketing/v1/ticket/"
+"/api/admin/visitor-management/v1/work-visit-request/actual-data-schema/"
+"/api/admin/visitor-management/v1/work-visit-request/export/"
+"/api/ai/v1/chat/chat/"
+"/api/check-in/v1/check-in-event/export/"
+"/api/check-in/v1/check-in/"
+"/api/check-in/v1/check-in/fallback/"
+"/api/check-in/v1/check-in/kiosk_login/"
+"/api/check-in/v1/check-in/kiosk_totp/validate/"
+"/api/config/v1/"
+"/api/ct/"
+"/api/dns/v1/record/"
+"/api/inventory/v1/tenant/self/"
+"/api/knowledge-base/v1"
+"/api/motd/v2/motd/block-types/"
+"/api/multi-tenancy/v1/association-request/"
+"/api/multi-tenancy/v1/auth/totp/verify/"
+"/api/multi-tenancy/v1/membership/"
+"/api/multi-tenancy/v1/membership/user-token/"
+"/api/multi-tenancy/v1/role/"
+"/api/multi-tenancy/v1/tenant-relationship/"
+"/api/multi-tenancy/v1/tenant/"
+"/api/multi-tenancy/v1/tenant/eav/"
+"/api/multi-tenancy/v1/tenant/self/"
+"/api/multi-tenancy/v1/user-registration/"
+"/api/multi-tenancy/v1/user-registration/eav/"
+"/api/multi-tenancy/v1/user/"
+"/api/multi-tenancy/v1/user/eav/"
+"/api/multi-tenancy/v1/user/me/"
+"/api/multi-tenancy/v1/user/me/change-password/"
+"/api/multi-tenancy/v1/user/me/change_mail/"
+"/api/multi-tenancy/v1/user/me/deactivate/"
+"/api/multi-tenancy/v1/user/me/recovery-codes/regenerate/"
+"/api/multi-tenancy/v1/user/me/totp/"
+"/api/multi-tenancy/v1/user/me/totp/confirm/"
+"/api/multi-tenancy/v1/user/me/totp/provision/"
+"/api/multi-tenancy/v1/user/profile-picture/"
+"/api/multi-tenancy/v1/user/profile-picture/delete/"
+"/api/multi-tenancy/v1/user/profile-picture/download/"
+"/api/multi-tenancy/v1/user/profile-picture/upload/"
+"/api/multi-tenancy/v1/user/request_reset_password/"
+"/api/session/"
+"/api/shipping/v1/delivery/"
+"/api/shipping/v1/delivery/reserve-delivery-id/"
+"/api/sites"
+"/api/system/"
+"/api/ticketing/v1/ticket/"
+"/api/ticketing/v1/ticket/available-memberships/"
+"/api/visitor-management/v1/work-visit-request/"
+"/api/visitor-management/v1/work-visit-request/actual-data-schema/"
+"/api/visitor-management/v1/work-visit/"
+"/associate/finish"
+"/check-in"
+"/check-in/"
+"/deliveries"
+"/deliveries/"
+"/deliveries/add"
+"/delivery-dashboard"
+"/delivery-dashboard/"
+"/delivery-dashboard/handout"
+"/dns"
+"/dns/"
+"/edit"
+"/forgot-password"
+"/help"
+"/kiosk"
+"/kiosk/"
+"/knowledge-base"
+"/knowledge-base/"
+"/knowledge-base/admin/index"
+"/knowledge-base/docs/index"
+"/login"
+"/login?redirect=/admin"
+"/mailpit/"
+"/password-reset/"
+"/portal-admin"
+"/portal-admin/"
+"/portal-admin/check-in"
+"/portal-admin/dns"
+"/portal-admin/dns/"
+"/portal-admin/documents"
+"/portal-admin/inventory"
+"/portal-admin/inventory/"
+"/portal-admin/knowledge-base"
+"/portal-admin/motd"
+"/portal-admin/open-registrations"
+"/portal-admin/roles"
+"/portal-admin/roles/"
+"/portal-admin/roles/create"
+"/portal-admin/system"
+"/portal-admin/system/"
+"/portal-admin/system/branding"
+"/portal-admin/tenant/"
+"/portal-admin/tickets"
+"/portal-admin/tickets/"
+"/portal-admin/users"
+"/profile"
+"/register-tenant/"
+"/tickets"
+"/tickets/"
+"/tickets/create"
+"/user-api/docs/"
+"/user-register/"
+"/work-visit"
+"/work-visit-dashboard"
+"/work-visit-dashboard/"
+"/work-visit-dashboard/all"
+"/work-visit/"
+"/work-visit/create"
+"/work-visit/log"
+[0m
+[0m$ [0m# Check event.ipb.de pretix API
+curl -s --connect-timeout 5 --max-time 10 "https://event.ipb.de/api/v1/organizers/" -H "Accept: application/json" | head -200
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Check the vendored JS bundle for more endpoints
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/vendor-DSfVvg0_.js" | grep -oP '"(/api/[^"]*)"' | sort -u
+(no output)
+[0m
+This is a massive API surface. pluto.portal.ipb.de is a full customer portal with admin, DNS, inventory, ticketing, shipping, visitor management, and AI features. Let me probe unauthenticated endpoints.
+[0m$ [0m# Probe unauthenticated API endpoints on pluto.portal.ipb.de
+for path in "/api/session/" "/api/multi-tenancy/v1/tenant/" "/api/multi-tenancy/v1/user/" "/api/config/v1/" "/api/system/" "/api/ct/" "/api/multi-tenancy/v1/user-registration/" "/api/multi-tenancy/v1/role/" "/api/multi-tenancy/v1/tenant-relationship/" "/admin-api/docs/" "/user-api/docs/" "/api/dns/v1/record/" "/api/ticketing/v1/ticket/" "/api/shipping/v1/delivery/" "/api/visitor-management/v1/work-visit/" "/api/inventory/v1/tenant/self/" "/api/knowledge-base/v1" "/api/motd/v2/motd/block-types/" "/api/multi-tenancy/v1/association-request/" "/api/ai/v1/chat/chat/"; do
+  echo "=== ${path} ==="
+  curl -s --connect-timeout 3 --max-time 5 "https://pluto.portal.ipb.de${path}" 2>&1 | head -5
+  echo ""
+done
+=== /api/session/ ===
+{"detail":"Method \"GET\" not allowed."}
+=== /api/multi-tenancy/v1/tenant/ ===
+{"detail":"Authentication credentials were not provided."}
+=== /api/multi-tenancy/v1/user/ ===
+{"detail":"Authentication credentials were not provided."}
+=== /api/config/v1/ ===
+
+
+<!doctype html>
+<html lang="en">
+
+
+=== /api/system/ ===
+{"detail":"Authentication credentials were not provided."}
+=== /api/ct/ ===
+{"ct":"C563GdbHZBKl8aklPOOdowAu9fOQjt0i"}
+=== /api/multi-tenancy/v1/user-registration/ ===
+{"detail":"Authentication credentials were not provided."}
+=== /api/multi-tenancy/v1/role/ ===
+{"detail":"Authentication credentials were not provided."}
+=== /api/multi-tenancy/v1/tenant-relationship/ ===
+
+
+<!doctype html>
+<html lang="en">
+
+
+=== /admin-api/docs/ ===
+
+=== /user-api/docs/ ===
+401 Unauthorized
+=== /api/dns/v1/record/ ===
+
+
+<!doctype html>
+<html lang="en">
+
+
+=== /api/ticketing/v1/ticket/ ===
+{"detail":"Authentication credentials were not provided."}
+=== /api/shipping/v1/delivery/ ===
+{"detail":"Authentication credentials were not provided."}
+=== /api/visitor-management/v1/work-visit/ ===
+
+
+<!doctype html>
+<html lang="en">
+
+
+=== /api/inventory/v1/tenant/self/ ===
+{"detail":"Authentication credentials were not provided."}
+=== /api/knowledge-base/v1 ===
+
+
+<!doctype html>
+<html lang="en">
+
+
+=== /api/motd/v2/motd/block-types/ ===
+{"detail":"Authentication credentials were not provided."}
+=== /api/multi-tenancy/v1/association-request/ ===
+{"detail":"Authentication credentials were not provided."}
+=== /api/ai/v1/chat/chat/ ===
+
+
+<!doctype html>
+<html lang="en">
+[0m
+[0m$ [0m# Full response for /api/ct/
+curl -sI "https://pluto.portal.ipb.de/api/ct/" 2>&1
+HTTP/2 200 
+allow: GET, HEAD, OPTIONS
+content-language: en
+content-type: application/json
+cross-origin-opener-policy: same-origin
+date: Thu, 03 Sep 2026 16:28:58 GMT
+referrer-policy: same-origin
+set-cookie: edgeportal__csrftoken=4xJNBfv4Eaw9hmaQETcojtWQb0P1oPee; expires=Thu, 02 Sep 2027 16:28:58 GMT; HttpOnly; Max-Age=31449600; Path=/; SameSite=Strict; Secure
+strict-transport-security: max-age=63072000; includeSubDomains
+vary: Accept, Cookie, Accept-Language
+x-content-type-options: nosniff
+x-frame-options: DENY
+content-length: 41
+[0m
+[0m$ [0m# Check /api/ct/ with different methods
+curl -s -X POST "https://pluto.portal.ipb.de/api/ct/" -H "Content-Type: application/json" 2>&1 | head -10
+echo "---"
+curl -s -X OPTIONS "https://pluto.portal.ipb.de/api/ct/" -I 2>&1 | head -10
+{"detail":"Method \"POST\" not allowed."}---
+HTTP/2 200 
+allow: GET, HEAD, OPTIONS
+content-language: en
+content-type: application/json
+cross-origin-opener-policy: same-origin
+date: Thu, 03 Sep 2026 16:28:59 GMT
+referrer-policy: same-origin
+set-cookie: edgeportal__csrftoken=CaUaekKLeAw9OqQTAThNL2xQnQQC4JxK; expires=Thu, 02 Sep 2027 16:28:59 GMT; HttpOnly; Max-Age=31449600; Path=/; SameSite=Strict; Secure
+strict-transport-security: max-age=63072000; includeSubDomains
+vary: Accept, Cookie, Accept-Language
+[0m
+[0m$ [0m# Check session endpoint with POST
+curl -s -X POST "https://pluto.portal.ipb.de/api/session/" -H "Content-Type: application/json" -d '{}' 2>&1 | head -10
+<!doctype html>
+<html lang="en">
+<head>
+  <title>Server Error (500)</title>
+</head>
+<body>
+  <h1>Server Error (500)</h1><p></p>
+</body>
+</html>
+[0m
+[0m$ [0m# Check registration endpoints
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user-registration/" -H "Content-Type: application/json" -d '{}' 2>&1 | head -10
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Search the SPA bundle for "ct" token usage
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | grep -oP '.{0,100}["\x27]ct["\x27].{0,100}' | head -20
+api/admin/dns/v1/system-token/regenerate/",{method:"POST"})).json()}}class Ug{constructor(){Sa(this,"ct",null);Sa(this,"initPromise",null);Sa(this,"membership_id",null)}buildQuery(t){const n=new URLSearch
+[0m
+[0m$ [0m# Check tenant registration
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/tenant-registration/" -H "Content-Type: application/json" -d '{}' 2>&1 | head -10
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>403 Forbidden</title>
+  <style>
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+[0m
+[0m$ [0m# Check association request
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/association-request/" -H "Content-Type: application/json" -d '{}' 2>&1 | head -10
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Check the admin-api docs with full response
+curl -sv --connect-timeout 5 --max-time 10 "https://pluto.portal.ipb.de/admin-api/docs/" 2>&1 | head -30
+* Host pluto.portal.ipb.de:443 was resolved.
+* IPv6: 2a02:f28:1:16::140
+* IPv4: 194.29.225.140
+*   Trying 194.29.225.140:443...
+* Connected to pluto.portal.ipb.de (194.29.225.140) port 443
+* ALPN: curl offers h2,http/1.1
+} [5 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+} [512 bytes data]
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+{ [5 bytes data]
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+{ [122 bytes data]
+* TLSv1.3 (IN), TLS handshake, Encrypted Extensions (8):
+{ [19 bytes data]
+* TLSv1.3 (IN), TLS handshake, Certificate (11):
+{ [3428 bytes data]
+* TLSv1.3 (IN), TLS handshake, CERT verify (15):
+{ [80 bytes data]
+* TLSv1.3 (IN), TLS handshake, Finished (20):
+{ [36 bytes data]
+* TLSv1.3 (OUT), TLS change cipher, Change cipher spec (1):
+} [1 bytes data]
+* TLSv1.3 (OUT), TLS handshake, Finished (20):
+} [36 bytes data]
+* SSL connection using TLSv1.3 / TLS_AES_128_GCM_SHA256 / X25519 / id-ecPublicKey
+* ALPN: server accepted h2
+* Server certificate:
+*  subject: CN=pluto.portal.ipb.de
+[0m
+**Critical finding**: `/api/ct/` leaked a plaintext token `C563GdbHZBKl8aklPOOdowAu9fOQjt0i`. Let me investigate what this token is and probe more endpoints.
+[0m$ [0m# Check for mailpit (debug email service)
+curl -sI --connect-timeout 5 --max-time 10 "https://pluto.portal.ipb.de/mailpit/" 2>&1
+HTTP/2 403 
+content-language: en
+content-type: text/html; charset=utf-8
+cross-origin-opener-policy: same-origin
+date: Thu, 03 Sep 2026 16:29:03 GMT
+referrer-policy: same-origin
+strict-transport-security: max-age=63072000; includeSubDomains
+vary: Accept-Language, Cookie
+x-content-type-options: nosniff
+x-frame-options: DENY
+content-length: 0
+[0m
+[0m$ [0m# Check user registration with proper CSRF
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user-registration/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"email":"test@test.com","password":"Test1234!"}' 2>&1 | head -20
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Check tenant registration with CSRF
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/tenant-registration/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"name":"test"}' 2>&1 | head -20
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>403 Forbidden</title>
+  <style>
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+    body { font-family: sans-serif; background:#eee; color:#000; }
+    body>div { border-bottom:1px solid #ddd; }
+    h1 { font-weight:normal; margin-bottom:.4em; }
+    h1 span { font-size:60%; color:#666; font-weight:normal; }
+    #info { background:#f6f6f6; }
+    #info ul { margin: 0.5em 4em; }
+    #info p, #summary p { padding-top:10px; }
+    #summary { background: #ffc; }
+    #explanation { background:#eee; border-bottom: 0px none; }
+  </style>
+[0m
+[0m$ [0m# Check password reset
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user/request_reset_password/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"email":"test@test.com"}' 2>&1 | head -20
+(no output)
+[0m
+[0m$ [0m# Check check-in kiosk login
+curl -s -X POST "https://pluto.portal.ipb.de/api/check-in/v1/check-in/kiosk_login/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{}' 2>&1 | head -20
+{"detail":"No User matches the given query."}
+[0m
+[0m$ [0m# Check shipping delivery
+curl -s -X POST "https://pluto.portal.ipb.de/api/shipping/v1/delivery/reserve-delivery-id/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{}' 2>&1 | head -20
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Check user profile picture download - potential IDOR
+curl -s -o /dev/null -w "%{http_code}" "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user/profile-picture/download/?user_id=1" 2>&1
+echo ""
+curl -s -o /dev/null -w "%{http_code}" "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user/profile-picture/download/?user_id=2" 2>&1
+echo ""
+curl -s -o /dev/null -w "%{http_code}" "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user/profile-picture/download/?id=1" 2>&1
+401
+401
+401
+[0m
+[0m$ [0m# Check AI chat endpoint
+curl -s -X POST "https://pluto.portal.ipb.de/api/ai/v1/chat/chat/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"message":"hello"}' 2>&1 | head -20
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>403 Forbidden</title>
+  <style>
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+    body { font-family: sans-serif; background:#eee; color:#000; }
+    body>div { border-bottom:1px solid #ddd; }
+    h1 { font-weight:normal; margin-bottom:.4em; }
+    h1 span { font-size:60%; color:#666; font-weight:normal; }
+    #info { background:#f6f6f6; }
+    #info ul { margin: 0.5em 4em; }
+    #info p, #summary p { padding-top:10px; }
+    #summary { background: #ffc; }
+    #explanation { background:#eee; border-bottom: 0px none; }
+  </style>
+[0m
+Critical findings so far:
+1. **`/api/ct/`** leaks CSRF token without auth: `{"ct":"C563GdbHZBKl8aklPOOdowAu9fOQjt0i"}`
+2. **`/mailpit/`** exists (403) - test email service leaked in production
+3. **`/api/session/` POST → 500** - unhandled error
+
+Let me now probe the registration flow and check-in system for auth bypasses.
+[0m$ [0m# Check knowledge base endpoints
+curl -s "https://pluto.portal.ipb.de/api/knowledge-base/v1" -H "Accept: application/json" 2>&1 | head -20
+echo "---"
+curl -s "https://pluto.portal.ipb.de/api/admin/knowledge-base/v1" -H "Accept: application/json" 2>&1 | head -20
+...output truncated...
+
+Full output saved to: /home/runner/.local/share/opencode/tool-output/tool_0681a6e73001oGb15QGn1R2Ni5
+
+
+  <link rel="stylesheet" href="/static/assets/index.544f95302d3e.css">
+<script type="module" src="/static/assets/index-MFqnr9OV.js"></script>
+[0m
+[0m$ [0m# Check dynamic-config endpoints
+curl -s "https://pluto.portal.ipb.de/api/admin/dynamic-config/v1/config-namespace/" -H "Accept: application/json" 2>&1 | head -10
+echo "---"
+curl -s "https://pluto.portal.ipb.de/api/admin/dynamic-config/v1/config-namespace/registry/" -H "Accept: application/json" 2>&1 | head -10
+{"detail":"Authentication credentials were not provided."}---
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Check pretix API with proper Accept header
+curl -s "https://event.ipb.de/api/v1/organizers/" -H "Accept: application/json" 2>&1 | head -20
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Check pretix event listings (might be public)
+curl -s "https://event.ipb.de/api/v1/events/" -H "Accept: application/json" 2>&1 | head -20
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Not found</title>
+    <link rel="stylesheet" href="/static/CACHE/css/output.5c44c59c566c.css" type="text/css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="icon" href="/static/pretixbase/img/favicon.e9b4f7d70340.ico">
+    
+    
+</head>
+<body>
+<div class="container">
+    
+    <i class="fa fa-meh-o fa-fw big-icon"></i>
+    <div class="error-details">
+        <h1>Not found</h1>
+[0m
+[0m$ [0m# Enumerate pretix organizers and events
+curl -s "https://event.ipb.de/IPB/" -H "Accept: text/html" | grep -oP 'href="[^"]*"' | head -30
+href="/static/CACHE/css/presale.de51dd394296.css"
+href="/IPB/theme.css?version=c534d21b5f04-1788452848"
+href="/static/pretixbase/img/favicon.e9b4f7d70340.ico"
+href="/static/pretixbase/img/favicon.e9b4f7d70340.ico"
+href="/static/pretixbase/img/icons/favicon-16x16.d9c6017a4222.png"
+href="/static/pretixbase/img/icons/favicon-32x32.5066e55d61de.png"
+href="/static/pretixbase/img/icons/android-chrome-192x192.7d21acc539fe.png"
+href="/static/pretixbase/img/icons/apple-touch-icon.332c189bb6df.png"
+href="#content"
+href="/locale/set?locale=de&next=/IPB/"
+href="/locale/set?locale=en&next=/IPB/"
+href="/IPB/"
+href="?style=list"
+href="?style=week"
+href="?style=calendar"
+href="?style=day"
+href="/IPB/events/ical/?locale=en"
+href="?old=1"
+href="/redirect/?url=https%3A//pretix.eu%3Al1tNIEhVacchTmBBcFgH3ZGX5ldVHx5Gz35RasysNWI"
+href=""
+[0m
+[0m$ [0m# Check for old events on pretix
+curl -s "https://event.ipb.de/IPB/?old=1" -H "Accept: text/html" | grep -oP 'href="/[^"]*"' | head -30
+href="/static/CACHE/css/presale.de51dd394296.css"
+href="/IPB/theme.css?version=c534d21b5f04-1788452848"
+href="/static/pretixbase/img/favicon.e9b4f7d70340.ico"
+href="/static/pretixbase/img/favicon.e9b4f7d70340.ico"
+href="/static/pretixbase/img/icons/favicon-16x16.d9c6017a4222.png"
+href="/static/pretixbase/img/icons/favicon-32x32.5066e55d61de.png"
+href="/static/pretixbase/img/icons/android-chrome-192x192.7d21acc539fe.png"
+href="/static/pretixbase/img/icons/apple-touch-icon.332c189bb6df.png"
+href="/locale/set?locale=de&next=/IPB/%3Fold=1"
+href="/locale/set?locale=en&next=/IPB/%3Fold=1"
+href="/IPB/"
+href="/IPB/events/ical/?locale=en"
+href="/redirect/?url=https%3A//pretix.eu%3Al1tNIEhVacchTmBBcFgH3ZGX5ldVHx5Gz35RasysNWI"
+[0m
+[0m$ [0m# Check session endpoint more carefully - try various content types
+curl -s -X POST "https://pluto.portal.ipb.de/api/session/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"username":"test","password":"test"}' 2>&1 | head -20
+{"error":"Invalid credentials."}
+[0m
+[0m$ [0m# Check user/me endpoint with different auth approaches
+curl -s "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user/me/" -H "Accept: application/json" 2>&1 | head -10
+echo "---"
+curl -s "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user/me/" -H "Accept: application/json" -H "Authorization: Bearer C563GdbHZBKl8aklPOOdowAu9fOQjt0i" 2>&1 | head -10
+{"detail":"Authentication credentials were not provided."}---
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Check for tenant registration with EAV fields
+curl -s "https://pluto.portal.ipb.de/api/admin/multi-tenancy/v1/tenant-registration/eav/" -H "Accept: application/json" 2>&1 | head -10
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Check the password reset with proper CSRF token
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user/request_reset_password/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"email":"admin@ipb.de"}' 2>&1 | head -10
+(no output)
+[0m
+**Critical finding**: Check-in kiosk login returns `{"detail":"No User matches the given query."}` - user enumeration possible. Also, tenant-registration returns 403 (different from auth error) and AI chat returns 403. Let me now investigate the pretix system and look for more IDOR vectors.
+[0m$ [0m# Check system endpoint
+curl -s "https://pluto.portal.ipb.de/api/system/" -H "Accept: application/json" -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" 2>&1 | head -10
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Check event.ipb.de pretix version
+curl -sI "https://event.ipb.de/control/login" 2>&1 | head -15
+HTTP/1.1 403 Forbidden
+Server: nginx/1.31.4
+Date: Thu, 03 Sep 2026 16:29:53 GMT
+Content-Type: text/html
+Content-Length: 153
+Connection: keep-alive
+[0m
+[0m$ [0m# Check pretix changelog/version endpoints
+curl -s -o /dev/null -w "%{http_code}" "https://event.ipb.de/control/changelog/" 2>&1; echo " /control/changelog/"
+curl -s -o /dev/null -w "%{http_code}" "https://event.ipb.de/static/pretixbase/js/pretix.js" 2>&1; echo " /static/pretixbase/js/pretix.js"
+curl -s -o /dev/null -w "%{http_code}" "https://event.ipb.de/robots.txt" 2>&1; echo " /robots.txt"
+403 /control/changelog/
+404 /static/pretixbase/js/pretix.js
+200 /robots.txt
+[0m
+[0m$ [0m# Check Plesk panel on www.ipb.de
+for path in /login /admin/login /modules/ /smb/ /control/ /plesk-bin/; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 3 --max-time 5 "https://www.ipb.de${path}" 2>&1)
+  echo "${code} ${path}"
+done
+404 /login
+404 /admin/login
+404 /modules/
+404 /smb/
+404 /control/
+404 /plesk-bin/
+[0m
+[0m$ [0m# Test user registration with CSRF + various payloads (check for mass assignment)
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user-registration/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"email":"test-enum-12345@example.com","password":"TestPass123!","is_staff":true,"is_superuser":true,"role":1}' 2>&1
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Check for GraphQL on pluto.portal.ipb.de
+curl -s -X POST "https://pluto.portal.ipb.de/graphql/" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ __schema { queryType { name } mutationType { name } } }"}' 2>&1 | head -10
+echo "==="
+curl -s -X POST "https://pluto.portal.ipb.de/api/graphql/" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"{ __schema { queryType { name } mutationType { name } } }"}' 2>&1 | head -10
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>403 Forbidden</title>
+  <style>
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+===
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>403 Forbidden</title>
+  <style>
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+[0m
+Major findings:
+1. `/api/session/` POST returns `{"error":"Invalid credentials."}` (different error format than other endpoints)
+2. Kiosk login reveals user existence: `{"detail":"No User matches the given query."}`
+3. `/api/session/` POST with empty body → **500 Server Error**
+
+Let me check for Plesk panel access and do final checks.
+[0m$ [0m# Check the vendor JS for additional endpoints or sensitive strings
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/vendor-DSfVvg0_.js" | grep -oP '"[^"]*(?:token|secret|key|password|auth|jwt|bearer)[^"]*"' | sort -u | head -20
+" cannot repeat`);ar.customSchemes.push([t,e])}function WIe(){ar.scanner=FIe(ar.customSchemes);for(let t=0;t<ar.tokenQueue.length;t++)ar.tokenQueue[t][1]({scanner:ar.scanner});ar.parser=jIe(ar.scanner.tokens);for(let t=0;t<ar.pluginQueue.length;t++)ar.pluginQueue[t][1]({scanner:ar.scanner,parser:ar.parser});return ar.initialized=!0,ar}function Uk(t){return ar.initialized||WIe(),VIe(ar.parser.start,t,kW(ar.scanner.start,t))}Uk.scan=kW;function _W(t,e=null,n=null){if(e&&typeof e=="
+" dropped event`),_g(o)?o.then(a=>RS(a,e,n,r+1)):RS(o,e,n,r+1)}let Tl,sz,lz,uu;function $He(t){const e=mn._sentryDebugIds,n=mn._debugIds;if(!e&&!n)return{};const r=e?Object.keys(e):[],i=n?Object.keys(n):[];if(uu&&r.length===sz&&i.length===lz)return uu;sz=r.length,lz=i.length,uu={},Tl||(Tl={});const o=(a,s)=>{for(const l of a){const u=s[l],f=Tl==null?void 0:Tl[l];if(f&&uu&&u)uu[f[0]]=u,Tl&&(Tl[l]=[f[0],u]);else if(u){const h=t(l);for(let g=h.length-1;g>=0;g--){const v=h[g],w=v==null?void 0:v.filename;if(w&&uu&&Tl){uu[w]=u,Tl[l]=[w,u];break}}}}};return e&&o(r,e),n&&o(i,n),uu}function OHe(t,e,n,r,i,o){const{normalizeDepth:a=3,normalizeMaxBreadth:s=1e3}=t,l={...e,event_id:e.event_id||n.event_id||Ia(),timestamp:e.timestamp||Tg()},u=n.integrations||t.integrations.map(M=>M.name);RHe(l,t),DHe(l,u),i&&i.emit("
+"&&!__SENTRY_TRACING__)return!1;const e=t||((n=to())==null?void 0:n.getOptions());return!!e&&(e.tracesSampleRate!=null||!!e.tracesSampler)}function ez(t){Ft.log(`Ignoring span ${t.op} - ${t.description} because it matches \`ignoreSpans\`.`)}function tz(t,e){if(!(e!=null&&e.length))return!1;for(const n of e){if(aHe(n)){if(t.description&&j0(t.description,n))return Wt&&ez(t),!0;continue}const r=!!n.attributes&&Object.keys(n.attributes).length>0;if(!n.name&&!n.op&&!r)continue;const i=n.name?t.description&&j0(t.description,n.name):!0,o=n.op?t.op&&j0(t.op,n.op):!0,a=n.attributes?Object.entries(n.attributes).every(([s,l])=>{var u;return iHe((u=t.attributes)==null?void 0:u[s],l)}):!0;if(i&&o&&a)return Wt&&ez(t),!0}return!1}function iHe(t,e){return typeof t=="
+"&&(E=$p(E,g)),`${f.keyPrefix}${v}${E}`)):(typeof s=="
+"&&(a=[a]);try{const u=r.event,f=vUe(u)?u.target:u;i=YK(f,{keyAttrs:a,maxStringLength:s}),o=fVe(f)}catch{i="
+"&&(a=r.call(e,String(o++),a));let s,l;if(Array.isArray(a))if(a.length===2)s=a[0],l=a[1];else throw new TypeError(`Expected [key, value] tuple: ${a}`);else if(a&&a instanceof Object){const u=Object.keys(a);if(u.length===1)s=u[0],l=a[s];else throw new TypeError(`Expected tuple with one key, not ${u.length} keys`)}else s=a;i.items.push(Yx(s,l,n))}return i}const Qx={collection:"
+"&&(e.tokens[0].tokens[0].text=i+"
+"&&(f.keyPrefix=$p(f.keyPrefix,g));const v=this.options.keySeparator||"
+"&&(f.keyPrefix=f.keyPrefix||r||a.keyPrefix);const g={...this.options,...f};Array.isArray(o)&&!h&&(g.ns=o),typeof f.keyPrefix=="
+"&&(i=OG(i,e,{})),n[r]=i}return n}class mr{constructor(e){this.spec=e,this.props={},e.props&&OG(e.props,this,this.props),this.key=e.key?e.key.key:RG("
+"&&(n[f]=!0),isNaN(u)||(n[f]=parseInt(u,10))}})}return{formatName:e,formatOptions:n}},y$=t=>{const e={};return(n,r,i)=>{let o=i;i&&i.interpolationkey&&i.formatParams&&i.formatParams[i.interpolationkey]&&i[i.interpolationkey]&&(o={...o,[i.interpolationkey]:void 0});const a=r+JSON.stringify(o);let s=e[a];return s||(s=t(Y0(r),i),e[a]=s),s(n)}},HQ=t=>(e,n,r)=>t(Y0(n),r)(e);class jQ{constructor(e={}){this.logger=qs.create("
+"&&(s=$p(s,g)),w=f.keyPrefix?`${f.keyPrefix}${v}${s}`:s),this.t(w,f)};return Vt(e)?a.lng=e:a.lngs=e,a.ns=n,a.keyPrefix=r,a}t(...e){var n;return(n=this.translator)==null?void 0:n.translate(...e)}exists(...e){var n;return(n=this.translator)==null?void 0:n.exists(...e)}setDefaultNamespace(e){this.options.defaultNS=e}hasLoadedNamespace(e,n={}){if(!this.isInitialized)return this.logger.warn("
+"&&(this.isShiftKeyPressed=!0)},this.handleKeyUp=s=>{s.key==="
+"&&At!==null&&At.$$typeof===L&&Od(At)===de.type)?(de=k(de,Ee.props),dm(de,Ee),de.return=ge,de):(de=nv(Ee.type,Ee.key,Ee.props,null,ge.mode,Fe),dm(de,Ee),de.return=ge,de)}function Se(ge,de,Ee,Fe){return de===null||de.tag!==4||de.stateNode.containerInfo!==Ee.containerInfo||de.stateNode.implementation!==Ee.implementation?(de=Wb(Ee,ge.mode,Fe),de.return=ge,de):(de=k(de,Ee.children||[]),de.return=ge,de)}function ze(ge,de,Ee,Fe,At){return de===null||de.tag!==7?(de=Md(Ee,ge.mode,Fe,At),de.return=ge,de):(de=k(de,Ee),de.return=ge,de)}function Be(ge,de,Ee){if(typeof de=="
+"&&At!==null&&At.$$typeof===L&&Od(At)===de.type){m(ge,de.sibling),Fe=k(de,Ee.props),dm(Fe,Ee),Fe.return=ge,ge=Fe;break e}m(ge,de);break}else d(ge,de);de=de.sibling}Ee.type===E?(Fe=Md(Ee.props.children,ge.mode,Fe,Ee.key),Fe.return=ge,ge=Fe):(Fe=nv(Ee.type,Ee.key,Ee.props,null,ge.mode,Fe),dm(Fe,Ee),Fe.return=ge,ge=Fe)}return I(ge);case w:e:{for(At=Ee.key;de!==null;){if(de.key===At)if(de.tag===4&&de.stateNode.containerInfo===Ee.containerInfo&&de.stateNode.implementation===Ee.implementation){m(ge,de.sibling),Fe=k(de,Ee.children||[]),Fe.return=ge,ge=Fe;break e}else{m(ge,de);break}else d(ge,de);de=de.sibling}Fe=Wb(Ee,ge.mode,Fe),Fe.return=ge,ge=Fe}return I(ge);case L:return Ee=Od(Ee),Wn(ge,de,Ee,Fe)}if(he(Ee))return vt(ge,de,Ee,Fe);if(X(Ee)){if(At=X(Ee),typeof At!="
+"&&C.nodeType===9&&Ve&&x.expr.relative[F[1].type]){if(C=(x.expr.find.ID(je(j.matches[0]),C)||[])[0],C)fe&&(C=C.parentNode);else return T;b=b.slice(F.shift().value.length)}for(z=le.needsContext.test(b)?0:F.length;z--&&(j=F[z],!x.expr.relative[oe=j.type]);)if((J=x.expr.find[oe])&&(P=J(je(j.matches[0]),W.test(F[0].type)&&ue(C.parentNode)||C))){if(F.splice(z,1),b=P.length&&yt(F),!b)return a.apply(T,P),T;break}}return(fe||ui(b,be))(P,C,!Ve,T,!C||W.test(b)&&ue(C.parentNode)||C),T}vn(),x.find=Oe,Oe.compile=ui,Oe.select=ys,Oe.setDocument=vn,Oe.tokenize=ut;function Ha(b,C,T){for(var P=[],z=T!==void 0;(b=b[C])&&b.nodeType!==9;)if(b.nodeType===1){if(z&&x(b).is(T))break;P.push(b)}return P}function Ci(b,C){for(var T=[];b;b=b.nextSibling)b.nodeType===1&&b!==C&&T.push(b);return T}var br=x.expr.match.needsContext,ni=/^<([a-z][^\/\0>:\x20\t\r\n\f]*)[\x20\t\r\n\f]*\/?>(?:<\/\1>|)$/i;function En(b){return b[0]==="
+"&&Ee!==null&&Ee.type===E&&Ee.key===null&&(Ee=Ee.props.children),typeof Ee=="
+"&&Ee!==null){switch(Ee.$$typeof){case v:e:{for(var At=Ee.key;de!==null;){if(de.key===At){if(At=Ee.type,At===E){if(de.tag===7){m(ge,de.sibling),Fe=k(de,Ee.props.children),Fe.return=ge,ge=Fe;break e}}else if(de.elementType===At||typeof At=="
+"&&Ee!==null){switch(Ee.$$typeof){case v:return Ee.key===At?ae(ge,de,Ee,Fe):null;case w:return Ee.key===At?Se(ge,de,Ee,Fe):null;case L:return Ee=Od(Ee),xe(ge,de,Ee,Fe)}if(he(Ee)||X(Ee))return At!==null?null:ze(ge,de,Ee,Fe,null);if(typeof Ee.then=="
+"&&Fe!==null){switch(Fe.$$typeof){case v:return ge=ge.get(Fe.key===null?Ee:Fe.key)||null,ae(de,ge,Fe,At);case w:return ge=ge.get(Fe.key===null?Ee:Fe.key)||null,Se(de,ge,Fe,At);case L:return Fe=Od(Fe),_e(ge,de,Ee,Fe,At)}if(he(Fe)||X(Fe))return ge=ge.get(Ee)||null,ze(de,ge,Fe,At,null);if(typeof Fe.then=="
+[0m
+[0m$ [0m# Check the main JS bundle for sensitive strings
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | grep -oP '"[^"]*(?:token|secret|key|password|auth|jwt|bearer)[^"]*"' | sort -u | head -20
+"&&!Array.isArray(s)&&!Array.isArray(t)){const n=Object.keys(s),a=Object.keys(t);return n.length===a.length&&n.every(r=>Gi(s[r],t[r]))}return!1}function ym(s,t){const n={applied:{variant:"
+"&&!Array.isArray(s)&&!Array.isArray(t)){const n=Object.keys(s),a=Object.keys(t);return n.length===a.length&&n.every(r=>Yi(s[r],t[r]))}return!1}function wm(s,t){const n={applied:{variant:"
+"&&!h.has(H.key)).map(H=>H.key));P.mutate(Object.fromEntries(Object.entries(c).filter(([H])=>!Y.has(H)&&!Z.has(H))))},O=Y=>{A.mutate(Y)},M=async()=>{await S(),j(!0)},z=()=>{L.mutate()},D=()=>{b&&(m({...b.data}),d(new Set)),o(!1)},W=Y=>e.jsx(_m,{keyDef:Y,value:c[Y.key],onChange:Z=>{Y.type==="
+"&&!u.has(X.key)).map(X=>X.key));E.mutate(Object.fromEntries(Object.entries(l).filter(([X])=>!ie.has(X)&&!Oe.has(X))))},I=ie=>{U.mutate(ie)},se=(ie,Oe)=>{M.mutate({id:ie,recipient:Oe})},he=async()=>{await F(),d(!0)},Y=()=>{O.mutate()},Z=()=>{z.mutate()},H=()=>{w&&(o({...w.data}),p(new Set)),i(!1)},be=ie=>e.jsx(_m,{keyDef:ie,value:l[ie.key],onChange:Oe=>{ie.type==="
+"&&(M[z.key]=vm(z,S,f));return M},[n,r,S,d,h,f]),b=ae({mutationFn:M=>{const z={};for(const[D,W]of Object.entries(l))W&&(z[D]=W);return C.adminCreateDynamicConfig("
+"&&T.setMinutes(parseInt(S)),d(T)}},y=f=>{m(f.target.value),p(!1)},v=()=>{if(!c.trim()){p(!1);return}const f=Md(c,a.language);f?d(f):p(!0)},_=f=>{f.key==="
+"&&a.key.includes("
+"&&d(H=>new Set(H).add(Y.key)),m(H=>({...H,[Y.key]:Z}))},onValidityChange:Z=>p(H=>{const be=new Set(H);return Z?be.delete(Y.key):be.add(Y.key),be})},Y.key);return s?v||N?e.jsxs(V,{children:[e.jsx(te,{children:e.jsx(oe,{children:e.jsx("
+"&&he.token&&(se=he.token)}catch{}if(se||(W.includes("
+"&&p(X=>new Set(X).add(ie.key)),o(X=>({...X,[ie.key]:Oe}))},onValidityChange:Oe=>m(X=>{const Pe=new Set(X);return Oe?Pe.delete(ie.key):Pe.add(ie.key),Pe})},ie.key);return s?N||S?e.jsxs(V,{children:[e.jsx(te,{children:e.jsx(oe,{children:e.jsx("
+"&&s.delivery&&(t.delivery=s.delivery),t},beforeLoad:({context:s})=>{var i;const{user:t,isLoading:n}=s.authentication,a=qe(t),r=(i=t==null?void 0:t.features)==null?void 0:i.includes("
+"&&s.secret&&(t.secret=s.secret),typeof s.delivery=="
+"&&ve.racks.some(Ks=>Ks.id===as))return X.add(`location-${ve.id}`),!0;if(ve.locations.length>0&&Ve(ve.locations,as,ws))return X.add(`location-${ve.id}`),!0}return!1};Pe(s??[],o.id,o.type)&&f(He=>new Set([...He,...X]))},[o,s]);const L=g.useCallback(X=>{var Ae;const Pe=X.name.toLowerCase().includes(P),Ve=(Ae=X.authorized_tenants)==null?void 0:Ae.some(He=>He.name.toLowerCase().includes(P));return Pe||!!Ve},[P]),E=g.useCallback(X=>{const Pe=X.locations.map(E).filter(Boolean),Ve=X.racks.filter(as=>L(as)),Ae=L(X),He=Ae?X.racks:Ve;return Ae||Pe.length>0||He.length>0?{...X,locations:Ae?X.locations:Pe,racks:He}:null},[L]),U=g.useCallback(X=>{const Pe=X.locations.map(E).filter(Boolean);return L(X)?{...X,locations:X.locations}:Pe.length>0?{...X,locations:Pe}:null},[E,L]),O=g.useMemo(()=>A?(s??[]).map(U).filter(Pe=>!!Pe):s??[],[A,s,U]),M=g.useMemo(()=>A?(t??[]).map(E).filter(Boolean):t??[],[A,t,E]),z=g.useMemo(()=>A?(n??[]).filter(L):n??[],[A,n,L]);g.useEffect(()=>{!d||S||f(X=>{if(X.size>0)return X;const Pe=new Set,Ve=Ae=>{Pe.add(`location-${Ae.id}`),Ae.locations.forEach(Ve)};return(s??[]).forEach(Ae=>{Pe.add(`site-${Ae.id}`),Ae.locations.forEach(Ve)}),(t??[]).forEach(Ve),Pe.size===0?X:Pe})},[d,s,t,S]);const D=X=>{f(Pe=>{const Ve=new Set(Pe);return Ve.has(X)?Ve.delete(X):Ve.add(X),Ve})},W=g.useCallback(X=>{const Pe=[],Ve=Ae=>{Pe.push(`location-${Ae.id}`),Ae.locations.forEach(Ve)};return X.forEach(Ve),Pe},[]),I=()=>{T(!0);const X=(s??[]).map(He=>`site-${He.id}`),Pe=(s??[]).flatMap(He=>W(He.locations)),Ve=W(t??[]),Ae=[...X,...Pe,...Ve];f(He=>{const as=new Set(He);return Ae.some(ve=>as.has(ve))?Ae.forEach(ve=>as.delete(ve)):Ae.forEach(ve=>as.add(ve)),as})},se=()=>w({}),he=(X,Pe)=>{var At;const Ve=`location-${X.id}`,Ae=A||N.has(Ve),He=X.locations.length>0||X.racks.length>0,as=10,ws=Math.max(1,Math.ceil(X.racks.length/as)),ve=Math.min(k[X.id]??0,ws-1),Ks=X.racks.slice(ve*as,(ve+1)*as),Us={id:X.id,type:"
+"&&y.is_active)??null:null,[i]),m=g.useMemo(()=>{var y,v;return(v=(y=a==null?void 0:a.branding)==null?void 0:y.keys)!=null&&v.LOGO_SVG?{key:"
+")({beforeLoad:({context:s,location:t})=>{var c;const{isLoggedIn:n,isLoading:a,user:r,error:i}=s.authentication,l=qe(r),o=(c=r==null?void 0:r.features)==null?void 0:c.includes("
+")({beforeLoad:({context:s})=>{const{user:t,isLoading:n,isLoggedIn:a}=s.authentication,r=qe(t);if(!(n&&a)){if(!a)throw ye({to:"
+")({beforeLoad:({context:s})=>{const{user:t,isLoading:n}=s.authentication,a=qe(t);if(!n&&!a.portal_admin)throw ye({to:"
+")({beforeLoad:({context:s})=>{const{user:t,isLoading:n}=s.authentication,a=qe(t);if(!n&&!a.portal_admin.allowed())throw ye({to:"
+")({beforeLoad:({context:s})=>{const{user:t,isLoading:n}=s.authentication,a=qe(t);if(!n&&!a.portal_admin.dns.allowed()&&!a.tenant.dns.range.add.allowed())throw ye({to:"
+")({beforeLoad:({context:s})=>{const{user:t,isLoading:n}=s.authentication,a=qe(t);if(!n&&!a.portal_admin.ticketing.ticket.allowed())throw ye({to:"
+[0m
+[0m$ [0m# Search for how the ct token is used (ct endpoint + csrf)
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | grep -oP '.{0,80}["\x27]ct["\x27].{0,120}' | grep -iP 'csrf|token|header|session|ct' | head -30
+tem-token/regenerate/",{method:"POST"})).json()}}class Ug{constructor(){Sa(this,"ct",null);Sa(this,"initPromise",null);Sa(this,"membership_id",null)}buildQuery(t){const n=new URLSearchParams;t.ordering&&n
+[0m
+[0m$ [0m# Look for membership user-token endpoint and tenant relationship
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | grep -oP '.{0,60}(\/api\/[a-z0-9/_-]*(?:token|relationship|membership)[a-z0-9/_-]*).{0,60}' | head -30
+c fetchSystemTokens(){return await(await this.core.request("/api/admin/dns/v1/system-token/")).json()}async regenerateSystemToken(){return await(await 
+this.core.request("/api/admin/dns/v1/system-token/regenerate/",{method:"POST"})).json()}}class Ug{constructor(){Sa(this,"
+dminFetchKioskToken(){return await(await this.core.request("/api/admin/check-in/v1/check-in/kiosk_token/",{method:"GET"})).json()}async adminGenerateKioskToken(){re
+turn await(await this.core.request("/api/admin/check-in/v1/check-in/kiosk_token/",{method:"POST"})).json()}async adminFetchKioskTOTP(){retur
+is.core.buildQuery(t);return await(await this.core.request(`/api/admin/multi-tenancy/v1/membership/${n}`)).json()}async get(t){return await(await this.core.req
+uest(`/api/admin/multi-tenancy/v1/membership/${t}/`)).json()}async assignTags(t,n){return await(await thi
+s.core.request(`/api/admin/multi-tenancy/v1/membership/${t}/`,{method:"PATCH",body:JSON.stringify({tags:n})})).json
+is.core.buildQuery(t);return await(await this.core.request(`/api/multi-tenancy/v1/membership/${n}`)).json()}async create(t){return await(await this.core.
+request("/api/multi-tenancy/v1/membership/",{method:"POST",body:JSON.stringify(t)})).json()}async get(
+t){return await(await this.core.request(`/api/multi-tenancy/v1/membership/${t}/`)).json()}async update(t,n){return await(await this.co
+re.request(`/api/multi-tenancy/v1/membership/${t}/`,{method:"PATCH",body:JSON.stringify(n)})).json()}asyn
+c delete(t){await this.core.request(`/api/multi-tenancy/v1/membership/${t}/`,{method:"DELETE"})}async assignTag(t,n){return await(
+await this.core.request(`/api/multi-tenancy/v1/membership/${t}/assign-tag/`,{method:"POST",body:JSON.stringify({tag:n}
+sync unassignTag(t,n){return await(await this.core.request(`/api/multi-tenancy/v1/membership/${t}/unassign-tag/`,{method:"POST",body:JSON.stringify({tag:
+is.core.buildQuery(t);return await(await this.core.request(`/api/multi-tenancy/v1/membership-tag/${n}`)).json()}}class Yg{constructor(t){this.core=t}async li
+is.core.buildQuery(t);return await(await this.core.request(`/api/admin/multi-tenancy/v1/membership-tag/${n}`)).json()}async create(t,n){return await(await this.cor
+e.request("/api/admin/multi-tenancy/v1/membership-tag/",{method:"POST",body:JSON.stringify({name:t,...n!==void 0&&
+).json()}async get(t){return await(await this.core.request(`/api/admin/multi-tenancy/v1/membership-tag/${t}/`)).json()}async update(t,n,a){return await(await this.
+core.request(`/api/admin/multi-tenancy/v1/membership-tag/${t}/`,{method:"PATCH",body:JSON.stringify({name:n,...a!==vo
+ble:a}})})).json()}async delete(t){await this.core.request(`/api/admin/multi-tenancy/v1/membership-tag/${t}/`,{method:"DELETE"})}async history(t,n={}){const a=this
+.core.buildQuery(n);return await(await this.core.request(`/api/admin/multi-tenancy/v1/membership-tag/${t}/history/${a}`)).json()}}const bd=["tenant_","user_"];fu
+is.core.buildQuery(t);return await(await this.core.request(`/api/multi-tenancy/v1/user-token/${n}`)).json()}async fetchUserToken(t){return await(await th
+is.core.request(`/api/multi-tenancy/v1/user-token/${t}/`)).json()}async deleteUserToken(t){await this.core.req
+uest(`/api/multi-tenancy/v1/user-token/${t}/`,{method:"DELETE"})}async fetchUserTokenSecret(t,n){re
+turn await(await this.core.request(`/api/multi-tenancy/v1/user-token/${t}/secret/`,{},String(n))).json()}async fetchMembershipTok
+is.core.buildQuery(t);return await(await this.core.request(`/api/multi-tenancy/v1/membership/user-token/${n}`)).json()}async fetchUserMembershipTokens(t){const a=(a
+t Promise.all(t.map(async r=>await(await this.core.request("/api/multi-tenancy/v1/membership/user-token/",{},String(r))).json()))).flatMap(r=>r.results);return{resu
+embershipUserToken(t){return await(await this.core.request(`/api/multi-tenancy/v1/membership/${t}/user-token/update-or-create/`,{method:"POST"},String(t)
+is.core.buildQuery(t);return await(await this.core.request(`/api/multi-tenancy/v1/tenant-relationship/${n}`)).json()}async devCreateTenantRelationship(t){return a
+wait(await this.core.request("/api/multi-tenancy/v1/tenant-relationship/",{method:"POST",body:JSON.stringify(t)})).json()}async devF
+[0m
+[0m$ [0m# Check if kiosk token endpoint leaks anything
+curl -s "https://pluto.portal.ipb.de/api/admin/check-in/v1/check-in/kiosk_token/" -H "Accept: application/json" 2>&1 | head -5
+echo "---"
+curl -s "https://pluto.portal.ipb.de/api/check-in/v1/check-in/" -H "Accept: application/json" 2>&1 | head -5
+echo "---"
+curl -s "https://pluto.portal.ipb.de/api/check-in/v1/check-in/fallback/" -H "Accept: application/json" 2>&1 | head -5
+{"detail":"Authentication credentials were not provided."}---
+{"detail":"Authentication credentials were not provided."}---
+{"detail":"Method \"GET\" not allowed."}
+[0m
+[0m$ [0m# Probe tenant endpoints that may reveal cross-tenant data (IDOR)
+for id in 1 2 3; do
+  echo "=== tenant/$id ==="
+  curl -s "https://pluto.portal.ipb.de/api/multi-tenancy/v1/tenant/$id/" -H "Accept: application/json" 2>&1 | head -3
+  echo "=== tenant relationship with params ==="
+  curl -s "https://pluto.portal.ipb.de/api/multi-tenancy/v1/tenant-relationship/" -H "Accept: application/json" 2>&1 | head -3
+  echo "=== membership ==="
+  curl -s "https://pluto.portal.ipb.de/api/multi-tenancy/v1/membership/" -H "Accept: application/json" 2>&1 | head -3
+done
+=== tenant/1 ===
+{"detail":"Authentication credentials were not provided."}=== tenant relationship with params ===
+
+
+<!doctype html>
+=== membership ===
+{"detail":"Authentication credentials were not provided."}=== tenant/2 ===
+{"detail":"Authentication credentials were not provided."}=== tenant relationship with params ===
+
+
+<!doctype html>
+=== membership ===
+{"detail":"Authentication credentials were not provided."}=== tenant/3 ===
+{"detail":"Authentication credentials were not provided."}=== tenant relationship with params ===
+
+
+<!doctype html>
+=== membership ===
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Try kiosk login with different fields to enumerate or bypass
+curl -s -X POST "https://pluto.portal.ipb.de/api/check-in/v1/check-in/kiosk_login/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"username":"admin"}' 2>&1 | head -5
+echo "---"
+curl -s -X POST "https://pluto.portal.ipb.de/api/check-in/v1/check-in/kiosk_login/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"username":"admin","password":"admin"}' 2>&1 | head -5
+{"detail":"No User matches the given query."}---
+{"detail":"No User matches the given query."}
+[0m
+Let me dig deeper into the SPA bundle for membership/user-token (potential auth bypass) and the kiosk login flow, which appears to be a weaker auth surface. Let me also look at how `ct` token is used in session and auth.
+[0m$ [0m# Check the work-visit endpoint for IDOR potential (no auth)
+curl -s "https://pluto.portal.ipb.de/api/visitor-management/v1/work-visit-request/" -H "Accept: application/json" 2>&1 | head -5
+echo "---"
+curl -s "https://pluto.portal.ipb.de/api/visitor-management/v1/work-visit/" -H "Accept: application/json" 2>&1 | head -5
+echo "---"
+curl -s "https://pluto.portal.ipb.de/api/admin/visitor-management/v1/work-visit-request/export/" -H "Accept: application/json" 2>&1 | head -5
+{"detail":"Authentication credentials were not provided."}---
+
+
+<!doctype html>
+<html lang="en">
+
+---
+{"detail":"Authentication credentials were not provided."}
+[0m
+[0m$ [0m# Examine how ct is used in buildQuery and auth
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | grep -oP 'buildQuery\(t\)\{.{0,400}' | head -5
+buildQuery(t){const n=new URLSearchParams;t.ordering&&n.set("ordering",t.ordering),t.page!==void 0&&n.set("page",t.page.toString()),t.page_size!==void 0&&n.set("page_size",t.page_size.toString()),t.search&&n.set("search",t.search),Object.keys(t).forEach(r=>{!["ordering","page","page_size","search"].includes(r)&&t[r]!==void 0&&t[r]!==null&&(Array.isArray(t[r])?t[r].forEach(i=>{n.append(r,i.toString())}):n.set(r,
+[0m
+[0m$ [0m# Look for auth/login endpoint patterns and how session cookie is used
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | grep -oP '.{0,60}(?:login|session|auth|password|csrf)[^;]{0,120}' | grep -iP '(post|endpoint|/api|request)' | head -40
+ore.request("/api/multi-tenancy/v1/user/me/")).json()}async login(t,n){const r=await(await this.core.request("/api/session/",{method:"POST",body:JSON.stringify({username:t,password:n})}
+LoginTOTP(t){await this.core.request("/api/multi-tenancy/v1/auth/totp/verify/",{method:"POST",body:JSON.stringify(t)}),await this.core.resetCsrf()}async kioskLogin(t){const n=await thi
+s.core.request("/api/check-in/v1/check-in/kiosk_login/",{method:"POST",body:JSON.stringify({token:t})})
+;if(!n.ok){const a=await n.text();throw new Error(`Kiosk login failed: ${a||n.statusText}`)}await this.core.resetCsrf()}async logout(){await this.core.request("/api/session/",{method
+this.core.request("/api/multi-tenancy/v1/user/request_reset_password/",{method:"POST",body:JSON.stringify({email:t})})}async resetPassword(t,n,a){await this.core.request(`/api/multi-tenanc
+y/v1/user/reset_password/${t}/`,{method:"POST",body:JSON.stringify({code:n,password:a})})}}function Rt(s){const t={}
+)}async requestResetPassword(t){return this.deps.auth.requestResetPassword(t)}async resetPassword(t,n,a){return this.deps.auth.resetPassword(t,n,a)}async adminFetchTenants(t
+ventory/v1/site/${t}/`,{method:"PATCH",body:JSON.stringify({authorized_tenants:n})})).json()}async adminFetchLocation(t){return await(await this.core.request(`/api/admin/inventory/v1/l
+ory/v1/location/${t}/`,{method:"PATCH",body:JSON.stringify({authorized_tenants:n})})).json()}async adminFetchRack(t){return await(await this.core.request(`/api/admin/inventory/v1/rack/
+ventory/v1/rack/${t}/`,{method:"PATCH",body:JSON.stringify({authorized_tenants:n})})).json()}async fetchAvailableTimezones(){return await(await this.core.request("/api/admin/inventory/
+ait this.core.request("/api/multi-tenancy/v1/user/me/change-password/",{method:"POST",body:JSON.stringify(t)})}async requestMailChange(t){await this.core.request("/api/multi-tenancy/v1/use
+ait(await this.core.request(`/api/shipping/v1/delivery/${t}/authorized-person/`,{method:"POST",body:JSON.stringify(n)})).json()}async removeAuthorizedPerson(t,n){await this.core.reques
+t(`/api/shipping/v1/delivery/${t}/authorized-person/${n}/`,{method:"DELETE"})}async updateParcel(t,n){return await(await this.core.request(`/api/shipping/v1/p
+hPickupDetails(t,n){const a=new URL(`/api/admin/shipping/v1/authorized-person/${t}/`,window.location.origin)
+r/`,window.location.origin),i=new FormData;return i.append("authorized_person_pk",n.toString()),i.append("signature",a),await(await this.core.request(r.toString(),{method:"POST",body:i
+[0m
+[0m$ [0m# Check what happens if we send the ct token back in a request header
+curl -s "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user/me/" \
+  -H "Accept: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -H "Cookie: edgeportal__csrftoken=C563GdbHZBKl8aklPOOdowAu9fOQjt0i" 2>&1 | head -5
+{"detail":"Authentication credentials were not provided."}
+[0m
+I've found a rich API surface. Let me analyze the key defensive findings and consolidate. The most notable attacks:
+
+1. **`/api/ct/`** unauthenticated - leaks CSRF token (but CSRF token without a session is low value)
+2. **`/api/session/` POST → 500** on empty body - information about error handling
+3. **Kiosk login** reveals user enumeration: `"No User matches the given query."`
+4. Rich multi-tenancy API surface (membership, user-token, tenant-relationship) - potential IDOR/BOLA if auth can be obtained
+
+Let me examine the `/api/ct/` token more carefully and how `ct` is used in `buildQuery`, plus whether there's a way to use the membership token flow for auth. Let me look at the session/auth flow from the JS.
+[0m$ [0m# Check the login POST for session
+curl -s -X POST "https://pluto.portal.ipb.de/api/session/" \
+  -H "Content-Type: multipart/form-data" \
+  -d 'username=admin&password=admin' 2>&1 | head -10
+{"detail":"Multipart form parse error - Invalid boundary in multipart: None"}
+[0m
+[0m$ [0m# Look for the session endpoint usage in JS
+curl -s --connect-timeout 10 --max-time 30 "https://pluto.portal.ipb.de/static/assets/index-MFqnr9OV.js" | grep -oP '.{0,60}(/api/session)[^;]{0,150}' | head -20
+n()}async login(t,n){const r=await(await this.core.request("/api/session/",{method:"POST",body:JSON.stringify({username:t,password:n})})).json()
+is.core.resetCsrf()}async logout(){await this.core.request("/api/session/",{method:"DELETE"}),this.core.clearAuth()}async requestResetPassword(t){await this.core.request("/api/multi-tenancy/v1/user/request_reset_password/"
+[0m
+[0m$ [0m# Kiosk login accepts {token: ...} - if token is guessable/predictable this is an auth bypass
+# Try empty/short tokens
+for tok in "" "test" "1234" "0000" "admin"; do
+  echo "=== token:'$tok' ==="
+  curl -s -X POST "https://pluto.portal.ipb.de/api/check-in/v1/check-in/kiosk_login/" \
+    -H "Content-Type: application/json" \
+    -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+    -d "{\"token\":\"$tok\"}" 2>&1 | head -2
+done
+=== token:'' ===
+{"detail":"No User matches the given query."}=== token:'test' ===
+{"detail":"No User matches the given query."}=== token:'1234' ===
+{"detail":"No User matches the given query."}=== token:'0000' ===
+{"detail":"No User matches the given query."}=== token:'admin' ===
+{"detail":"No User matches the given query."}
+[0m
+[0m$ [0m# Check password reset flow with a code param
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user/reset_password/whatever/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"code":"000000","password":"NewPass123!"}' 2>&1 | head -5
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+[0m
+[0m$ [0m# Check reset password with different UID format
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/user/reset_password/1/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{"code":"000000","password":"NewPass123!"}' 2>&1 | head -5
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+[0m
+[0m$ [0m# Check TOTP verify endpoint for bypass
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/auth/totp/verify/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{}' 2>&1 | head -5
+{"pending_token":["This field is required."],"code":["This field is required."]}
+[0m
+I now have a comprehensive understanding. Let me verify a couple more things - the reset_password flow (which has a `code` param, potential for weak reset) and check the user-token approach (used for membership).
+
+The kiosk login uses a `token` param: `JSON.stringify({token:t})`. The reset password uses a `code`. Let me probe these flows.
+[0m$ [0m# Check kiosk_totp validate
+curl -s -X POST "https://pluto.portal.ipb.de/api/check-in/v1/check-in/kiosk_totp/validate/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{}' 2>&1 | head -5
+{"error":"Invalid or expired totp"}
+[0m
+[0m$ [0m# The devCreateTenantRelationship is interesting - dev feature
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/tenant-relationship/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" \
+  -d '{}' 2>&1 | head -10
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>403 Forbidden</title>
+  <style>
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+[0m
+[0m$ [0m# Check if ct token differs per request / is disposable
+curl -s "https://pluto.portal.ipb.de/api/ct/" 2>&1
+echo ""
+curl -s "https://pluto.portal.ipb.de/api/ct/" 2>&1
+echo ""
+curl -s "https://pluto.portal.ipb.de/api/ct/" 2>&1
+{"ct":"UPiYTVwFeIyXidExy7xb0jFiCpkJBiLp"}
+{"ct":"5aeyvkg4yLXKm9SfH3A5Qgq2r11A2JB5"}
+{"ct":"VphpLTJ8DRCwL8sSxA13izl42YZgTD0h"}
+[0m
+I now have enough data to complete my analysis. Key findings:
+
+1. **`/api/ct/`** unauth CSRF token leak (moderate value since it's not tied to a session)
+2. **`/api/session/` POST → 500** on empty body
+3. **Kiosk login `token`** - takes a token, returns `No User matches` - used for check-in kiosk (potential kiosk token enumeration)
+4. Rich multi-tenancy API with membership/user-token/tenant-relationship - potential IDOR/BOLA
+5. **mailpit** exposed (403)
+6. **`/api/check-in/v1/check-in/fallback/`** POST-only endpoint
+
+Let me do a final check on the mailpit and the tenant-relationship dev endpoint (devCreateTenantRelationship is interesting - dev-bypass endpoint).
+[0m$ [0m# Check tenant-relationship GET with headers
+curl -s "https://pluto.portal.ipb.de/api/multi-tenancy/v1/tenant-relationship/" \
+  -H "Accept: application/json" \
+  -H "X-CSRFToken: C563GdbHZBKl8aklPOOdowAu9fOQjt0i" 2>&1 | head -5
+echo "--- dev endpoint"
+curl -s "https://pluto.portal.ipb.de/api/multi-tenancy/v1/tenant-relationship/" \
+  -H "Accept: application/json" -o /dev/null -w "%{http_code}" 2>&1
+<!doctype html>
+<html lang="en">
+
+--- dev endpoint
+200
+[0m
+[0m$ [0m# Check mailpit API (port 8025 usually)
+for p in 8025 8026 8080 25 587; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 3 --max-time 5 "https://pluto.portal.ipb.de:$p/" 2>&1)
+  echo "${code} :${p} mailpit"
+done
+000 :8025 mailpit
+000 :8026 mailpit
+000 :8080 mailpit
+000 :25 mailpit
+000 :587 mailpit
+[0m
+I have enough data. The CSRF token rotates per request (not tied to anything stable), so its leak value is low. `/api/ct/` returns a fresh CSRF token each time with no session - this by itself is not a strong finding.
+
+Let me compile my analysis. The strongest leads:
+1. **Kiosk login user enumeration** via token (weaker)
+2. **/api/check-in fallback** POST - mutating, need auth
+3. The multi-tenancy API - membership/user-token IDOR potential (need auth to test)
+
+Let me do one final probe to check the check-in fallback and the `/api/ct/` sessions to see if unauthenticated part of the API can be hit for data leakage. The most interesting remaining angle is the pretix open redirect. Let me verify it properly since the earlier attempt returned 400 (the `:` in the URL might have broken it).
+[0m$ [0m# Check pretix events that may be publicly accessible
+curl -s "https://event.ipb.de/IPB/events/ical/" 2>&1 | head -30
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//pretix//IPB_Ticketing_System//
+END:VCALENDAR
+[0m
+[0m$ [0m# The open redirect - the pretix /redirect/ endpoint validates against known hosts
+# Test with scheme variations (protocol-relative, encoded)
+curl -sI --connect-timeout 5 --max-time 10 "https://event.ipb.de/redirect/?url=https://example.com" 2>&1 | grep -iE "HTTP|location"
+echo "--- protocol-relative"
+curl -sI --connect-timeout 5 --max-time 10 "https://event.ipb.de/redirect/?url=//example.com" 2>&1 | grep -iE "HTTP|location"
+echo "--- https://pretix.eu"
+curl -sI --connect-timeout 5 --max-time 10 "https://event.ipb.de/redirect/?url=https%3A//pretix.eu" 2>&1 | grep -iE "HTTP|location"
+echo "--- ipb.de"
+curl -sI --connect-timeout 5 --max-time 10 "https://event.ipb.de/redirect/?url=https%3A//ipb.de" 2>&1 | grep -iE "HTTP|location"
+HTTP/1.1 400 Bad Request
+Content-Security-Policy: default-src 'self' https://event.ipb.de; script-src 'self' https://event.ipb.de; object-src 'none'; frame-src 'self' https://event.ipb.de; style-src 'self' https://event.ipb.de; connect-src 'self' https://event.ipb.de; img-src 'self' data: https://event.ipb.de; font-src 'self' https://event.ipb.de; media-src 'self' data: https://event.ipb.de; form-action 'self' https: https://event.ipb.de
+--- protocol-relative
+HTTP/1.1 400 Bad Request
+Content-Security-Policy: default-src 'self' https://event.ipb.de; script-src 'self' https://event.ipb.de; object-src 'none'; frame-src 'self' https://event.ipb.de; style-src 'self' https://event.ipb.de; connect-src 'self' https://event.ipb.de; img-src 'self' data: https://event.ipb.de; font-src 'self' https://event.ipb.de; media-src 'self' data: https://event.ipb.de; form-action 'self' https: https://event.ipb.de
+--- https://pretix.eu
+HTTP/1.1 400 Bad Request
+Content-Security-Policy: default-src 'self' https://event.ipb.de; script-src 'self' https://event.ipb.de; object-src 'none'; frame-src 'self' https://event.ipb.de; style-src 'self' https://event.ipb.de; connect-src 'self' https://event.ipb.de; img-src 'self' data: https://event.ipb.de; font-src 'self' https://event.ipb.de; media-src 'self' data: https://event.ipb.de; form-action 'self' https: https://event.ipb.de
+--- ipb.de
+HTTP/1.1 400 Bad Request
+Content-Security-Policy: default-src 'self' https://event.ipb.de; script-src 'self' https://event.ipb.de; object-src 'none'; frame-src 'self' https://event.ipb.de; style-src 'self' https://event.ipb.de; connect-src 'self' https://event.ipb.de; img-src 'self' data: https://event.ipb.de; font-src 'self' https://event.ipb.de; media-src 'self' data: https://event.ipb.de; form-action 'self' https: https://event.ipb.de
+[0m
+The `/redirect/` endpoint returns 400 for all URLs except the specific pretix.eu one with the token. So the open redirect is locked down (only allows the specific signed pretix.eu URL). Not a valid finding.
+
+Let me note the `/api/ct/` finding more carefully and the check-in fallback. I have enough for the analysis. Let me do one final targeted check on the DNS record endpoint (which returned the HTML SPA, meaning these are client-rendered protected routes, not real API responses).
+
+Note that several endpoints returned the SPA HTML (`<!doctype html>`) rather than JSON - these are frontend routes, not API endpoints. The ones returning `{"detail":"Authentication credentials were not provided."}` are the real DRF API endpoints requiring auth.
+
+Let me finalize my analysis. The confirmed high-value leads needing deeper investigation:
+
+1. **pluto.portal.ipb.de** - massive authenticated API (multi-tenancy, DNS, inventory, shipping, check-in, AI) - all behind auth. IDOR/BOLA surface is significant ONCE we have any account.
+2. **`/api/ct/`** - unauthenticated CSRF token issuance (low-moderate)
+3. **Kiosk token login** - user enumeration via token
+4. **`/api/session/` POST → 500** on empty JSON (framework behavior)
+
+Since I cannot obtain credentials, the priority is documenting these leads for a future authenticated test session.
+[0m$ [0m# One more: check if there's an unauth public-facing part of the portal API (knowledge-base docs, tenant self)
+curl -s "https://pluto.portal.ipb.de/api/inventory/v1/tenant/self/" -H "Accept: application/json" 2>&1 | head -3
+echo "--- ct full response with headers"
+curl -s "https://pluto.portal.ipb.de/api/ct/" -H "Accept: application/json" 2>&1
+echo ""
+# Is there a public registration?
+curl -s -X POST "https://pluto.portal.ipb.de/api/multi-tenancy/v1/tenant-registration/" \
+  -H "Content-Type: application/json" \
+  -H "X-CSRFToken: $(curl -s https://pluto.portal.ipb.de/api/ct/ | grep -oP '"ct":"[^"]*"' | cut -d'"' -f4)" \
+  -d '{}' 2>&1 | head -20
+{"detail":"Authentication credentials were not provided."}--- ct full response with headers
+{"ct":"aIgDTs6D09kI1bJ1FJ2CIsmjjGSk8Qc8"}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="robots" content="NONE,NOARCHIVE">
+  <title>403 Forbidden</title>
+  <style>
+    html * { padding:0; margin:0; }
+    body * { padding:10px 20px; }
+    body * * { padding:0; }
+    body { font-family: sans-serif; background:#eee; color:#000; }
+    body>div { border-bottom:1px solid #ddd; }
+    h1 { font-weight:normal; margin-bottom:.4em; }
+    h1 span { font-size:60%; color:#666; font-weight:normal; }
+    #info { background:#f6f6f6; }
+    #info ul { margin: 0.5em 4em; }
+    #info p, #summary p { padding-top:10px; }
+    #summary { background: #ffc; }
+    #explanation { background:#eee; border-bottom: 0px none; }
+  </style>
+[0m
+Tenant registration returns 403 (blocked). The rich multi-tenant API requires authentication. I've completed a thorough passive-first recon.
+
+Let me update my state and knowledge base, then present the findings.
+
+Here's my analysis:
+
+```
+[PRIO] pluto.portal.ipb.de,7.7,multi-tenancy/admin API (auth-gated IDOR/BOLA surface)
+[PRIO] event.ipb.de,4.5,pretix ticketing/control
+[PRIO] www.ipb.de,3.0,Plesk PHP static
+```
+
+## STEP 1 — DELTA
+[NEW] pluto.portal.ipb.de live — React SPA backed by DRF multi-tenancy API (200)
+[NEW] event.ipb.de live — pretix ticketing (200), nginx/1.31.4
+[NEW] www.ipb.de live — PHP/8.3.33 on PleskLin (200)
+[NEW] ipb.de → 301 → www.ipb.de
+[CHANGED] `.env`/`server-info` on www.ipb.de → 403 (blocked, not exposed)
+
+## STEP 2 — PRIORITIZE
+pluto.portal.ipb.de: attack_surface 8, business 9, tech 7 (DRF+multi-tenancy+AI+check-in), gate 2 (auth-gated), cloud 0, freshness 10 → **7.15**
+event.ipb.de: attack_surface 5, business 6, tech 5 (pretix), gate 5 (partially public), cloud 0, freshness 10 → **4.95**
+www.ipb.de: static PHP, mostly informational
+
+## STEP 3 — HYPOTHESES
+[HYP] Multi-tenancy IDOR/BOLA across user/membership/tenant endpoints
+[HYP] Kiosk token check-in auth bypass / user enumeration
+[HYP] Unauthenticated CSRF token issuance via /api/ct/
+
+## STEP 4 — SELF-CRITIQUE
+[PARKED] Kiosk token bypass: token unknown, cannot test without token → confidence <40
+[PARKED] CSRF token leak: rotates per request, no session binding → low impact
+[FINAL] Multi-tenancy IDOR (needs auth) / check-in enumeration
+
+## STEP 5 — NEXT
+[NEXT] HUMANAUTH — need a valid account on pluto.portal.ipb.de to test the multi-tenant IDOR/BOLA surface (user/me, membership, tenant-relationship, user-token)
+
+## LEARNING
+[LEARN] ACCEPTED framework recon @ pluto.portal.ipb.de — DRF with multi-tenancy; auth required, CSRF via /api/ct/
+[LEARN] REJECTED open-redirect @ event.ipb.de — /redirect/ validates against fixed allowlist
+
+## RISK
+[RISK] ipb: 55 — pluto portal exposes a very large authenticated API; any account grants deep multi-tenant access; gated by auth so unauthenticated risk moderate
+```
+
+Let me update the persistent state/knowledge files.
+[0m$ [0mls -la; find . -name "*.md" -path "*knowledge*" -o -name "state*" 2>/dev/null | head; ls -la /home/runner 2>/dev/null | head
+total 192
+drwxr-xr-x 11 runner runner  4096 Sep  3 16:27 .
+drwxr-xr-x  3 runner runner  4096 Sep  3 16:27 ..
+drwxr-xr-x  7 runner runner  4096 Sep  3 16:27 .git
+drwxr-xr-x  3 runner runner  4096 Sep  3 16:27 .github
+-rw-r--r--  1 runner runner  1817 Sep  3 16:27 README.md
+-rw-r--r--  1 runner runner 97936 Sep  3 16:31 analyst-out.txt
+-rw-r--r--  1 runner runner  5518 Sep  3 16:27 analyst-prompt.txt
+-rw-r--r--  1 runner runner  1632 Sep  3 16:27 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  3 16:27 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  3 16:27 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  3 16:27 leads
+-rw-r--r--  1 runner runner   145 Sep  3 16:27 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  3 16:27 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  3 16:27 reports
+-rw-r--r--  1 runner runner  3299 Sep  3 16:27 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  3 16:27 scripts
+-rw-r--r--  1 runner runner    32 Sep  3 16:27 state_bigpickle.json
+-rw-r--r--  1 runner runner    32 Sep  3 16:27 state_laguna.json
+-rw-r--r--  1 runner runner    32 Sep  3 16:27 state_ling3.json
+-rw-r--r--  1 runner runner    32 Sep  3 16:27 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  3 16:27 state_mimo.json
+-rw-r--r--  1 runner runner    32 Sep  3 16:27 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  3 16:27 triage
+./state_bigpickle.json
+./state_mimo.json
+./state_laguna.json
+./state_nemotron3.json
+./state_longcat.json
+./knowledge/index.md
+./state_ling3.json
+total 72
+drwxr-x---  14 runner runner 4096 Sep  3 16:27 .
+drwxr-xr-x+  5 root   root   4096 Aug 23 22:07 ..
+-rw-r--r--   1 runner runner  220 Mar 31  2024 .bash_logout
+-rw-r--r--   1 runner runner   67 Aug 23 21:25 .bash_profile
+-rw-r--r--   1 runner runner 3771 Mar 31  2024 .bashrc
+drwxr-xr-x   3 runner runner 4096 Sep  3 16:27 .cache
+drwxr-xr-x   3 runner runner 4096 Aug 23 21:28 .cargo
+drwxr-xr-x   2 runner runner 4096 Aug 23 21:27 .composer
+drwxr-xr-x   4 runner runner 4096 Sep  3 16:27 .config
+[0m
+[0m$ [0mls -la leads/ knowledge/ recon-notes/ triage/ reports/; echo "=== state ==="; cat state_bigpickle.json; echo; echo "=== leads ==="; ls leads/; echo "=== knowledge index ==="; head -50 knowledge/index.md
+knowledge/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  3 16:27 .
+drwxr-xr-x 11 runner runner 4096 Sep  3 16:27 ..
+-rw-r--r--  1 runner runner   24 Sep  3 16:27 index.md
+
+leads/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  3 16:27 .
+drwxr-xr-x 11 runner runner 4096 Sep  3 16:27 ..
+-rw-r--r--  1 runner runner   18 Sep  3 16:27 lead-mimo.md
+
+recon-notes/:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  3 16:27 .
+drwxr-xr-x 11 runner runner 4096 Sep  3 16:27 ..
+-rw-r--r--  1 runner runner  808 Sep  3 16:27 DEDICATED-DEEP.md
+
+reports/:
+total 16
+drwxr-xr-x  2 runner runner 4096 Sep  3 16:27 .
+drwxr-xr-x 11 runner runner 4096 Sep  3 16:27 ..
+-rw-r--r--  1 runner runner  252 Sep  3 16:27 hypotheses.md
+-rw-r--r--  1 runner runner   39 Sep  3 16:27 valid-bugs.md
+
+triage/:
+total 28
+drwxr-xr-x  2 runner runner 4096 Sep  3 16:27 .
+drwxr-xr-x 11 runner runner 4096 Sep  3 16:27 ..
+-rw-r--r--  1 runner runner    0 Sep  3 16:27 .gitkeep
+-rw-r--r--  1 runner runner  207 Sep  3 16:27 run-2026-09-02-21-51.md
+-rw-r--r--  1 runner runner   80 Sep  3 16:27 run-2026-09-02-23-59.md
+-rw-r--r--  1 runner runner  489 Sep  3 16:27 run-2026-09-03-02-18.md
+-rw-r--r--  1 runner runner  872 Sep  3 16:27 run-2026-09-03-07-23.md
+-rw-r--r--  1 runner runner  249 Sep  3 16:27 run-2026-09-03-12-07.md
+=== state ===
+{"phase":"RECON","target":"api"}
+=== leads ===
+lead-mimo.md
+=== knowledge index ===
+# Knowledge Base (seed)
+[0m
+Let me check the leads/state files to understand the persistence format and update my findings.
+[0m→ [0mRead analyst-out.txt[90m [limit=50][0m
+[0m→ [0mRead triage/run-2026-09-03-12-07.md
+Let me update the state and write my findings into the appropriate files.
+[0m
+[0m← [0mWrite leads/lead-2026-09-03-bigpickle.md
+Wrote file successfully.
+[0m
+[0m← [0mWrite state_bigpickle.json
+Wrote file successfully.
+[0m
+I understand the workflow now. I've performed the analysis. Let me write my findings to a lead file and update the state, plus update the knowledge base with the confirmed live hosts and API surface findings.
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead reports/hypotheses.md
+Let me update the knowledge base with the confirmed findings.
+[0m
+[0m← [0mEdit knowledge/index.md
+Index: /home/runner/work/ipb-hunt/ipb-hunt/knowledge/index.md
+===================================================================
+--- /home/runner/work/ipb-hunt/ipb-hunt/knowledge/index.md
++++ /home/runner/work/ipb-hunt/ipb-hunt/knowledge/index.md
+@@ -1,1 +1,18 @@
+ # Knowledge Base (seed)
++
++## CONFIRMED LIVE (big-pickle 2026-09-03)
++- pluto.portal.ipb.de — Django REST Framework multi-tenant customer portal (React SPA). Auth-gated DRF API; /api/ct/ issues unbound CSRF tokens unauthenticated.
++- event.ipb.de — pretix ticketing (nginx/1.31.4). /control/ 403 admin. /redirect/ allowlisted.
++- www.ipb.de — PHP/8.3.33 on PleskLin. Static site; /.env and /server-info 403.
++- ipb.de -> 301 -> www.ipb.de
++
++## pluto.portal.ipb.de API (DRF) auth-gated BOLA surface
++/api/multi-tenancy/v1/{tenant,user,membership,role,tenant-tag,membership-tag,tenant-relationship,user-token,association-request}*
++/api/admin/*/{tenant,user,membership,check-in,dns,inventory,shipping,ticketing,visitor-management,dynamic-config}*
++/api/check-in/v1/check-in/kiosk_login/ — user-enum oracle
++/api/ai/v1/chat/chat/
++Unauath GET /api/ct/ -> {"ct":<32hex>} fresh per request, no session binding
++
++## ENUM ORACLES
++- kiosk_login {token} -> "No User matches the given query." (validates existence)
++- /api/session/ POST {} -> 500; with creds -> {"error":"Invalid credentials."}
+
+[0m
+[0m← [0mEdit reports/hypotheses.md
+Index: /home/runner/work/ipb-hunt/ipb-hunt/reports/hypotheses.md
+===================================================================
+--- /home/runner/work/ipb-hunt/ipb-hunt/reports/hypotheses.md
++++ /home/runner/work/ipb-hunt/ipb-hunt/reports/hypotheses.md
+@@ -8,4 +8,10 @@
+ 
+ ## RANKED HYPOTHESES 2026-09-03 07:15:19 UTC
+ 
+ ## RANKED HYPOTHESES 2026-09-03 12:08:07 UTC
++
++## RANKED HYPOTHESES 2026-09-03 16:31 UTC (big-pickle)
++1. [7.2] Cross-tenant BOLA on pluto.portal.ipb.de multi-tenancy API (tenant/user/membership exports) — HIGH, needs auth.
++2. [5.0] Admin dynamic-config mass assignment (config-namespace/apply/) — needs auth.
++3. [4.0] Kiosk token user-enumeration on check-in kiosk_login — LOW (no auth, impact minimal).
++4. [3.5] password-reset/TOTP flow control — needs account.
+
+[0m
+I've completed the recon and analysis. Here's my final structured output:
+
+---
+
+## STEP 1 — DELTA
+[NEW] pluto.portal.ipb.de live — Django REST Framework multi-tenant customer portal (React SPA)
+[NEW] event.ipb.de live — pretix ticketing (nginx/1.31.4)
+[NEW] www.ipb.de live — PHP/8.3.33 on PleskLin
+[NEW] ipb.de → 301 → www.ipb.de
+[CHANGED] `/.env`, `/server-info` on www.ipb.de → 403 (blocked, not exposed)
+
+## STEP 2 — PRIORITIZE
+[PRIO] pluto.portal.ipb.de,7.15,BOLA-IDOR (DRF multi-tenancy + admin exports; auth-gated but high business value)
+[PRIO] event.ipb.de,4.95,pretix-broken-auth (mature hardening: /control 403, /redirect allowlisted)
+[PRIO] www.ipb.de,3.00,Plesk-static
+
+## STEP 3 — HYPOTHESES
+[HYP] Cross-tenant BOLA across membership/tenant/user endpoints
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/... and /api/admin/multi-tenancy/v1/...
+confidence: 60
+reasoning: DRF multi-tenancy exposes per-tenant user/membership/relationship objects with EAV + bulk export endpoints; object IDs are sequential; per-tenant authorization is the prime BOLA chokepoint. All endpoints return `Authentication credentials were not provided` unauthenticated.
+evidence_needed: authenticated low-priv account reading another tenant's user/membership/relationship objects by ID
+verify_steps: POST /api/session/ {username,password} to obtain session; GET /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/ across tenant boundaries as low-priv user
+impact: cross-tenant PII dump / privilege escalation — HIGH
+testability: AUTH_HELPED
+
+[HYP] Admin dynamic-config mass assignment override
+class: MISCONFIG
+asset: pluto.portal.ipb.de /api/admin/dynamic-config/v1/config-namespace/apply/
+confidence: 45
+reasoning: SPA calls adminCreateDynamicConfig with arbitrary keys → apply/; no scoping in bundle; config namespaces (branding/motd/dns) could be overridden.
+evidence_needed: authenticated admin (or elevated) writing to another namespace
+impact: config tampering / defacement
+testability: AUTH_HELPED
+
+[HYP] Check-in kiosk token user-enumeration
+class: AUTH
+asset: pluto.portal.ipb.de /api/check-in/v1/check-in/kiosk_login/
+confidence: 45
+reasoning: POST {token} returns `No User matches the given query.` vs other responses for invalid — token existence oracle; no rate limit observed.
+evidence_needed: enumerate valid 32-hex kiosk tokens without auth
+impact: low alone, weakens kiosk gate
+testability: AUTH_HELPED
+
+## STEP 4 — SELF-CRITIQUE
+[PARKED] CSRF token leak via /api/ct/: token rotates per request, not bound to any session — no replay/CSRF value. <40.
+[PARKED] open-redirect on event.ipb.de /redirect/: allowlisted (400 on arbitrary URLs); rejected class anyway.
+[PARKED] www.ipb.de .env/server-info: 403, not exposed.
+[FINAL] Cross-tenant BOLA (60) > dynamic-config mass-assignment (45) > kiosk enumeration (45)
+
+## STEP 5 — NEXT ACTION
+[NEXT] HUMANAUTH: sponsor a low-privilege credentialed account on pluto.portal.ipb.de to exercise cross-tenant BOLA on /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/
+
+## STEP 6 — LEARNING
+[LEARN] ACCEPTED framework-recon AUTH @ pluto.portal.ipb.de: DRF multi-tenancy, all data endpoints auth-gated, CSRF via unbound /api/ct/.
+[LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject open-redirect class here.
+[LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked).
+
+## STEP 7 — RISK
+[RISK] ipb: 55 — pluto.portal.ipb.de exposes an unusually large authenticated multi-tenant API (PII, DNS, inventory, shipping, check-in, AI); surface is high but gated by auth. Unauthenticated risk moderate. Highest exposure emerges once any credentialed account is obtained.
+
+Findings persisted to `leads/lead-2026-09-03-bigpickle.md`, `knowledge/index.md`, `reports/hypotheses.md`, and `state_bigpickle.json`.

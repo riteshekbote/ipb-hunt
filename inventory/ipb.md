@@ -52,3 +52,15 @@ www.survey.ipb.de
 ## 2026-09-03 07:15:19 UTC
 
 ## 2026-09-03 12:08:07 UTC
+
+## 2026-09-03 16:37:18 UTC
+- NEW pluto.portal.ipb.de live — React SPA backed by DRF multi-tenancy API (200)
+- NEW event.ipb.de live — pretix ticketing (200), nginx/1.31.4
+- NEW www.ipb.de live — PHP/8.3.33 on PleskLin (200)
+- NEW ipb.de → 301 → www.ipb.de
+- CHANGED `.env`/`server-info` on www.ipb.de → 403 (blocked, not exposed)
+- NEW pluto.portal.ipb.de live — Django REST Framework multi-tenant customer portal (React SPA)
+- NEW event.ipb.de live — pretix ticketing (nginx/1.31.4)
+- NEW www.ipb.de live — PHP/8.3.33 on PleskLin
+- NEW ipb.de → 301 → www.ipb.de
+- CHANGED `/.env`, `/server-info` on www.ipb.de → 403 (blocked, not exposed)
