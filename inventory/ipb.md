@@ -72,3 +72,12 @@ www.survey.ipb.de
 - NEW ipb.de → 301 → www.ipb.de
 - CHANGED `/.env`, `/server-info` on www.ipb.de → 403 (blocked, not exposed)
 - NEW app.ipb.de, auth.gold.ipb.de, my.ipb.de, prod.ipb.de, cloud.ipb.de — DNS resolution failure (Name or service not known) or SSL cert verify failed on probe attempts
+
+## 2026-09-03 21:55:25 UTC
+- NEW pluto.portal.ipb.de live — React SPA backed by DRF multi-tenancy API (HTTP 200), extensive /api/multi-tenancy/v1/, /api/admin/, /api/check-in/ endpoints discovered in bundle
+- NEW event.ipb.de live — pretix ticketing (HTTP 200), nginx/1.31.4, /control 403, /redirect/ allowlisted
+- NEW www.ipb.de live — PHP/8.3.33 on PleskLin (HTTP 200)
+- NEW ipb.de → 301 → www.ipb.de
+- CHANGED `/.env`, `/server-info` on www.ipb.de → 403 (blocked, not exposed)
+- NEW app.ipb.de, auth.gold.ipb.de, my.ipb.de, prod.ipb.de, cloud.ipb.de — DNS resolution failure (Name or service not known) or SSL cert verify failed on probe attempts
+- CHANGED Dedicated deep scan confirms wildcard DNS on *.ipb.de — 0 genuinely dedicated hosts after shared-IP filtering

@@ -25,3 +25,10 @@ https://auth.gold.ipb.de/authorize?client_id=test&redirect_uri=https://evil.com&
 
 ## 2026-09-03 19:32:07 UTC
 
+
+## 2026-09-03 21:55:31 UTC
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://auth.gold.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://cloud.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://my.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://prod.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
