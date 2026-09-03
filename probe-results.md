@@ -32,3 +32,6 @@ https://auth.gold.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not k
 https://cloud.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
 https://my.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
 https://prod.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+
+## 2026-09-03 23:44:26 UTC
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
