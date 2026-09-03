@@ -59,3 +59,43 @@ testability: AUTH_HELPED
 [LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject open-redirect class here.
 [LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked).
 [RISK] ipb: 55 — pluto.portal.ipb.de exposes an unusually large authenticated multi-tenant API (PII, DNS, inventory, shipping, check-in, AI); surface is high but gated by auth. Unauthenticated risk moderate. Highest exposure emerges once any credentialed account is obtained.
+## 2026-09-03 19:25:33 UTC [target] (model bigpickle)
+[PRIO] pluto.portal.ipb.de,7.15,BOLA-IDOR (DRF multi-tenancy; auth-gated but highest business value — PII/tenant access)
+[PRIO] event.ipb.de,4.90,pretix-broken-auth (mature hardening confirmed: /control 403, /redirect allowlisted)
+[PRIO] www.ipb.de,3.00,Plesk-static (env/config 403 blocked)
+[HYP] Cross-tenant BOLA across membership/tenant/user endpoints
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/ and /user/{id}/
+confidence: 60
+reasoning: DRF multi-tenancy exposes per-tenant user/membership/relationship objects with EAV + bulk export; sequential object IDs; per-tenant authorization is the prime BOLA chokepoint; all unauthenticated calls return `Authentication credentials were not provided`.
+evidence_needed: authenticated low-priv account reading another tenant's user/membership/relationship objects by ID
+verify_steps: POST /api/session/ {username,password} then GET /api/multi-tenancy/v1/tenant/{id}/ and /user/{id}/ across tenant boundaries as low-priv user
+impact: cross-tenant PII dump / privilege escalation — HIGH
+testability: AUTH_HELPED
+[HYP] Check-in kiosk token user-enumeration oracle
+class: AUTH
+asset: pluto.portal.ipb.de /api/check-in/v1/check-in/kiosk_login/
+confidence: 45
+reasoning: POST {token} returns distinct `No User matches the given query.` response; token existence oracle; 32-hex token space; no rate-limit observed in bundle.
+evidence_needed: enumerate valid 32-hex kiosk tokens unauthenticated
+verify_steps: POST /api/check-in/v1/check-in/kiosk_login/ with header `X-CSRFToken` + `Cookie: csrftoken` for none vs varying tokens; compare status/body
+impact: weakens kiosk gate; low alone
+testability: AUTH_HELPED
+[HYP] Admin dynamic-config namespace mass-assignment
+class: MISCONFIG
+asset: pluto.portal.ipb.de /api/admin/dynamic-config/v1/config-namespace/apply/
+confidence: 45
+reasoning: SPA calls adminCreateDynamicConfig with arbitrary keys → apply/; no scoping in bundle; config namespaces (branding/motd/dns) could be overridden if an admin-level session is obtained.
+evidence_needed: authenticated admin writing to a namespace it should not scope
+verify_steps: with admin session, POST apply/ supplying keys outside expected namespace; check for 200 and reflected config override
+impact: config tampering / defacement
+testability: AUTH_HELPED
+[PARKED] CSRF token leak via /api/ct/: rotates per request, no session binding — no replay/CSRF value. <40.
+[PARKED] open-redirect event.ipb.de /redirect/: allowlisted (400 on arbitrary URLs); REJECTED class.
+[PARKED] www.ipb.de .env/server-info: 403, not exposed; REJECTED class.
+[FINAL] BOLA-IDOR (60) > kiosk token enum (45) > admin dynamic-config (45)
+[NEXT] HUMANAUTH: sponsor a low-privilege credentialed account on pluto.portal.ipb.de to exercise cross-tenant BOLA on /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/ — the single highest-value unverified hypothesis, gated solely on having any valid account.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: DRF multi-tenancy is the prime cross-tenant chokepoint; all endpoints seq-ID, auth-gated; remains top priority pending credentialed access.
+[LEARN] ACCEPTED AUTH @ pluto.portal.ipb.de: kiosk_login token oracle is a low-severity enumeration; distinct error message per token validity confirmed in bundle.
+[LEARN] REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist confirm mature hardening; do not re-probe.
+[RISK] ipb: 55 — pluto.portal exposes a very large authenticated multi-tenant API (PII, DNS, inventory, shipping, check-in, AI). Surface high but gated by auth. Unauthenticated risk moderate; highest exposure materializes once any credentialed account is obtained, which only a human sponsor can provide.

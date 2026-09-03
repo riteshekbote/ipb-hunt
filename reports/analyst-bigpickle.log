@@ -2057,3 +2057,70 @@ testability: AUTH_HELPED
 [RISK] ipb: 55 — pluto.portal.ipb.de exposes an unusually large authenticated multi-tenant API (PII, DNS, inventory, shipping, check-in, AI); surface is high but gated by auth. Unauthenticated risk moderate. Highest exposure emerges once any credentialed account is obtained.
 
 Findings persisted to `leads/lead-2026-09-03-bigpickle.md`, `knowledge/index.md`, `reports/hypotheses.md`, and `state_bigpickle.json`.
+===== ANALYST bigpickle 2026-09-03 19:32:07 UTC =====
+[0m
+> build · big-pickle
+[0m
+I'll analyze the current state and execute the 8 steps.
+
+**STEP 1 — DELTA:** Comparing inventory, knowledge base, and last leads against current surface. The surface state is consistent with prior analysis - pluto.portal.ipb.de, event.ipb.de, www.ipb.de all confirmed live with established findings (wildcard DNS, DRF multi-tenancy, pretix, Plesk PHP). No new assets changed since last cycle.
+
+NO_DELTA — surface stable; all high-value hypotheses already parked pending HUMANAUTH on pluto.portal.ipb.de (cross-tenant BOLA @ /api/multi-tenancy/v1/).
+
+**STEP 2 — PRIORITIZE:** The scoring is dominated by the unresolved cross-tenant BOLA surface on pluto.portal, which remains the highest-value target despite auth gating.
+
+[PRIO] pluto.portal.ipb.de,7.15,BOLA-IDOR (DRF multi-tenancy; auth-gated but highest business value — PII/tenant access)
+[PRIO] event.ipb.de,4.90,pretix-broken-auth (mature hardening confirmed: /control 403, /redirect allowlisted)
+[PRIO] www.ipb.de,3.00,Plesk-static (env/config 403 blocked)
+
+**STEP 3 — HYPOTHESES:** Top 3 assets, one hypothesis each.
+
+[HYP] Cross-tenant BOLA across membership/tenant/user endpoints
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/ and /user/{id}/
+confidence: 60
+reasoning: DRF multi-tenancy exposes per-tenant user/membership/relationship objects with EAV + bulk export; sequential object IDs; per-tenant authorization is the prime BOLA chokepoint; all unauthenticated calls return `Authentication credentials were not provided`.
+evidence_needed: authenticated low-priv account reading another tenant's user/membership/relationship objects by ID
+verify_steps: POST /api/session/ {username,password} then GET /api/multi-tenancy/v1/tenant/{id}/ and /user/{id}/ across tenant boundaries as low-priv user
+impact: cross-tenant PII dump / privilege escalation — HIGH
+testability: AUTH_HELPED
+
+[HYP] Check-in kiosk token user-enumeration oracle
+class: AUTH
+asset: pluto.portal.ipb.de /api/check-in/v1/check-in/kiosk_login/
+confidence: 45
+reasoning: POST {token} returns distinct `No User matches the given query.` response; token existence oracle; 32-hex token space; no rate-limit observed in bundle.
+evidence_needed: enumerate valid 32-hex kiosk tokens unauthenticated
+verify_steps: POST /api/check-in/v1/check-in/kiosk_login/ with header `X-CSRFToken` + `Cookie: csrftoken` for none vs varying tokens; compare status/body
+impact: weakens kiosk gate; low alone
+testability: AUTH_HELPED
+
+[HYP] Admin dynamic-config namespace mass-assignment
+class: MISCONFIG
+asset: pluto.portal.ipb.de /api/admin/dynamic-config/v1/config-namespace/apply/
+confidence: 45
+reasoning: SPA calls adminCreateDynamicConfig with arbitrary keys → apply/; no scoping in bundle; config namespaces (branding/motd/dns) could be overridden if an admin-level session is obtained.
+evidence_needed: authenticated admin writing to a namespace it should not scope
+verify_steps: with admin session, POST apply/ supplying keys outside expected namespace; check for 200 and reflected config override
+impact: config tampering / defacement
+testability: AUTH_HELPED
+
+**STEP 4 — SELF-CRITIQUE:**
+[PARKED] CSRF token leak via /api/ct/: rotates per request, no session binding — no replay/CSRF value. <40.
+[PARKED] open-redirect event.ipb.de /redirect/: allowlisted (400 on arbitrary URLs); REJECTED class.
+[PARKED] www.ipb.de .env/server-info: 403, not exposed; REJECTED class.
+
+All three live hypotheses (BOLA 60, kiosk enum 45, dynamic-config 45) survive critique. Dynamic-config ranks lowest (needs admin, marginal impact).
+
+[FINAL] BOLA-IDOR (60) > kiosk token enum (45) > admin dynamic-config (45)
+
+**STEP 5 — NEXT ACTION:**
+[NEXT] HUMANAUTH: sponsor a low-privilege credentialed account on pluto.portal.ipb.de to exercise cross-tenant BOLA on /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/ — the single highest-value unverified hypothesis, gated solely on having any valid account.
+
+**STEP 6 — LEARNING:**
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: DRF multi-tenancy is the prime cross-tenant chokepoint; all endpoints seq-ID, auth-gated; remains top priority pending credentialed access.
+[LEARN] ACCEPTED AUTH @ pluto.portal.ipb.de: kiosk_login token oracle is a low-severity enumeration; distinct error message per token validity confirmed in bundle.
+[LEARN] REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist confirm mature hardening; do not re-probe.
+
+**STEP 7 — RISK:**
+[RISK] ipb: 55 — pluto.portal exposes a very large authenticated multi-tenant API (PII, DNS, inventory, shipping, check-in, AI). Surface high but gated by auth. Unauthenticated risk moderate; highest exposure materializes once any credentialed account is obtained, which only a human sponsor can provide.
