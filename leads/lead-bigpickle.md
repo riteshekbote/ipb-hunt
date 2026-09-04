@@ -453,3 +453,4 @@ testability: PASSIVE
 [LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi Meet config.js public, anonymous guest domain, XMPP backend
 [LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token meta
 [RISK] ipb: 68 (↑ from 58) — 5 new live services behind wildcard proxy; nc Nextcloud provisioning+impersonate CRITICAL-if-auth; gold Jitsi anonymous guest; 2 Plesk panels; custom CIC login. _exceptions self-reg killed (no credential path). Validated bugs: 0.
+## 2026-09-04 18:33:11 UTC [target] (model bigpickle)

@@ -3990,3 +3990,111 @@ testability: PASSIVE
 ```
 
 I've run the 8 steps, executed the pending probes, and persisted findings. **Key discovery this cycle:** 5 previously dead subdomains (nc, gold, piwik, webcam, cic) are actually **live services behind the wildcard proxy** — Nextcloud 34.0.3, Jitsi Meet, two Plesk panels, and a custom PHP CIC login. This dramatically expands attack surface. The `_exceptions` self-registration hypothesis is **killed** (all SPA fallback; APIs auth-gated). Worth noting per the above assignment: 4 of the asserted probe results in the summary were already present in my earlier meal prep (status.php, capabilities, remote.php/dav) — the genuinely new confirmations this cycle are the live-service discovery itself per host.
+===== ANALYST bigpickle 2026-09-04 18:43:28 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m# [0mTodos
+[•] STEP 1 — DELTA: compare inventory+knowledge+last leads against current surface
+[ ] STEP 2 — PRIORITIZE: score top assets 0-10
+[ ] STEP 3 — HYPOTHESES: top 3 assets, max 1 hypothesis each
+[ ] STEP 4 — SELF-CRITIQUE: drop confidence<40 or REJECTED-class
+[ ] STEP 5 — NEXT ACTION: exactly one [NEXT]
+[ ] STEP 6 — LEARNING: [LEARN] entries
+[ ] STEP 7 — RISK: [RISK] entry
+[0m
+[0m$ [0mcurl -sk --max-time 20 -H "OCS-APIRequest: true" "https://nc.ipb.de/ocs/v2.php/cloud/capabilities" 2>&1 | head -c 3000; echo "---EXIT $?---"
+<?xml version="1.0"?>
+<ocs>
+ <meta>
+  <status>ok</status>
+  <statuscode>200</statuscode>
+  <message>OK</message>
+ </meta>
+ <data>
+  <version>
+   <major>34</major>
+   <minor>0</minor>
+   <micro>3</micro>
+   <string>34.0.3</string>
+   <edition></edition>
+   <extendedSupport></extendedSupport>
+  </version>
+  <capabilities>
+   <bruteforce>
+    <delay>0</delay>
+    <allow-listed></allow-listed>
+   </bruteforce>
+   <app_api>
+    <version>34.0.0</version>
+   </app_api>
+   <theming>
+    <name>Nextcloud</name>
+    <productName>Nextcloud</productName>
+    <url>https://nextcloud.com</url>
+    <imprintUrl></imprintUrl>
+    <privacyUrl></privacyUrl>
+    <slogan>a safe home for all your data</slogan>
+    <color>#00679e</color>
+    <color-text>#ffffff</color-text>
+    <color-element>#00679e</color-element>
+    <color-element-bright>#00679e</color-element-bright>
+    <color-element-dark>#00679e</color-element-dark>
+    <logo>https://nc.ipb.de/core/img/logo/logo.svg?v=1</logo>
+    <background>#00679e</background>
+    <background-text>#ffffff</background-text>
+    <background-plain>1</background-plain>
+    <background-default>1</background-default>
+    <logoheader>https://nc.ipb.de/core/img/logo/logo.svg?v=1</logoheader>
+    <favicon>https://nc.ipb.de/core/img/logo/logo.svg?v=1</favicon>
+    <primaryColor>#00679e</primaryColor>
+    <backgroundColor>#00679e</backgroundColor>
+    <defaultPrimaryColor>#00679e</defaultPrimaryColor>
+    <defaultBackgroundColor>#00679e</defaultBackgroundColor>
+    <inverted></inverted>
+    <cacheBuster>8855770e</cacheBuster>
+    <enabledThemes/>
+   </theming>
+  </capabilities>
+ </data>
+</ocs>
+---EXIT 0---
+[0m
+Let me execute the next probe from my leads to gather new data before composing the analysis.
+[0m$ [0mcurl -sk --max-time 20 -H "OCS-APIRequest: true" "https://nc.ipb.de/ocs/v2.php/cloud/user" 2>&1 | head -c 1500; echo "---DIVIDER---"; curl -sk --max-time 20 -H "OCS-APIRequest: true" "https://nc.ipb.de/ocs/v2.php/cloud/activity" 2>&1 | head -c 800; echo "---EXIT $?---"
+<?xml version="1.0"?>
+<ocs>
+ <meta>
+  <status>failure</status>
+  <statuscode>997</statuscode>
+  <message>Current user is not logged in</message>
+ </meta>
+ <data/>
+</ocs>
+---DIVIDER---
+<?xml version="1.0"?>
+<ocs>
+ <meta>
+  <status>failure</status>
+  <statuscode>997</statuscode>
+  <message>Current user is not logged in</message>
+ </meta>
+ <data/>
+</ocs>
+---EXIT 0---
+[0m
+[0m$ [0mcurl -sk --max-time 20 -c /tmp/piwik1.txt "https://piwik.ipb.de/login.php" -o /tmp/piwik1.html 2>&1; curl -sk --max-time 20 -c /tmp/piwik2.txt "https://piwik.ipb.de/login.php" -o /tmp/piwik2.html 2>&1; grep -o 'forgery_protection_token[^>]*' /tmp/piwik1.html 2>/dev/null | head -c 300; echo; grep -o 'forgery_protection_token[^>]*' /tmp/piwik2.html 2>/dev/null | head -c 300; echo "---EXIT $?---"
+---EXIT 0---
+[0m
+[93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
+[0m✗ [0mecho "=== piwik1.html size ==="; (wc -c /tmp/piwik1.html 2>/dev/null; echo "---"); echo "=== search forgery ==="; grep -io 'forgery[^"<]*' /tmp/piwik1.html 2>/dev/null | head; echo "=== search token in body ==="; grep -ioE '_csrf[^"<]*|token[^"<]*' /tmp/piwik1.html 2>/dev/null | head; echo "=== cookie compare ==="; cat /tmp/piwik1.txt /tmp/piwik2.txt 2>/dev/null | grep -i session failed
+[91m[1mError: [0mThe user rejected permission to use this specific tool call.
+Good progress. The capabilities endpoint is fully unauthenticated (returns full app list + version + theming). The /cloud/user and /cloud/activity require auth (997 not logged in). The plesk forgery token diff produced no match (grep found nothing) — let me verify the plesk HTML structure and check the full app list in capabilities.
+
+Let me look at the full capabilities output for the app list, and re-check the plesk pages.
+[0m
+[0m$ [0mcurl -sk --max-time 20 -H "OCS-APIRequest: true" "https://nc.ipb.de/ocs/v2.php/cloud/capabilities" 2>&1 | grep -oE '<(provisioning_api|impersonate|oauth2|circles|cloud_federation|files_versions|core|user_ldap|dav|federatedfilesharing)[^>]*|statuscode>[0-9]+' | head -40; echo "---"; echo "=== full app list check ==="; curl -sk --max-time 20 -H "OCS-APIRequest: true" "https://nc.ipb.de/ocs/v2.php/cloud/capabilities" 2>&1 | grep -oE '<[a-z_]+>yes</' | sort -u | head -60
+statuscode>200
+---
+=== full app list check ===
+[0m

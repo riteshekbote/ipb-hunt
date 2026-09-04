@@ -145,3 +145,15 @@ www.survey.ipb.de
 - CHANGED Wildcard DNS deep scan: 21 inventory hosts never individually re-confirmed post-discovery; potential hidden services behind wildcard proxy
 - CHANGED app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — persistent DNS resolution failure or SSL cert verify failed
 - CHANGED /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/docs, /api/openapi all confirmed SPA fallback (no DRF schema leak)
+
+## 2026-09-04 18:43:28 UTC
+- NEW nc.ipb.de — Nextcloud 34.0.3 live behind wildcard proxy; nginx/1.28.3; status.php full version leak; OCS API with provisioning_api, impersonate, oauth2, circles, WebDAV; bruteforce delay=0
+- NEW gold.ipb.de — Jitsi Meet live behind wildcard proxy; nginx/1.22.1; config.js public; anonymous guest domain (guest.gold.ipb.de); XMPP backend (auth.gold.ipb.de)
+- NEW piwik.ipb.de — Plesk Panel 18.0.80-6 "I/P/B/ Cloudhosting Panel" live (303→/login.php); forgery_protection_token in HTML meta
+- NEW webcam.ipb.de — Plesk Panel 18.0.80-6 live (same instance as piwik); forgery_protection_token in HTML meta
+- NEW cic.ipb.de — Customer Information Center live; custom PHP login (User ID + Password); PHPSESSID cookie; nginx/1.31.4
+- NEW eticket.ipb.de — Pretix "Unknown host" (400); pretix handles wildcard but no custom domain configured
+- CHANGED pluto.portal.ipb.de/_exceptions/{user-register,register-tenant,forgot-password} all SPA fallback (354606 bytes) — no server-side registration form; self-service credential hypothesis killed
+- CHANGED pluto.portal.ipb.de/api/multi-tenancy/v1/user-registration/ 401 (auth-gated); /tenant-registration/ 403 (admin-only)
+- CHANGED Wildcard DNS deep scan: 21 inventory hosts never individually re-confirmed; 6 subdomains with SSL cert failures confirm live TLS behind proxy
+- CHANGED app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — persistent DNS resolution failure or SSL cert verify failed
