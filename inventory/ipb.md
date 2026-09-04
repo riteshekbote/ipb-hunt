@@ -157,3 +157,14 @@ www.survey.ipb.de
 - CHANGED pluto.portal.ipb.de/api/multi-tenancy/v1/user-registration/ 401 (auth-gated); /tenant-registration/ 403 (admin-only)
 - CHANGED Wildcard DNS deep scan: 21 inventory hosts never individually re-confirmed; 6 subdomains with SSL cert failures confirm live TLS behind proxy
 - CHANGED app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — persistent DNS resolution failure or SSL cert verify failed
+
+## 2026-09-04 21:05:20 UTC
+- NEW nc.ipb.de/ocs/v2.php/cloud/capabilities probed (SSL cert fail) — OCS API surface unconfirmed live via probe-results
+- NEW piwik.ipb.de/login.php probed twice (SSL cert fail) — forgery_protection_token staticity unconfirmed
+- CHANGED pluto.portal.ipb.de/_exceptions/{user-register,register-tenant,forgot-password} all SPA fallback (354606 bytes) — self-service registration hypothesis killed (confirmed by both nemotron3 and bigpickle
+- CHANGED pluto.portal.ipb.de/api/multi-tenancy/v1/user-registration/ 401, /tenant-registration/ 403 — no credential path
+- CHANGED 6 subdomains (eticket, nc, gold, piwik, webcam, cic) SSL cert verify failed — live TLS behind wildcard proxy confirmed
+- CHANGED 21 inventory hosts never individually re-confirmed post-discovery — wildcard DNS hides potential services
+- CHANGED app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — persistent DNS/SSL failures
+- CHANGED event.ipb.de pretix /control 403 and /redirect/ allowlist — saturated, do not re-probe
+- CHANGED www.ipb.de .env/server-info 403 — saturated, do not re-probe

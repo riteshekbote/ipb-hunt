@@ -1,14 +1,13 @@
-## 2026-09-04 18:43:18 UTC [target] (model nemotron3)
-[NEW] nc.ipb.de — Nextcloud 34.0.3 live behind wildcard proxy; nginx/1.28.3; status.php full version leak; OCS API with provisioning_api, impersonate, oauth2, circles, WebDAV; bruteforce delay=0
-[NEW] gold.ipb.de — Jitsi Meet live behind wildcard proxy; nginx/1.22.1; config.js public; anonymous guest domain (guest.gold.ipb.de); XMPP backend (auth.gold.ipb.de)
-[NEW] piwik.ipb.de — Plesk Panel 18.0.80-6 "I/P/B/ Cloudhosting Panel" live (303→/login.php); forgery_protection_token in HTML meta
-[NEW] webcam.ipb.de — Plesk Panel 18.0.80-6 live (same instance as piwik); forgery_protection_token in HTML meta
-[NEW] cic.ipb.de — Customer Information Center live; custom PHP login (User ID + Password); PHPSESSID cookie; nginx/1.31.4
-[NEW] eticket.ipb.de — Pretix "Unknown host" (400); pretix handles wildcard but no custom domain configured
-[CHANGED] pluto.portal.ipb.de/_exceptions/{user-register,register-tenant,forgot-password} all SPA fallback (354606 bytes) — no server-side registration form; self-service credential hypothesis killed
-[CHANGED] pluto.portal.ipb.de/api/multi-tenancy/v1/user-registration/ 401 (auth-gated); /tenant-registration/ 403 (admin-only)
-[CHANGED] Wildcard DNS deep scan: 21 inventory hosts never individually re-confirmed; 6 subdomains with SSL cert failures confirm live TLS behind proxy
-[CHANGED] app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — persistent DNS resolution failure or SSL cert verify failed
+## 2026-09-04 21:05:08 UTC [target] (model nemotron3)
+[NEW] nc.ipb.de/ocs/v2.php/cloud/capabilities probed (SSL cert fail) — OCS API surface unconfirmed live via probe-results
+[NEW] piwik.ipb.de/login.php probed twice (SSL cert fail) — forgery_protection_token staticity unconfirmed
+[CHANGED] pluto.portal.ipb.de/_exceptions/{user-register,register-tenant,forgot-password} all SPA fallback (354606 bytes) — self-service registration hypothesis killed (confirmed by both nemotron3 and bigpickle)
+[CHANGED] pluto.portal.ipb.de/api/multi-tenancy/v1/user-registration/ 401, /tenant-registration/ 403 — no credential path
+[CHANGED] 6 subdomains (eticket, nc, gold, piwik, webcam, cic) SSL cert verify failed — live TLS behind wildcard proxy confirmed
+[CHANGED] 21 inventory hosts never individually re-confirmed post-discovery — wildcard DNS hides potential services
+[CHANGED] app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — persistent DNS/SSL failures
+[CHANGED] event.ipb.de pretix /control 403 and /redirect/ allowlist — saturated, do not re-probe
+[CHANGED] www.ipb.de .env/server-info 403 — saturated, do not re-probe
 [PRIO] nc.ipb.de,8.15,attack_surface=8,business_value=10,tech_exposure=9,gate_ease=6,cloud_surface=5,freshness=9
 [PRIO] pluto.portal.ipb.de,7.85,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=2,cloud_surface=7,freshness=10
 [PRIO] gold.ipb.de,6.85,attack_surface=7,business_value=8,tech_exposure=7,gate_ease=7,cloud_surface=3,freshness=7
@@ -19,7 +18,11 @@
 [PRIO] eticket.ipb.de,4.45,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
 [PRIO] event.ipb.de,4.80,attack_surface=4,business_value=5,tech_exposure=3,gate_ease=8,cloud_surface=2,freshness=7
 [PRIO] www.ipb.de,3.70,attack_surface=2,business_value=4,tech_exposure=2,gate_ease=8,cloud_surface=1,freshness=6
-[HYP] Cross-tenant BOLA via sequenti[0m
+[HYP] Cross-tenant BOLA via sequential IDs on multi-tenancy/user/check-in/association-request endpoints
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /user/{id}/, /association-request/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request objects with sequential integer IDs; all endpoints auth-gated (401) but per-tenant authorization is sole BOLA control; expanded surface includes association-request, user-token, self endpoints; EdgePortal bundle confirms extensive API surface
 evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation
 verify_steps: 1) Obtain low-priv credentialed session; 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with valid Authorization: Token header; 3) Observe 200 vs 403/404 differentiation
 impact: Cross-tenant PII dump (membership, user, association-request data); HIGH
@@ -48,7 +51,7 @@ testability: PASSIVE
 [FINAL] Cross-tenant BOLA via sequential IDs on multi-tenancy/user/check-in/association-request endpoints (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact, AUTH_HELPED testability
 [FINAL] Nextcloud OCS provisioning_api + impersonate = privilege escalation vector (confidence 55) — HUMAN_ONLY but CRITICAL value if auth obtained, well-defined verify steps
 [FINAL] Wildcard DNS masking hidden attack surface on *.ipb.de subdomains with live TLS endpoints (confidence 60) — surviving passive hypothesis, testable now with Host header probes, HIGH impact if confirmed, PASSIVE testability
-[NEXT] PROBE: GET https://eticket.ipb.de/ (Host: eticket.ipb.de) — check Server header, content-length, status vs wildcard fallback; repeat for nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de at 1 rps GET/HEAD only
+[NEXT] PROBE: GET https://nc.ipb.de/ocs/v2.php/cloud/capabilities -H "OCS-APIRequest: true" — extract full enabled app list to confirm provisioning_api, impersonate, oauth2 scope; GET https://nc.ipb.de/ocs/v2.php/cloud/activity and GET https://nc.ipb.de/ocs/v2.php/cloud/user with empty credentials — check for unauthenticated data leak
 [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: DRF multi-tenancy is the prime cross-tenant chokepoint; expanded surface (association-request, user-token, self endpoints) all seq-ID auth-gated; top priority pending credentialed access
 [LEARN] ACCEPTED MISCONFIG @ *.ipb.de: wildcard DNS confirmed by dedicated deep scan (0 genuinely dedicated hosts), hides real attack surface; 21 inventory hosts never individually re-confirmed; SSL cert failures on 6 subdomains confirm live TLS behind proxy
 [LEARN] ACCEPTED AUTH @ pluto.portal.ipb.de: kiosk_login token oracle is a low-severity enumeration; distinct error message per token validity confirmed in bundle

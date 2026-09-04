@@ -74,3 +74,9 @@ https://nc.ipb.de/ocs/v2.php/cloud/capabilities -> ERR <urlopen error [SSL: CERT
 https://nc.ipb.de/ocs/v2.php/cloud/activity -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
 https://nc.ipb.de/ocs/v2.php/cloud/user -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
 https://eticket.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+
+## 2026-09-04 21:05:26 UTC
+https://nc.ipb.de/ocs/v2.php/cloud/capabilities -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/activity -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/user -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://eticket.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
