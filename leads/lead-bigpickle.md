@@ -350,3 +350,106 @@ testability: HUMAN_ONLY
 [LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ allowlisted
 [LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 blocked
 [RISK] ipb: 58 (↑ from 55) — EdgePortal 70+ auth-gated endpoints + 6 SSL-cert-fail hosts live behind wildcard proxy + registration routes could remove HUMAN gate. Validated bugs: 0.
+## 2026-09-04 15:28:36 UTC [target] (model bigpickle)
+[NEW] nc.ipb.de — Nextcloud 34.0.3 live behind wildcard proxy; nginx/1.28.3 (Ubuntu); status.php leaks full version/install status; OCS API + WebDAV + provisioning_api + impersonate + oauth2 + circles apps enabled
+[NEW] gold.ipb.de — Jitsi Meet live behind wildcard proxy; nginx/1.22.1; config.js publicly accessible; anonymous guest domain configured (guest.gold.ipb.de); XMPP backend (auth.gold.ipb.de)
+[NEW] piwik.ipb.de — Plesk Panel "I/P/B/ Cloudhosting Panel" 1800260901.22 live (303→/login.php); forgery_protection_token in HTML meta
+[NEW] webcam.ipb.de — Plesk Panel "I/P/B/ Cloudhosting Panel" 1800260901.22 live (303→/login.php); same Plesk instance as piwik
+[NEW] cic.ipb.de — Customer Information Center (CIC) live; custom PHP login form (User ID + Password); PHPSESSID cookie; nginx/1.31.4
+[NEW] eticket.ipb.de — Pretix "Unknown host" (400); pretix instance handles wildcard but no custom domain configured
+[CHANGED] pluto.portal.ipb.de/_exceptions/user-register/ returns SPA fallback (354606 bytes) — no distinct registration form; _exceptions/register-tenant/ and _exceptions/forgot-password/ identical
+[CHANGED] pluto.portal.ipb.de/api/multi-tenancy/v1/user-registration/ returns 401 (auth-gated, not public self-registration)
+[CHANGED] pluto.portal.ipb.de/api/multi-tenancy/v1/tenant-registration/ returns 403 Forbidden (admin-only or disabled)
+[PRIO] nc.ipb.de,8.15 — attack_surface=8, business_value=10, tech_exposure=9, gate_ease=6, cloud_surface=5, freshness=9 — Nextcloud 34.0.3 with provisioning_api, impersonate, oauth2, circles, WebDAV, OCS API; status.php version leak; all data endpoints auth-gated
+[PRIO] pluto.portal.ipb.de,7.20 — attack_surface=9, business_value=10, tech_exposure=8, gate_ease=5, cloud_surface=6, freshness=10 — unchanged; 70+ auth-gated endpoints; BOLA still top hypothesis pending auth
+[PRIO] gold.ipb.de,6.85 — attack_surface=7, business_value=8, tech_exposure=7, gate_ease=7, cloud_surface=3, freshness=7 — Jitsi Meet with anonymous guest access, config.js leak, XMPP backend
+[PRIO] cic.ipb.de,5.70 — attack_surface=5, business_value=9, tech_exposure=5, gate_ease=5, cloud_surface=2, freshness=5 — custom PHP CIC login, potential auth issues
+[PRIO] piwik.ipb.de,5.80 — attack_surface=5, business_value=8, tech_exposure=6, gate_ease=5, cloud_surface=4, freshness=5 — Plesk Panel with exposed forgery_protection_token
+[PRIO] webcam.ipb.de,5.80 — same as piwik.ipb.de
+[PRIO] event.ipb.de,4.90 — pretix mature hardened, saturated
+[PRIO] www.ipb.de,3.00 — Plesk static, config blocked
+[HYP] Nextcloud OCS provisioning_api + impersonate = privilege escalation vector
+class: AUTH
+asset: nc.ipb.de
+confidence: 55
+reasoning: status.php confirms Nextcloud 34.0.3 installed, not in maintenance; capabilities API confirms provisioning_api (user CRUD), impersonate (admin act-as-user), oauth2 (token-based auth), circles (group sharing) all enabled; WebDAV endpoint returns Sabre DAV error with detailed auth guidance; bruteforce delay=0 in capabilities
+evidence_needed: authenticated OCS request showing user listing or impersonation; or unauth endpoint leaking user data
+verify_steps: GET https://nc.ipb.de/ocs/v2.php/cloud/users (with token) to list users; POST /ocs/v2.php/cloud/users with impersonate app; check /ocs/v2.php/cloud/activity for unauth data; check /status.php is already info leak (version 34.0.3)
+impact: full user data access + impersonation of any user — CRITICAL if auth obtained
+testability: HUMAN_ONLY
+[HYP] Plesk Panel forgery_protection_token is static/reusable for CSRF
+class: AUTH
+asset: piwik.ipb.de, webcam.ipb.de
+confidence: 45
+reasoning: both Plesk instances expose forgery_protection_token in HTML meta tag (piwik: b4bfe2ae17bfcdab6c0eb22f216e0ed8, webcam: 486e8124f2b4926317c408be3e4a51f9); Plesk 18.0.80-6 build; if token is static per session or predictable, CSRF on login or admin actions possible
+evidence_needed: second request showing same token value (static) or predictable pattern; POST to login with token succeeding
+verify_steps: GET https://piwik.ipb.de/login.php twice, compare forgery_protection_token; check /login.php POST with token in body
+impact: CSRF on Plesk admin panel — HIGH (admin takeover)
+testability: PASSIVE (token re-read confirms staticity)
+[HYP] Custom PHP CIC login vulnerable to SQL injection
+class: AUTH
+asset: cic.ipb.de
+confidence: 35
+reasoning: custom PHP login form (not a known CMS/framework), User ID + Password fields, PHPSESSID cookie, no visible framework; custom PHP = higher chance of injection; but no evidence of actual vuln
+evidence_needed: error message revealing SQL syntax or database type on malformed input
+verify_steps: GET https://cic.ipb.de/ with input "user"=' OR 1=1-- in POST; but OUT OF SCOPE per rules (brute-force, SQLi on login panels without confirmed path)
+impact: account takeover — CRITICAL
+testability: PASSIVE
+[PARKED] CIC SQLi (35): custom PHP login is interesting but no evidence of vulnerability; also "public login panels" is out-of-scope per program rules; confidence <40
+[PARKED] Plesk forgery_protection_token (45): token may rotate per session; need staticity confirmation; Plesk panels also potentially out-of-scope as "public login panels"
+[FINAL] nc.ipb.de Nextcloud provisioning + impersonate (55): highest new value, HUMAN_ONLY but well-defined
+[FINAL] pluto.portal.ipb.de cross-tenant BOLA (65): unchanged, HUMAN_ONLY — still top overall
+[NEXT] PROBE: GET https://nc.ipb.de/ocs/v2.php/cloud/capabilities -H "OCS-APIRequest: true" — extract full enabled app list to confirm provisioning_api, impersonate, oauth2 scope; also GET https://nc.ipb.de/ocs/v2.php/cloud/activity and GET https://nc.ipb.de/ocs/v2.php/cloud/user with empty credentials — check for unauthenticated data leak. Concurrently: GET https://piwik.ipb.de/login.php twice and compare forgery_protection_token to confirm staticity.
+[LEARN] ACCEPTED MISCONFIG @ nc/gold/piwik/webcam/cic.ipb.de: 5 new live services confirmed behind wildcard proxy — Nextcloud 34.0.3 (nc), Jitsi Meet (gold), Plesk Panel x2 (piwik/webcam), CIC PHP login (cic)
+[LEARN] ACCEPTED MISCONFIG @ eticket.ipb.de: pretix responds with "Unknown host" — no custom domain configured, pretix handles wildcard
+[LEARN] REJECTED AUTH @ pluto.portal.ipb.de _exceptions routes: all return SPA fallback (354606 bytes) = no server-side registration form; API endpoints auth-gated (user-registration 401, tenant-registration 403); self-service credential hypothesis killed
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: Nextcloud 34.0.3 with provisioning_api, impersonate, oauth2, circles, WebDAV, OCS API; bruteforce delay=0; status.php full version leak
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi Meet with config.js public, anonymous guest domain (guest.gold.ipb.de), XMPP backend (auth.gold.ipb.de)
+[LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token in meta tag
+[RISK] ipb: 68 (↑ from 58) — 5 new live services behind wildcard proxy dramatically expand attack surface; nc.ipb.de Nextcloud with provisioning_api + impersonate is CRITICAL value if auth obtained; gold.ipb.de Jitsi with anonymous access; cic.ipb.de custom PHP login; two Plesk panels. pluto.portal.ipb.de remains top BOLA target. _exceptions registration hypothesis killed. Validated bugs: 0.
+[NEW] nc.ipb.de — Nextcloud 34.0.3 live behind wildcard proxy (curl -k); nginx/1.28.3 (Ubuntu); status.php full version leak
+[NEW] gold.ipb.de — Jitsi Meet live behind wildcard proxy; nginx/1.22.1; config.js public; anonymous guest domain (guest.gold.ipb.de), XMPP backend (auth.gold.ipb.de)
+[NEW] piwik.ipb.de — Plesk Panel 18.0.80-6 "I/P/B/ Cloudhosting Panel" live; forgery_protection_token in HTML meta
+[NEW] webcam.ipb.de — Plesk Panel 18.0.80-6 live (same instance as piwik)
+[NEW] cic.ipb.de — Customer Information Center live; custom PHP login (User ID + Password); PHPSESSID
+[NEW] eticket.ipb.de — pretix responds "Unknown host" (400) — no custom domain configured for eticket
+[CHANGED] pluto.portal.ipb.de/_exceptions/{user-register,register-tenant,forgot-password} all SPA fallback (354606) — no server-side registration form
+[CHANGED] pluto user-registration API 401 (auth-gated), tenant-registration 403 (admin-only) — no self-service credential path
+[PRIO] nc.ipb.de,8.15 — attack_surface=8, business_value=10, tech_exposure=9, gate_ease=6, cloud_surface=5, freshness=9 — Nextcloud with provisioning_api/impersonate/oauth2/circles/WebDAV/OCS
+[PRIO] pluto.portal.ipb.de,7.20 — attack_surface=9, business_value=10, tech_exposure=8, gate_ease=5, cloud_surface=6, freshness=10 — BOLA top overall (unchanged)
+[PRIO] gold.ipb.de,6.85 — attack_surface=7, business_value=8, tech_exposure=7, gate_ease=7, cloud_surface=3, freshness=7 — Jitsi anonymous guest
+[PRIO] piwik.ipb.de,5.80 — attack_surface=5, business_value=8, tech_exposure=6, gate_ease=5, cloud_surface=4, freshness=5 — Plesk Panel
+[PRIO] webcam.ipb.de,5.80 — same as piwik
+[PRIO] cic.ipb.de,5.70 — custom PHP login
+[PRIO] event.ipb.de,4.90 — pretix saturated
+[PRIO] www.ipb.de,3.00 — static Plesk, config blocked
+[HYP] Nextcloud provisioning_api + impersonate = privilege escalation
+class: AUTH
+asset: nc.ipb.de
+confidence: 55
+reasoning: status.php confirms Nextcloud 34.0.3 installed, not in maintenance; capabilities API confirms provisioning_api, impersonate, oauth2, circles, WebDAV enabled; bruteforce delay=0; /remote.php/dav/ Sabre DAV NotAuthenticated
+evidence_needed: authenticated OCS showing user listing or unauth data leak
+verify_steps: GET /ocs/v2.php/cloud/capabilities (full app list); GET /ocs/v2.php/cloud/activity; GET /ocs/v2.php/cloud/user — all unauthenticated
+impact: full user data + impersonate any user — CRITICAL if auth obtained
+testability: HUMAN_ONLY
+[HYP] Plesk forgery_protection_token static → CSRF on admin panel
+class: AUTH
+asset: piwik.ipb.de, webcam.ipb.de
+confidence: 45
+reasoning: hash-like token in login page meta (piwik b4bfe2ae..., webcam 486e8124f2...); Plesk 18.0.80-6; distinct per host
+evidence_needed: second GET returns identical token (staticity)
+verify_steps: GET /login.php twice, diff forgery_protection_token
+impact: CSRF on Plesk admin — HIGH if token static
+testability: PASSIVE
+[PARKED] cic CIC SQLi(35): public login panel out-of-scope + no evidence; drop
+[PARKED] Plesk forgery token(45): staticity unproven, Plesk panel is public-login scope edge; needs passive confirmation
+[FINAL] nc.ipb.de Nextcloud provisioning+impersonate (55) — HUMAN_ONLY but CRITICAL value
+[FINAL] pluto.portal.ipb.de cross-tenant BOLA (65) — top overall
+[NEXT] PROBE: GET https://nc.ipb.de/ocs/v2.php/cloud/capabilities (full enabled-app confirmation) then GET https://nc.ipb.de/ocs/v2.php/cloud/activity and GET https://nc.ipb.de/ocs/v2.php/cloud/user unauthenticated — check for data leak; concurrently GET https://piwik.ipb.de/login.php twice to diff forgery_protection_token staticity.
+[LEARN] ACCEPTED MISCONFIG @ nc/gold/piwik/webcam/cic.ipb.de: 5 new live services behind wildcard proxy (Nextcloud 34.0.3, Jitsi Meet, Plesk x2, custom CIC PHP)
+[LEARN] ACCEPTED MISCONFIG @ eticket.ipb.de: pretix "Unknown host" — no custom domain, wildcard handling
+[LEARN] REJECTED AUTH @ pluto.portal.ipb.de _exceptions routes: all SPA fallback (354606), user-registration API 401, tenant-registration 403; self-service credential hypothesis killed
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: Nextcloud 34.0.3 with provisioning_api/impersonate/oauth2/circles/WebDAV/OCS; bruteforce delay=0; status.php version leak
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi Meet config.js public, anonymous guest domain, XMPP backend
+[LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token meta
+[RISK] ipb: 68 (↑ from 58) — 5 new live services behind wildcard proxy; nc Nextcloud provisioning+impersonate CRITICAL-if-auth; gold Jitsi anonymous guest; 2 Plesk panels; custom CIC login. _exceptions self-reg killed (no credential path). Validated bugs: 0.

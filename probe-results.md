@@ -59,3 +59,12 @@ https://eticket.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] c
 https://pluto.portal.ipb.de/_exceptions/user-register/ -> 200 len=354606
 https://nc.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
 https://gold.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+
+## 2026-09-04 15:31:15 UTC
+https://eticket.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/users -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://piwik.ipb.de/login.php -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://cic.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/capabilities -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/activity -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/user -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce

@@ -1,24 +1,24 @@
-## 2026-09-04 11:58:10 UTC [target] (model nemotron3)
-[NEW] pluto.portal.ipb.de/_exceptions/user-register/ returns 200 (SPA fallback, 354606 bytes) — self-service registration route exists in bundle
-[NEW] eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de — SSL cert verify failed (live TLS endpoints behind wildcard proxy)
+## 2026-09-04 15:30:53 UTC [target] (model nemotron3)
+[NEW] pluto.portal.ipb.de/_exceptions/user-register/ returns 200 (SPA fallback, 354606 bytes) — self-service registration route confirmed in bundle
+[NEW] eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de — SSL cert verify failed confirmed (live TLS endpoints behind wildcard proxy)
 [NEW] survey.ipb.de, www.cic.ipb.de — DNS resolution failure
 [NEW] speedtest.ipb.de — timeout on probe
 [CHANGED] Wildcard DNS deep scan: 21 inventory hosts never individually re-confirmed post-discovery; potential hidden services behind wildcard proxy
 [CHANGED] app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — persistent DNS resolution failure or SSL cert verify failed
 [CHANGED] /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/docs, /api/openapi all confirmed SPA fallback (no DRF schema leak)
-[PRIO] pluto.portal.ipb.de,8.15,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=2,cloud_surface=7,freshness=10
-[PRIO] *.ipb.de (wildcard),6.80,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=8,cloud_surface=8,freshness=8
-[PRIO] eticket.ipb.de,4.20,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
-[PRIO] nc.ipb.de,4.20,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
-[PRIO] gold.ipb.de,4.20,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
-[PRIO] piwik.ipb.de,4.20,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
-[PRIO] webcam.ipb.de,4.20,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
-[PRIO] cic.ipb.de,4.20,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
-[PRIO] event.ipb.de,3.95,attack_surface=4,business_value=5,tech_exposure=3,gate_ease=8,cloud_surface=2,freshness=7
-[PRIO] www.ipb.de,3.35,attack_surface=2,business_value=4,tech_exposure=2,gate_ease=8,cloud_surface=1,freshness=6
+[PRIO] pluto.portal.ipb.de,7.85,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=2,cloud_surface=7,freshness=10
+[PRIO] *.ipb.de (wildcard),7.45,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=8,cloud_surface=8,freshness=8
+[PRIO] eticket.ipb.de,4.45,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
+[PRIO] nc.ipb.de,4.45,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
+[PRIO] gold.ipb.de,4.45,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
+[PRIO] piwik.ipb.de,4.45,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
+[PRIO] webcam.ipb.de,4.45,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
+[PRIO] cic.ipb.de,4.45,attack_surface=3,business_value=6,tech_exposure=3,gate_ease=5,cloud_surface=4,freshness=6
+[PRIO] event.ipb.de,4.80,attack_surface=4,business_value=5,tech_exposure=3,gate_ease=8,cloud_surface=2,freshness=7
+[PRIO] www.ipb.de,3.70,attack_surface=2,business_value=4,tech_exposure=2,gate_ease=8,cloud_surface=1,freshness=6
 [HYP] Cross-tenant BOLA via sequential IDs on multi-tenancy/user/check-in/association-request endpoints
 class: IDOR
-asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /api/multi-tenancy/v1/user/{id}/, /api/check-in/v1/check-in/, /api/multi-tenancy/v1/association-request/
+asset: pluto.portal.ipb.de
 confidence: 65
 reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request objects with sequential integer IDs; all endpoints auth-gated (401) but per-tenant authorization is sole BOLA control; expanded surface includes association-request, user-token, self endpoints; EdgePortal bundle confirms extensive API surface
 evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation
@@ -27,7 +27,7 @@ impact: Cross-tenant PII dump (membership, user, association-request data); HIGH
 testability: AUTH_HELPED
 [HYP] Wildcard DNS masking hidden attack surface on *.ipb.de subdomains with live TLS endpoints
 class: MISCONFIG
-asset: *.ipb.de (eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de, app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de)
+asset: *.ipb.de (eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de)
 confidence: 60
 reasoning: Dedicated deep scan confirms wildcard DNS — 0 genuinely dedicated hosts after shared-IP filtering; 21 inventory hosts never individually re-confirmed post-discovery; SSL cert verify failures on 6 subdomains confirm live TLS endpoints behind wildcard proxy; real services may exist behind wildcard responding only to correct Host headers or specific paths
 evidence_needed: live HTTP response on any wildcard subdomain with distinct content vs wildcard fallback
