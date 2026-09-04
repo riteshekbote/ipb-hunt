@@ -110,3 +110,12 @@ www.survey.ipb.de
 - NEW eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de — SSL cert verify failed on probe attempts
 - NEW survey.ipb.de, www.cic.ipb.de — DNS resolution failure on probe attempts
 - NEW speedtest.ipb.de — timeout on probe attempt
+
+## 2026-09-04 11:58:22 UTC
+- NEW pluto.portal.ipb.de/_exceptions/user-register/ returns 200 (SPA fallback, 354606 bytes) — self-service registration route exists in bundle
+- NEW eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de — SSL cert verify failed (live TLS endpoints behind wildcard proxy)
+- NEW survey.ipb.de, www.cic.ipb.de — DNS resolution failure
+- NEW speedtest.ipb.de — timeout on probe
+- CHANGED Wildcard DNS deep scan: 21 inventory hosts never individually re-confirmed post-discovery; potential hidden services behind wildcard proxy
+- CHANGED app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — persistent DNS resolution failure or SSL cert verify failed
+- CHANGED /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/docs, /api/openapi all confirmed SPA fallback (no DRF schema leak)

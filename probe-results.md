@@ -53,3 +53,9 @@ https://www.cic.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not kno
 ## 2026-09-04 06:54:39 UTC
 https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
 https://pluto.portal.ipb.de/_exceptions/user-register/ -> 200 len=354606
+
+## 2026-09-04 11:58:29 UTC
+https://eticket.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://pluto.portal.ipb.de/_exceptions/user-register/ -> 200 len=354606
+https://nc.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://gold.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce

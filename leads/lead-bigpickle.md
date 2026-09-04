@@ -307,3 +307,46 @@ testability: PASSIVE
 [LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ allowlisted
 [LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 blocked
 [RISK] ipb: 58 (↑ from 55) — EdgePortal 70+ auth-gated endpoints + 6 SSL-cert-fail hosts live behind wildcard proxy + registration routes could remove HUMAN gate. Validated bugs: 0.
+## 2026-09-04 11:53:43 UTC [target] (model bigpickle)
+[PRIO] pluto.portal.ipb.de,7.20 — attack_surface=9, business_value=10, tech_exposure=8, gate_ease=5, cloud_surface=6, freshness=10
+[PRIO] eticket.ipb.de,4.80 — SSL cert fail = live behind wildcard proxy
+[PRIO] nc.ipb.de,4.20 — SSL cert fail, Nextcloud = auth+upload+WebDAV
+[PRIO] event.ipb.de,4.90 — pretix mature hardened, saturated
+[PRIO] www.ipb.de,3.00 — Plesk static, config blocked
+[HYP] EdgePortal _exceptions registration routes enable self-service credential acquisition
+class: AUTH
+asset: pluto.portal.ipb.de /_exceptions/user-register/, /_exceptions/register-tenant/
+confidence: 55
+reasoning: SPA bundle contains these routes distinct from 403 API-level registration; /signup/ and /register/ are SPA fallback (354606 bytes); _exceptions paths may be frontend forms
+evidence_needed: GET response showing form HTML (not SPA fallback)
+verify_steps: GET /_exceptions/user-register/ then /_exceptions/register-tenant/ then /_exceptions/forgot-password/ — check Content-Length ≠ 354606
+impact: removes HUMAN gate on BOLA — HIGH (enabling)
+testability: PASSIVE
+[HYP] SSL-cert-fail hosts hide live services behind reverse proxy
+class: MISCONFIG
+asset: eticket, nc, gold, piwik, webcam, cic.ipb.de
+confidence: 50
+reasoning: 6 hosts returned SSL cert verify failures = live (TCP open, TLS attempted), cert mismatch from wildcard proxy; HTTP port 80 or --insecure may reveal service
+evidence_needed: HTTP 200 from http:// or HTTPS with --insecure showing distinct content
+verify_steps: curl -k on each host; also try http:// port 80
+impact: discovering new live attack surface — potentially HIGH
+testability: PASSIVE
+[HYP] Cross-tenant BOLA via sequential IDs on multi-tenancy endpoints
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/
+confidence: 65
+reasoning: DRF multi-tenancy with sequential IDs uniformly auth-gated; per-tenant auth is sole BOLA control; association-request, user-token, self endpoints all use seq-ID
+evidence_needed: authenticated request showing cross-tenant data access
+verify_steps: HUMAN_ONLY — requires valid Token to test
+impact: cross-tenant PII/business data dump — CRITICAL
+testability: HUMAN_ONLY
+[PARKED] Cross-tenant BOLA (65): highest confidence + impact but HUMAN_ONLY — no path to credentials without registration discovery. Parked until registration probe resolves.
+[FINAL] EdgePortal registration discovery (55) — PASSIVE, high leverage, removes HUMAN gate
+[FINAL] SSL-cert-fail hosts (50) — PASSIVE, could reveal new attack surface
+[NEXT] PROBE: GET https://pluto.portal.ipb.de/_exceptions/user-register/ then GET /_exceptions/register-tenant/ then GET /_exceptions/forgot-password/ — check Content-Length ≠ 354606 (SPA fallback = 354606 bytes). If distinct response, registration form exists and HUMAN gate is removable. Concurrently: curl -k https://eticket.ipb.de/ then https://nc.ipb.de/ then https://gold.ipb.de/ — check for live HTTP content behind wildcard proxy.
+[LEARN] ACCEPTED AUTH @ pluto.portal.ipb.de: _exceptions routes in SPA bundle are most promising path for self-service credential acquisition
+[LEARN] ACCEPTED MISCONFIG @ eticket/nc/gold/piwik/webcam/cic.ipb.de: SSL cert failures confirm live hosts behind wildcard proxy
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe
+[LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ allowlisted
+[LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 blocked
+[RISK] ipb: 58 (↑ from 55) — EdgePortal 70+ auth-gated endpoints + 6 SSL-cert-fail hosts live behind wildcard proxy + registration routes could remove HUMAN gate. Validated bugs: 0.
