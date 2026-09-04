@@ -1040,3 +1040,122 @@ STEP 7 — RISK:
 EOF
 cat /tmp/analysis_output.txt failed
 [91m[1mError: [0mThe user rejected permission to use this specific tool call.
+===== ANALYST nemotron3 2026-09-04 06:54:36 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/ipb-hunt/ipb-hunt
+total 140
+drwxr-xr-x 12 runner runner  4096 Sep  4 06:48 .
+drwxr-xr-x  3 runner runner  4096 Sep  4 06:48 ..
+drwxr-xr-x  7 runner runner  4096 Sep  4 06:48 .git
+drwxr-xr-x  3 runner runner  4096 Sep  4 06:48 .github
+-rw-r--r--  1 runner runner  1817 Sep  4 06:48 README.md
+-rw-r--r--  1 runner runner    43 Sep  4 06:48 analyst-out.txt
+-rw-r--r--  1 runner runner 27063 Sep  4 06:48 analyst-prompt.txt
+-rw-r--r--  1 runner runner 23177 Sep  4 06:48 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  4 06:48 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  4 06:48 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  4 06:48 leads
+-rw-r--r--  1 runner runner  2315 Sep  4 06:48 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  4 06:48 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  4 06:48 reports
+drwxr-xr-x  2 runner runner  4096 Sep  4 06:48 reposcan-raw
+-rw-r--r--  1 runner runner  3299 Sep  4 06:48 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  4 06:48 scripts
+-rw-r--r--  1 runner runner    33 Sep  4 06:48 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  4 06:48 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  4 06:48 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  4 06:48 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  4 06:48 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  4 06:48 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  4 06:48 triage
+[0m
+[0m→ [0mRead inventory/ipb.md
+[0m✗ [0mRead knowledge/seed.md failed
+[91m[1mError: [0mFile not found: /home/runner/work/ipb-hunt/ipb-hunt/knowledge/seed.md
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead scope.yml
+[0m✱ [0mGlob "/home/runner/work/ipb-hunt/ipb-hunt/leads/*"[90m 0 matches[0m
+[0m
+[0m$ [0mls -la /home/runner/work/ipb-hunt/ipb-hunt/knowledge/
+total 16
+drwxr-xr-x  2 runner runner 4096 Sep  4 06:48 .
+drwxr-xr-x 12 runner runner 4096 Sep  4 06:48 ..
+-rw-r--r--  1 runner runner 4705 Sep  4 06:48 index.md
+[0m
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead analyst-out.txt
+**STEP 1 — DELTA**
+[NEW] pluto.portal.ipb.de bundle confirms /api/system/ (live DRF, 401 Token), /api/check-in/v1/check-in/kiosk_totp/validate/ (POST-only), /api/multi-tenancy/v1/association-request/
+[NEW] App name confirmed: "EdgePortal" (title in index.html)
+[CHANGED] /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/docs, /api/openapi all return SPA fallback (200 text/html) — no DRF schema/OpenAPI exposure
+[CHANGED] Wildcard DNS deep scan: 21 inventory hosts never individually re-confirmed post-discovery; potential hidden services behind wildcard proxy
+[CHANGED] app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — DNS resolution failure or SSL cert verify failed on probe attempts (persistent)
+[NEW] eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de — SSL cert verify failed on probe attempts
+[NEW] survey.ipb.de, www.cic.ipb.de — DNS resolution failure on probe attempts
+[NEW] speedtest.ipb.de — timeout on probe attempt
+
+**STEP 2 — PRIORITIZE**
+[PRIO] pluto.portal.ipb.de,8.15,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=2,cloud_surface=7,freshness=10
+[PRIO] *.ipb.de (wildcard),6.80,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=8,cloud_surface=8,freshness=8
+[PRIO] event.ipb.de,5.45,attack_surface=5,business_value=6,tech_exposure=4,gate_ease=8,cloud_surface=3,freshness=8
+[PRIO] www.ipb.de,4.35,attack_surface=3,business_value=5,tech_exposure=3,gate_ease=8,cloud_surface=2,freshness=7
+[PRIO] eticket.ipb.de,3.20,attack_surface=2,business_value=6,tech_exposure=2,gate_ease=5,cloud_surface=3,freshness=5
+[PRIO] nc.ipb.de,3.20,attack_surface=2,business_value=6,tech_exposure=2,gate_ease=5,cloud_surface=3,freshness=5
+[PRIO] gold.ipb.de,3.20,attack_surface=2,business_value=6,tech_exposure=2,gate_ease=5,cloud_surface=3,freshness=5
+[PRIO] piwik.ipb.de,3.20,attack_surface=2,business_value=6,tech_exposure=2,gate_ease=5,cloud_surface=3,freshness=5
+[PRIO] webcam.ipb.de,3.20,attack_surface=2,business_value=6,tech_exposure=2,gate_ease=5,cloud_surface=3,freshness=5
+[PRIO] cic.ipb.de,3.20,attack_surface=2,business_value=6,tech_exposure=2,gate_ease=5,cloud_surface=3,freshness=5
+
+**STEP 3 — HYPOTHESES**
+[HYP] Cross-tenant BOLA via sequential IDs on multi-tenancy/user/check-in/association-request endpoints
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /api/multi-tenancy/v1/user/{id}/, /api/check-in/v1/check-in/, /api/multi-tenancy/v1/association-request/
+confidence: 65
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request objects with sequential integer IDs; all endpoints auth-gated (401) but per-tenant authorization is sole BOLA control; expanded surface includes association-request, user-token, self endpoints; EdgePortal bundle confirms extensive API surface
+evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation
+verify_steps: 1) Obtain low-priv credentialed session; 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with valid Authorization: Token header; 3) Observe 200 vs 403/404 differentiation
+impact: Cross-tenant PII dump (membership, user, association-request data); HIGH
+testability: AUTH_HELPED
+
+[HYP] Wildcard DNS masking hidden attack surface on *.ipb.de subdomains
+class: MISCONFIG
+asset: *.ipb.de (app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de)
+confidence: 60
+reasoning: Dedicated deep scan confirms wildcard DNS — 0 genuinely dedicated hosts after shared-IP filtering; 21 inventory hosts never individually re-confirmed post-discovery; real services may exist behind wildcard responding only to correct Host headers or specific paths; probe results show SSL cert failures on several subdomains suggesting live TLS endpoints
+evidence_needed: live HTTP response on any wildcard subdomain with distinct content vs wildcard fallback
+verify_steps: GET https://app.ipb.de/ (Host: app.ipb.de) — check Server header, content length, status vs wildcard; repeat for auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de at 1 rps GET/HEAD only
+impact: Hidden attack surface (auth, cloud, customer portal, prod API, monitoring, ticketing) — HIGH if real services exist
+testability: PASSIVE
+
+[HYP] Kiosk TOTP validation endpoint logic flaw
+class: AUTH
+asset: pluto.portal.ipb.de /api/check-in/v1/check-in/kiosk_totp/validate/
+confidence: 40
+reasoning: POST-only endpoint for TOTP validation; kiosk_login already shows token oracle (distinct error per token validity); TOTP validation may have timing/response differentiation or reusable codes
+evidence_needed: response differentiation between valid/invalid TOTP codes, or replayable codes
+verify_steps: 1) POST /api/check-in/v1/check-in/kiosk_totp/validate/ with candidate TOTP codes; 2) Observe status/body/timing differences; 3) Test code reuse
+impact: Kiosk authentication bypass; MEDIUM
+testability: PASSIVE
+
+**STEP 4 — SELF-CRITIQUE**
+[PARKED] Kiosk TOTP validation endpoint logic flaw: confidence 40 (at threshold), requires valid token format knowledge, enumeration at scale may trigger WAF, low impact relative to cross-tenant BOLA
+[FINAL] Cross-tenant BOLA via sequential IDs on multi-tenancy/user/check-in/association-request endpoints (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact
+[FINAL] Wildcard DNS masking hidden attack surface on *.ipb.de subdomains (confidence 60) — surviving passive hypothesis, testable now with Host header probes, HIGH impact if confirmed
+
+**STEP 5 — NEXT ACTION**
+[NEXT] PROBE: GET https://app.ipb.de/ (Host: app.ipb.de) — check for live HTTP, Server header, distinct content vs wildcard fallback; repeat for auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de at 1 rps GET/HEAD only
+
+**STEP 6 — LEARNING**
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: DRF multi-tenancy is the prime cross-tenant chokepoint; expanded surface (association-request, user-token, self endpoints) all seq-ID auth-gated; top priority pending credentialed access
+[LEARN] ACCEPTED AUTH @ pluto.portal.ipb.de: kiosk_login token oracle is a low-severity enumeration; distinct error message per token validity confirmed in bundle
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de: wildcard DNS confirmed by dedicated deep scan (0 genuinely dedicated hosts), hides real attack surface; 21 inventory hosts never individually re-confirmed
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface (incl. /api/system/, motd, check-in, association-request) uniformly auth-gated (401, WWW-Authenticate: Token); no unauth config/schema leak (all SPA fallback)
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/openapi all return SPA fallback, not schema/config leak; do not re-probe as unauth surface
+[LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject open-redirect class here
+[LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked)
+[LEARN] REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist confirm mature hardening; do not re-probe
+
+**STEP 7 — RISK**
+[RISK] ipb: 60 — pluto.portal.ipb.de exposes large authenticated multi-tenant API (PII, DNS, inventory, shipping, check-in, AI, association-request); surface high but gated by auth. Unauthenticated risk moderate. Highest exposure emerges once any credentialed account obtained. Wildcard DNS on *.ipb.de masks potential additional attack surface (app, auth, cloud, my, prod, eticket, nc, gold, piwik, webcam, cic subdomains unresolved or SSL cert failures suggesting live TLS endpoints). Risk increased from 55 due to expanded API surface confirmation and wildcard proxy potential.

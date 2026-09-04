@@ -49,3 +49,7 @@ https://webcam.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
 https://speedtest.ipb.de/ -> ERR <urlopen error timed out>
 https://cic.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
 https://www.cic.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+
+## 2026-09-04 06:54:39 UTC
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://pluto.portal.ipb.de/_exceptions/user-register/ -> 200 len=354606

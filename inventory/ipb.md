@@ -100,3 +100,13 @@ www.survey.ipb.de
 - CHANGED /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/docs, /api/openapi all return SPA fallback (200 text/html) — no DRF schema/OpenAPI exposure
 - CHANGED /api/system/ confirmed real DRF endpoint (401) not SPA fallback
 - NEW App name confirmed: "EdgePortal" (title in index.html)
+
+## 2026-09-04 06:54:36 UTC
+- NEW pluto.portal.ipb.de bundle confirms /api/system/ (live DRF, 401 Token), /api/check-in/v1/check-in/kiosk_totp/validate/ (POST-only), /api/multi-tenancy/v1/association-request/
+- NEW App name confirmed: "EdgePortal" (title in index.html)
+- CHANGED /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/docs, /api/openapi all return SPA fallback (200 text/html) — no DRF schema/OpenAPI exposure
+- CHANGED Wildcard DNS deep scan: 21 inventory hosts never individually re-confirmed post-discovery; potential hidden services behind wildcard proxy
+- CHANGED app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — DNS resolution failure or SSL cert verify failed on probe attempts (persistent)
+- NEW eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de — SSL cert verify failed on probe attempts
+- NEW survey.ipb.de, www.cic.ipb.de — DNS resolution failure on probe attempts
+- NEW speedtest.ipb.de — timeout on probe attempt

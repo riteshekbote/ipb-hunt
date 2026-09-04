@@ -28,3 +28,9 @@
 - 2026-09-04 REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject open-redirect class here
 - 2026-09-04 REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked)
 - 2026-09-04 REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist confirm mature hardening; do not re-probe
+- 2026-09-04 ACCEPTED MISCONFIG @ *.ipb.de: wildcard DNS confirmed by dedicated deep scan (0 genuinely dedicated hosts), hides real attack surface; 21 inventory hosts never individually re-confirmed
+- 2026-09-04 ACCEPTED AUTH @ pluto.portal.ipb.de: _exceptions routes in SPA bundle are most promising path for self-service credential acquisition
+- 2026-09-04 ACCEPTED MISCONFIG @ eticket/nc/gold/piwik/webcam/cic.ipb.de: SSL cert failures confirm live hosts behind wildcard proxy
+- 2026-09-04 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe
+- 2026-09-04 REJECTED open-redirect @ event.ipb.de: /redirect/ allowlisted
+- 2026-09-04 REJECTED config-exposure @ www.ipb.de: .env/server-info 403 blocked
