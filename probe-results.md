@@ -35,3 +35,17 @@ https://prod.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
 
 ## 2026-09-03 23:44:26 UTC
 https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+
+## 2026-09-04 01:58:41 UTC
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://pluto.portal.ipb.de/api/ -> 200 len=354606
+https://pluto.portal.ipb.de/signup/ -> 200 len=354606
+https://eticket.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://gold.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://piwik.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://survey.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://webcam.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://speedtest.ipb.de/ -> ERR <urlopen error timed out>
+https://cic.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://www.cic.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know

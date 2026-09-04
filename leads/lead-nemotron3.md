@@ -204,3 +204,56 @@ testability: PASSIVE
 [LEARN] REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist confirm mature hardening; do not re-probe
 [LEARN] ACCEPTED cross-tenant BOLA @ pluto.portal.ipb.de: DRF multi-tenancy API with sequential IDs, auth-gated but per-tenant auth is sole BOLA control
 [RISK] ipb: 55 — pluto.portal.ipb.de exposes an unusually large authenticated multi-tenant API (PII, DNS, inventory, shipping, check-in, AI); surface is high but gated by auth. Unauthenticated risk moderate. Highest exposure emerges once any credentialed account is obtained. Wildcard DNS on *.ipb.de still masks potential additional attack surface (app, auth, cloud, my, prod subdomains unresolved).
+## 2026-09-04 01:57:40 UTC [target] (model nemotron3)
+[NEW] pluto.portal.ipb.de bundle reveals additional endpoints: /api/system/ (live DRF, 401 Token-auth), /api/check-in/v1/check-in/kiosk_totp/validate/ (POST-only), /api/multi-tenancy/v1/association-request/
+[CHANGED] /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/docs, /api/openapi all return SPA fallback (200 text/html) — no DRF schema/OpenAPI exposure
+[CHANGED] /api/system/ confirmed real DRF endpoint (401) not SPA fallback
+[NEW] App name confirmed: "EdgePortal" (title in index.html)
+[PRIO] pluto.portal.ipb.de,8.15,attack_surface=9,business_value=9,tech_exposure=9,gate_ease=2,cloud_surface=7,freshness=10
+[PRIO] event.ipb.de,5.45,attack_surface=5,business_value=6,tech_exposure=4,gate_ease=8,cloud_surface=3,freshness=8
+[PRIO] www.ipb.de,4.35,attack_surface=3,business_value=5,tech_exposure=3,gate_ease=8,cloud_surface=2,freshness=7
+[PRIO] app.ipb.de,2.50,attack_surface=1,business_value=7,tech_exposure=1,gate_ease=1,cloud_surface=2,freshness=5
+[PRIO] auth.gold.ipb.de,2.25,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] my.ipb.de,2.25,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] cloud.ipb.de,2.00,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] prod.ipb.de,2.00,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[HYP] Cross-tenant BOLA via sequential IDs on multi-tenancy/user/check-in endpoints
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /api/multi-tenancy/v1/user/{id}/, /api/check-in/v1/check-in/, /api/multi-tenancy/v1/association-request/
+confidence: 65
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request objects with sequential integer IDs; all endpoints auth-gated (401) but per-tenant authorization is sole BOLA control; expanded surface includes association-request, user-token, self endpoints; EdgePortal bundle confirms extensive API surface
+evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation
+verify_steps: 1) Obtain low-priv credentialed session; 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with valid auth; 3) Observe 200 vs 403/404 differentiation
+impact: Cross-tenant PII dump (membership, user, association-request data); HIGH
+testability: AUTH_HELPED
+[HYP] Kiosk TOTP validation endpoint logic flaw
+class: AUTH
+asset: pluto.portal.ipb.de /api/check-in/v1/check-in/kiosk_totp/validate/
+confidence: 40
+reasoning: POST-only endpoint for TOTP validation; kiosk_login already shows token oracle (distinct error per token validity); TOTP validation may have timing/response differentiation or reusable codes
+evidence_needed: response differentiation between valid/invalid TOTP codes, or replayable codes
+verify_steps: 1) POST /api/check-in/v1/check-in/kiosk_totp/validate/ with candidate TOTP codes; 2) Observe status/body/timing differences; 3) Test code reuse
+impact: Kiosk authentication bypass; MEDIUM
+testability: PASSIVE
+[HYP] Wildcard DNS masking hidden attack surface on *.ipb.de
+class: MISCONFIG
+asset: *.ipb.de (app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de)
+confidence: 60
+reasoning: Dedicated deep scan confirms wildcard DNS — 0 genuinely dedicated hosts after shared-IP filtering; 6 subdomains resolve but fail HTTP/SSL probe; real services may exist behind wildcard responding only to correct Host headers or specific paths
+evidence_needed: live HTTP response on any wildcard subdomain with distinct content vs wildcard fallback
+verify_steps: GET https://app.ipb.de/ (Host: app.ipb.de) — check Server header, content length, status vs wildcard; repeat for auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de at 1 rps GET/HEAD only
+impact: Hidden attack surface (auth, cloud, customer portal, prod API) — HIGH if real services exist
+testability: PASSIVE
+[PARKED] Kiosk TOTP validation endpoint logic flaw: confidence 40 (below 40 threshold), requires valid token format knowledge, enumeration at scale may trigger WAF
+[FINAL] Cross-tenant BOLA via sequential IDs on multi-tenancy/user/check-in endpoints (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact
+[FINAL] Wildcard DNS masking hidden attack surface on *.ipb.de (confidence 60) — only surviving passive hypothesis, testable now, HIGH impact if confirmed
+[NEXT] PROBE: GET https://app.ipb.de/ (Host: app.ipb.de) — check for live HTTP, Server header, distinct content vs wildcard; repeat for auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de at 1 rps GET/HEAD only
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: DRF multi-tenancy is the prime cross-tenant chokepoint; expanded surface (association-request, user-token, self endpoints) all seq-ID auth-gated; top priority pending credentialed access
+[LEARN] ACCEPTED AUTH @ pluto.portal.ipb.de: kiosk_login token oracle is a low-severity enumeration; distinct error message per token validity confirmed in bundle
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de: wildcard DNS confirmed by dedicated deep scan (0 genuinely dedicated hosts), hides real attack surface
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface (incl. /api/system/, motd, check-in, association-request) uniformly auth-gated (401, WWW-Authenticate: Token); no unauth config/schema leak (all SPA fallback)
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/openapi all return SPA fallback, not schema/config leak; do not re-probe as unauth surface
+[LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject open-redirect class here
+[LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked)
+[LEARN] REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist confirm mature hardening; do not re-probe
+[RISK] ipb: 60 — pluto.portal.ipb.de exposes large authenticated multi-tenant API (PII, DNS, inventory, shipping, check-in, AI, association-request); surface high but gated by auth. Unauthenticated risk moderate. Highest exposure emerges once any credentialed account obtained. Wildcard DNS on *.ipb.de masks potential additional attack surface (app, auth, cloud, my, prod subdomains unresolved). Risk increased from 55 due to expanded API surface confirmation.
