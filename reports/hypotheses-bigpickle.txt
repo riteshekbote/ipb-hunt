@@ -1,1 +1,28 @@
-## 2026-09-04 21:00:36 UTC [target] (model bigpickle)
+## 2026-09-04 22:54:05 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de
+confidence: 65
+reasoning: DRF multi-tenant portal, all data endpoints seq-ID auth-gated; per-tenant token auth is sole cross-tenant control; /api/system/ live 401 confirms real surface still up
+evidence_needed: two tenant accounts; object access with token from tenant A against tenant B seq-id
+verify_steps: authenticated GET on /api/multi-tenancy/v1/<obj>/<seq> cross-tenant
+impact: cross-tenant PII/association data dump — CRITICAL
+testability: HUMAN_ONLY
+[HYP] Nextcloud provisioning + impersonate mis-scoping
+class: AUTH
+asset: nc.ipb.de
+confidence: 55
+reasoning: live caps confirm NC 34.0.3, bruteforce delay=0; OCS alive; impersonate/provisioning apps reported enabled in bundle; unauth leak now ruled out (997), so impact requires any valid session
+evidence_needed: authed OCS /cloud/users + /cloud/user/{id} impersonation test
+verify_steps: GET /ocs/v2.php/cloud/users?format=json with valid token; impersonate header
+impact: full user data + account takeover as any user — CRITICAL
+testability: HUMAN_ONLY
+[HYP] Jitsi anonymous guest room access
+class: AUTH
+asset: gold.ipb.de
+confidence: 35
+reasoning: config.js shows anonymousdomain guest.gold.ipb.de and public websocket/BOSH; rooms unguessable random strings; anonymous join is deliberate config
+evidence_needed: any real meeting room URL leaks or lobby bypass
+verify_steps: GET /{room}/info static assets; no leak path evident
+impact: eavesdrop if room URL known — by-design exposure
+testability: HUMAN_ONLY

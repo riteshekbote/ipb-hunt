@@ -168,3 +168,5 @@ www.survey.ipb.de
 - CHANGED app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de — persistent DNS/SSL failures
 - CHANGED event.ipb.de pretix /control 403 and /redirect/ allowlist — saturated, do not re-probe
 - CHANGED www.ipb.de .env/server-info 403 — saturated, do not re-probe
+
+## 2026-09-04 22:54:15 UTC

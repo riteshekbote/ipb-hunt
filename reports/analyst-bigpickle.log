@@ -4113,3 +4113,194 @@ USER status=401 size=170
 [93m[1m! [0mpermission requested: external_directory (/tmp/*); auto-rejecting
 [0m✗ [0mecho "--- activity ---"; cat /tmp/nc_activity.txt; echo; echo "--- user ---"; cat /tmp/nc_user.txt failed
 [91m[1mError: [0mThe user rejected permission to use this specific tool call.
+===== ANALYST bigpickle 2026-09-04 22:54:15 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -sk --max-time 20 "https://nc.ipb.de/ocs/v2.php/cloud/capabilities?format=json" -H "OCS-APIRequest: true" | head -c 3000
+{"ocs":{"meta":{"status":"ok","statuscode":200,"message":"OK"},"data":{"version":{"major":34,"minor":0,"micro":3,"string":"34.0.3","edition":"","extendedSupport":false},"capabilities":{"bruteforce":{"delay":0,"allow-listed":false},"app_api":{"version":"34.0.0"},"theming":{"name":"Nextcloud","productName":"Nextcloud","url":"https:\/\/nextcloud.com","imprintUrl":"","privacyUrl":"","slogan":"a safe home for all your data","color":"#00679e","color-text":"#ffffff","color-element":"#00679e","color-element-bright":"#00679e","color-element-dark":"#00679e","logo":"https:\/\/nc.ipb.de\/core\/img\/logo\/logo.svg?v=1","background":"#00679e","background-text":"#ffffff","background-plain":true,"background-default":true,"logoheader":"https:\/\/nc.ipb.de\/core\/img\/logo\/logo.svg?v=1","favicon":"https:\/\/nc.ipb.de\/core\/img\/logo\/logo.svg?v=1","primaryColor":"#00679e","backgroundColor":"#00679e","defaultPrimaryColor":"#00679e","defaultBackgroundColor":"#00679e","inverted":false,"cacheBuster":"8855770e","enabledThemes":[]}}}}}
+[0m
+[0m$ [0msleep 1; echo "=== cloud/user ==="; curl -sk --max-time 20 "https://nc.ipb.de/ocs/v2.php/cloud/user?format=json" -H "OCS-APIRequest: true" | head -c 800; echo; sleep 1; echo "=== cloud/activity ==="; curl -sk --max-time 20 "https://nc.ipb.de/ocs/v2.php/cloud/activity?format=json" -H "OCS-APIRequest: true" | head -c 600
+=== cloud/user ===
+{"ocs":{"meta":{"status":"failure","statuscode":997,"message":"Current user is not logged in"},"data":[]}}
+=== cloud/activity ===
+{"ocs":{"meta":{"status":"failure","statuscode":997,"message":"Current user is not logged in"},"data":[]}}
+[0m
+[0m$ [0mcurl -sk --max-time 20 "https://piwik.ipb.de/login.php" -o /tmp/piwik1.html; sleep 1; curl -sk --max-time 20 "https://piwik.ipb.de/login.php" -o /tmp/piwik2.html; grep -oE 'forgery_protection_token[^>]{0,80}' /tmp/piwik1.html; echo "---SECOND---"; grep -oE 'forgery_protection_token[^>]{0,80}' /tmp/piwik2.html; echo "---H1---"; grep -iE 'content-length|cache-control|set-cookie' /tmp/piwik1.html | head
+---SECOND---
+---H1---
+[0m
+[0m$ [0mwc -c /tmp/piwik1.html /tmp/piwik2.html; echo "---"; grep -oiE 'forgery[^"<>]*' /tmp/piwik1.html; echo "---token grep---"; grep -oiE 'csrf[^"<>]*|token[^"<>]{0,40}' /tmp/piwik1.html | head; echo "---title---"; grep -oiE '<title>[^<]*' /tmp/piwik1.html | head -3
+0 /tmp/piwik1.html
+0 /tmp/piwik2.html
+0 total
+---
+---token grep---
+---title---
+[0m
+[0m$ [0mcurl -sk --max-time 20 -D - -o /tmp/piwik3.html "https://piwik.ipb.de/"; echo "---BODY---"; wc -c /tmp/piwik3.html; echo "---"; curl -sk --max-time 20 -D - -o /tmp/piwik4.html "https://piwik.ipb.de/login.php"; echo "---BODY---"; wc -c /tmp/piwik4.html; head -c 400 /tmp/piwik4.html
+HTTP/2 303 
+server: nginx
+date: Fri, 04 Sep 2026 22:52:22 GMT
+content-type: text/html; charset=UTF-8
+expires: Fri, 28 May 1999 00:00:00 GMT
+last-modified: Fri, 04 Sep 2026 22:52:21 GMT
+cache-control: no-store, no-cache, must-revalidate
+pragma: no-cache
+p3p: CP="NON COR CURa ADMa OUR NOR UNI COM NAV STA"
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+location: https://piwik.ipb.de:443/login.php
+x-content-type-options: nosniff
+
+---BODY---
+0 /tmp/piwik3.html
+---
+HTTP/2 303 
+server: nginx
+date: Fri, 04 Sep 2026 22:52:22 GMT
+content-type: text/html; charset=utf-8
+expires: Fri, 28 May 1999 00:00:00 GMT
+last-modified: Fri, 04 Sep 2026 22:52:22 GMT
+cache-control: no-store, no-cache, must-revalidate
+pragma: no-cache
+p3p: CP="NON COR CURa ADMa OUR NOR UNI COM NAV STA"
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+location: https://piwik.ipb.de:443/login_up.php
+x-content-type-options: nosniff
+
+---BODY---
+0 /tmp/piwik4.html
+[0m
+[0m$ [0mcurl -skL --max-time 20 -o /tmp/piwik5.html "https://piwik.ipb.de/login.php"; sleep 1; curl -skL --max-time 20 -o /tmp/piwik6.html "https://piwik.ipb.de/login.php"; wc -c /tmp/piwik5.html /tmp/piwik6.html; echo "---TOKEN1---"; grep -oE 'forgery_protection_token[^>]{0,100}' /tmp/piwik5.html; echo "---TOKEN2---"; grep -oE 'forgery_protection_token[^>]{0,100}' /tmp/piwik6.html
+99189 /tmp/piwik5.html
+ 99189 /tmp/piwik6.html
+198378 total
+---TOKEN1---
+forgery_protection_token" id="forgery_protection_token" content="bcc47de3994d00b7829ac499d9fe4ad8"
+---TOKEN2---
+forgery_protection_token" id="forgery_protection_token" content="be487d2981bbd493bcf7e9d89a710dd7"
+[0m
+[0m$ [0mcurl -sk --max-time 20 -o /tmp/gold_cfg.js "https://gold.ipb.de/config.js"; wc -c /tmp/gold_cfg.js; grep -oiE 'appid|api[Kk]ey|token|secret|issuer|jwt[^,;]{0,60}|analytics[^,;]{0,80}|ExternalApiUrl[^,;]{0,80}' /tmp/gold_cfg.js | head -20
+71683 /tmp/gold_cfg.js
+jwt or the userInfo from the iframe api init object in order fo
+JWT so the JWT name becomes read only.)
+JWT.
+Secret
+Secret
+secret
+analytics
+analytics: {
+analytics should be disabled
+Analytics Tracking ID:
+AnalyticsTrackingId: 'your-tracking-id-UA-123456-1'
+analytics (amplitude
+analytics handlers".
+analytics-ga.min.js"
+analytics
+analytics.js"
+token
+token
+Token
+token
+[0m
+[0m$ [0mgrep -nE 'hosts:|domain:|conference=|hostDomain|websocket|bosh|anonymousdomain|prejoin|disableThirdPartyRequests|amplitude|trackingId|googleAnalytics' /tmp/gold_cfg.js | head -30
+31:    hosts: {
+33:        domain: 'gold.ipb.de',
+36:        anonymousdomain: 'guest.gold.ipb.de',
+39:        // authdomain: 'gold.ipb.de',
+49:    bosh: 'https://gold.ipb.de/' + subdir + 'http-bind',
+52:    websocket: 'wss://gold.ipb.de/' + subdir + 'xmpp-websocket',
+61:        // If the backend advertises multiple colibri websockets, this options allows
+67:        // Prefer SCTP (WebRTC data channels over the media path) over a colibri websocket.
+656:    // Configs for prejoin page.
+657:    // prejoinConfig: {
+659:    //     // This replaces `prejoinPageEnabled`.
+661:    //     // Hides the participant name editing field in the prejoin screen.
+954:    // disableThirdPartyRequests: false,
+1010:        // googleAnalyticsTrackingId: 'your-tracking-id-UA-123456-1',
+1017:        // amplitudeAPPKey: '<APP_KEY>',
+1021:        // amplitudeIncludeUTM: false,
+1023:        // Obfuscates room name sent to analytics (amplitude, rtcstats)
+1298:        // The lobby/prejoin screen background
+1497:     websocketKeepAlive
+1498:     websocketKeepAliveUrl
+1569:    //     'prejoin.errorDialOut',
+1570:    //     'prejoin.errorDialOutDisconnected',
+1571:    //     'prejoin.errorDialOutFailed',
+1572:    //     'prejoin.errorDialOutStatus',
+1573:    //     'prejoin.errorStatusCode',
+1574:    //     'prejoin.errorValidation',
+[0m
+[0m$ [0msleep 1; for p in "/api/admin/" "/api/admin" "/api/system/"; do echo "=== $p ==="; curl -sk --max-time 15 -o /dev/null -w "%{http_code} %{content_type} %{size_download}\n" "https://pluto.portal.ipb.de${p}"; done
+=== /api/admin/ ===
+200 text/html; charset=utf-8 354606
+=== /api/admin ===
+200 text/html; charset=utf-8 354606
+=== /api/system/ ===
+401 application/json 58
+[0m
+## 2026-09-04 22:53:00 UTC — analyst (model bigpickle)
+
+**STEP 1 — DELTA**
+- [CHANGED] nc.ipb.de/ocs/v2.php/cloud/capabilities live (curl -k): Nextcloud 34.0.3, bruteforce delay=0, app_api 34.0.0; provisioning_api/impersonate NOT exposed in public caps (only bundle-derived)
+- [CHANGED] nc.ipb.de/ocs/v2.php/cloud/{user,activity} unauth → 997 "Current user is not logged in" — unauth data-leak branch falsified
+- [CHANGED] piwik.ipb.de/login.php → 303 → login_up.php; forgery_protection_token ROTATES per GET (bcc47de3… vs be487d29…) — staticity falsified
+- [CHANGED] gold.ipb.de/config.js = stock Jitsi template (71,683B), all analytics/app keys commented boilerplate, no secrets; anonymousdomain=guest.gold.ipb.de (by design)
+- [CHANGED] pluto.portal.ipb.de/api/admin/ → SPA fallback (354606), /api/system/ → 401 — no admin-route exposure
+
+**STEP 2 — PRIORITIZE**
+- [PRIO] nc.ipb.de,8.05 — attack_surface=8, business_value=10, tech_exposure=9, gate_ease=6, cloud_surface=5, freshness=8 — live NC 34.0.3, provisioning/impersonate if creds
+- [PRIO] pluto.portal.ipb.de,7.20 — unchanged — BOLA top overall
+- [PRIO] gold.ipb.de,6.20 — attack_surface=6, business_value=8, tech_exposure=5, gate_ease=7, cloud_surface=3, freshness=6 — stock Jitsi, anonymous guest deliberate
+- [PRIO] piwik/webcam.ipb.de,5.60 — Plesk login-only, CSRF hypothesis dead
+
+**STEP 3 — HYPOTHESES**
+[HYP] Cross-tenant BOLA on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de
+confidence: 65
+reasoning: DRF multi-tenant portal, all data endpoints seq-ID auth-gated; per-tenant token auth is sole cross-tenant control; /api/system/ live 401 confirms real surface still up
+evidence_needed: two tenant accounts; object access with token from tenant A against tenant B seq-id
+verify_steps: authenticated GET on /api/multi-tenancy/v1/<obj>/<seq> cross-tenant
+impact: cross-tenant PII/association data dump — CRITICAL
+testability: HUMAN_ONLY
+
+[HYP] Nextcloud provisioning + impersonate mis-scoping
+class: AUTH
+asset: nc.ipb.de
+confidence: 55
+reasoning: live caps confirm NC 34.0.3, bruteforce delay=0; OCS alive; impersonate/provisioning apps reported enabled in bundle; unauth leak now ruled out (997), so impact requires any valid session
+evidence_needed: authed OCS /cloud/users + /cloud/user/{id} impersonation test
+verify_steps: GET /ocs/v2.php/cloud/users?format=json with valid token; impersonate header
+impact: full user data + account takeover as any user — CRITICAL
+testability: HUMAN_ONLY
+
+[HYP] Jitsi anonymous guest room access
+class: AUTH
+asset: gold.ipb.de
+confidence: 35
+reasoning: config.js shows anonymousdomain guest.gold.ipb.de and public websocket/BOSH; rooms unguessable random strings; anonymous join is deliberate config
+evidence_needed: any real meeting room URL leaks or lobby bypass
+verify_steps: GET /{room}/info static assets; no leak path evident
+impact: eavesdrop if room URL known — by-design exposure
+testability: HUMAN_ONLY
+
+**STEP 4 — SELF-CRITIQUE**
+- [PARKED] Plesk forgery_protection_token staticity: token rotates per GET (bcc47de3 vs be487d29) — CSRF hypothesis falsified, drop to <40
+- [PARKED] Jitsi anonymous guest: deliberate design, no room-ID leak path — drop
+- [FINAL] pluto.portal.ipb.de cross-tenant BOLA (65) — top, HUMAN_ONLY
+- [FINAL] nc.ipb.de Nextcloud provisioning+impersonate (55) — HUMAN_ONLY
+
+**STEP 5 — NEXT ACTION**
+- [NEXT] HUMAN: pluto.portal.ipb.de cross-tenant BOLA — obtain two tenant tokens via program/customer credential access (sole gate), then cross-tenant seq-id fetch on /api/multi-tenancy/v1/…; passive surface now exhausted
+
+**STEP 6 — LEARNING**
+- [LEARN] REJECTED CSRF @ piwik/webcam.ipb.de: forgery_protection_token rotates every GET (bcc47de3… vs be487d29…) — not static; Plesk CSRF hypothesis falsified; do not re-probe
+- [LEARN] REJECTED unauth-leak @ nc.ipb.de: /ocs/v2.php/cloud/{user,activity} both 997 "not logged in" — no unauth data exposure; provisioning/impersonate require any valid session
+- [LEARN] ACCEPTED framework-recon @ gold.ipb.de: config.js is stock template, no embedded secrets; anonymous guest domain and XMPP endpoints confirmed by design; nothing exploitable passively
+- [LEARN] ACCEPTED framework-recon @ nc.ipb.de: did — capabilities endpoint confirms Bruteforce delay=0 and app_api 34.0.0; impersonate/provisioning claims remain bundle-derived, not public-caps-visible
+
+**STEP 7 — RISK**
+- [RISK] ipb: 60 (↓ from 68) — passive exhaust: nc unauth-leak falsified, piwik CSRF falsified, gold config clean; pluto BOLA (65) and nc impersonate (55) real but gated on credentials; 0 validated bugs. Next jump requires credentialed (HUMAN) testing on pluto or nc, or a new discovery hosts cycle.
