@@ -178,3 +178,9 @@ www.survey.ipb.de
 ## 2026-09-05 08:46:36 UTC
 - CHANGED nc.ipb.de OCS capabilities endpoint confirmed live unauthenticated — returns Nextcloud 34.0.3 version, bruteforce delay=0, theming config; activity/user endpoints require auth (997)
 - CHANGED nc.ipb.de WebDAV (remote.php/dav/) returns 401 NotAuthenticated with Sabre DAV 4.0+ auth guidance
+
+## 2026-09-05 12:17:02 UTC
+- NEW nc.ipb.de OCS capabilities endpoint confirmed live unauthenticated via curl -k — returns Nextcloud 34.0.3, bruteforce.delay=0, app_api 34.0.0; provisioning_api/impersonate/oauth2/circles NOT confirmed
+- NEW nc.ipb.de WebDAV (remote.php/dav/) returns 401 NotAuthenticated with Sabre DAV 4.0+ auth guidance (live probe with curl -k)
+- CHANGED nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live probe
+- CHANGED probe-results.md shows all nc.ipb.de and eticket.ipb.de probes still failing SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation

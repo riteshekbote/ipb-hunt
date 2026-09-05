@@ -615,3 +615,33 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi root confirms unguessable random roomName rooms; anonymous guest by-design; no room-URL leak path
 [LEARN] REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000) this cycle — wildcard mask persists, no new hidden service
 [RISK] ipb: 58 (down from 60) — live caps correction removes overstated provision/impersonate claim from risk basis; guest.gold non-vhost, CIC/login panels out-of-scope, remaining wildcard hosts DNS-dead; remaining exposure: NC34 hosted-file + app_api surface (auth-gated), Plesk default-vhost blast radius, pluto multi-tenant BOLA (top, 65, credential-gated). Validated bugs: 0.
+## 2026-09-05 12:13:36 UTC [target] (model bigpickle)
+[HYP] NC AppAPI ExApp auth mis-scoping (extend prior, 404 not 401)
+class: AUTH
+asset: nc.ipb.de ocs/v2.php/apps/app_api/apps/list (+ app_api ExApp registry endpoints)
+confidence: 40
+reasoning: unauth GET /ocs/v2.php/apps/app_api/apps/list → 404 (not 401); prior caps confirmed NC 34.0.3, app_api 34.0.0 active, bruteforce.delay=0; app_api enables external app runtime historically exposing unauth endpoints/SSRF once registered
+evidence_needed: any valid NC session; enumerate ExApps list then probe each ExApp endpoint unauth vs authed
+verify_steps: GET /ocs/v2.php/cloud/capabilities (200, done); with token GET /ocs/v2.php/apps/app_api/apps/list; unauth GET each returned ExApp route
+impact: external app auth/SSRF mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+[HYP] pluto cross-tenant BOLA (unchanged)
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request}/
+confidence: 65
+reasoning: all object GET probes uniformly 401 Token-auth; OPTIONS exposes seq-ID schemas; per-tenant token sole cross-tenant control; no self-service credential path (SPA fallback, user-reg 401, tenant-reg 403) — unchanged this cycle
+verify_steps: two tenant accounts; tenant-A token GET tenant-B seq-ID objects (200 vs 403/404)
+impact: cross-tenant PII/property dump — CRITICAL
+testability: HUMAN_ONLY
+[HYP] pluto avatar upload stored-XSS (unchanged)
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/upload/ + /download/
+confidence: 45
+reasoning: authed POST multipart; avatar served inline from portal origin; SVG/HTML content-type bypass could yield stored XSS vs staff across tenants
+verify_steps: any tenant token POST svg/html multipart → GET /download/ check Content-Type + inline render
+impact: stored XSS → admin session theft → full multi-tenant compromise — HIGH
+testability: HUMAN_ONLY
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) and one low-priv NC session, then: (a) cross-tenant seq-ID BOLA on /api/multi-tenancy/v1/{user,tenant,association-request}/(1..N) with tenant-A token; (b) POST avatar upload/ SVG → /download/ stored-XSS chain; (c) enumerate /ocs/v2.php/apps/app_api/apps/list + probe returned ExApp routes unauth.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: unauth GET /ocs/v2.php/apps/app_api/apps/list → 404 and /ocs/v2.php/cloud/apps → 401 — AppAPI ExApp list and provisioning both require a session; confirms NC AppAPI lead is session-gated (404 routing, not unauth leak).
+[LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: both Plesk login.php → 303 (unchanged); public login panel = out-of-scope class; no new attack surface.
+[RISK] ipb: 58 (unchanged) — no new validated bug this cycle; all remaining high-value leads (pluto BOLA 65, avatar stored-XSS 45, NC AppAPI 40) are credential-gated with zero validated bugs; live surface fully surveyed, hard targets only.

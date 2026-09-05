@@ -105,3 +105,9 @@ https://nc.ipb.de/ocs/v2.php/cloud/activity -> ERR <urlopen error [SSL: CERTIFIC
 https://nc.ipb.de/remote.php/dav/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
 https://eticket.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
 https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+
+## 2026-09-05 12:17:07 UTC
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://nc.ipb.de/ocs/v2.php/cloud/capabilities -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/activity -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/remote.php/dav/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
