@@ -239,3 +239,13 @@ www.survey.ipb.de
 - CHANGED probe-results.md: all nc.ipb.de/eticket.ipb.de probes fail SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
 - CHANGED nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles NOT confirmed by live probe
 - CHANGED REJECTED MISCONFIG @ *.ipb.de wildcard DNS masking: app/auth.gold/my/prod/survey all DNS-dead; cloud.ipb.de resolves to shared Plesk (out-of-scope); mirror/spam/NS/mail out-of-scope; wildcard mask no 
+
+## 2026-09-05 23:16:52 UTC
+- NEW pluto.portal.ipb.de/api/system/ → HTTP 401 (live DRF endpoint confirmed, WWW-Authenticate: Token)
+- NEW gold.ipb.de/config.js → SSL cert verify failed (Python urllib), but KB confirms live via curl -k
+- CHANGED Wildcard DNS masking hypothesis KILLED — 33/33 inventory names fully classified (Plesk panels, DNS-dead set, non-web infra, Jitsi internal components)
+- CHANGED nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles NOT confirmed by live probe
+- CHANGED guest.gold.ipb.de does not resolve (000) — Jitsi anonymousdomain config-only, not a live vhost
+- CHANGED cloud.ipb.de resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope
+- CHANGED focus.gold.ipb.de + moderated.gold.ipb.de DNS-dead (000) — Jitsi internal components, not external vhosts
+- CHANGED *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de all DNS-dead (000)

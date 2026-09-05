@@ -6841,3 +6841,174 @@ Confidence<40 or orphaned hypotheses dropped: Jitsi room-leak (35), CIC SQLi (35
 
 === STEP 7 — RISK ===
 [RISK] ipb: 58 (unchanged) — inventory reach 100% with zero newly discovered surface this cycle; all remaining high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) remain credential-gated with zero validated bugs; 58 reflects the large auth-gated multi-tenant Attack Surface that materializes only once any valid account is obtained. Validated bugs: 0.
+===== ANALYST bigpickle 2026-09-05 23:16:52 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la /home/runner/work/ipb-hunt/ipb-hunt && echo "---" && ls -la /home/runner/work/ipb-hunt/ipb-hunt/inventory 2>/dev/null; ls -la /home/runner/work/ipb-hunt/ipb-hunt/art 2>/dev/null | head -30
+total 208
+drwxr-xr-x 12 runner runner  4096 Sep  5 23:15 .
+drwxr-xr-x  3 runner runner  4096 Sep  5 23:15 ..
+drwxr-xr-x  7 runner runner  4096 Sep  5 23:15 .git
+drwxr-xr-x  3 runner runner  4096 Sep  5 23:15 .github
+-rw-r--r--  1 runner runner  1817 Sep  5 23:15 README.md
+-rw-r--r--  1 runner runner    32 Sep  5 23:15 analyst-out.txt
+-rw-r--r--  1 runner runner 59422 Sep  5 23:15 analyst-prompt.txt
+-rw-r--r--  1 runner runner 55536 Sep  5 23:15 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  5 23:15 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  5 23:15 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  5 23:15 leads
+-rw-r--r--  1 runner runner  7868 Sep  5 23:15 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  5 23:15 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  5 23:15 reports
+drwxr-xr-x  2 runner runner  4096 Sep  5 23:15 reposcan-raw
+-rw-r--r--  1 runner runner  3299 Sep  5 23:15 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  5 23:15 scripts
+-rw-r--r--  1 runner runner    33 Sep  5 23:15 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  5 23:15 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  5 23:15 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  5 23:15 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  5 23:15 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  5 23:15 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  5 23:15 triage
+---
+total 32
+drwxr-xr-x  2 runner runner  4096 Sep  5 23:15 .
+drwxr-xr-x 12 runner runner  4096 Sep  5 23:15 ..
+-rw-r--r--  1 runner runner 21142 Sep  5 23:15 ipb.md
+[0m
+[0m✱ [0mGlob "**/probe-results.md"[90m 1 match[0m
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead scope.yml
+[0m
+[0m$ [0mls scripts/ && echo "---" && ls knowledge/ leads/ recon-notes/ triage/ reports/ 2>/dev/null
+sync-issues.py
+---
+knowledge/:
+index.md
+
+leads/:
+lead-bigpickle.md
+lead-laguna.md
+lead-ling3.md
+lead-longcat.md
+lead-mimo.md
+lead-nemotron3.md
+reposcan-ipb.md
+
+recon-notes/:
+DEDICATED-DEEP.md
+
+reports/:
+analyst-bigpickle.log
+analyst-laguna.log
+analyst-ling3.log
+analyst-longcat.log
+analyst-nemotron3.log
+hypotheses-bigpickle.txt
+hypotheses-laguna.txt
+hypotheses-ling3.txt
+hypotheses-longcat.txt
+hypotheses-nemotron3.txt
+hypotheses.md
+valid-bugs.md
+
+triage/:
+run-2026-09-02-21-51.md
+run-2026-09-02-23-59.md
+run-2026-09-03-02-18.md
+run-2026-09-03-07-23.md
+run-2026-09-03-12-07.md
+run-2026-09-03-16-28.md
+run-2026-09-03-19-24.md
+run-2026-09-03-21-52.md
+run-2026-09-03-23-43.md
+run-2026-09-04-02-13.md
+run-2026-09-04-07-16.md
+run-2026-09-04-12-09.md
+run-2026-09-04-16-24.md
+run-2026-09-04-19-06.md
+run-2026-09-04-21-31.md
+run-2026-09-04-23-15.md
+run-2026-09-05-00-59.md
+run-2026-09-05-05-25.md
+run-2026-09-05-09-18.md
+run-2026-09-05-12-47.md
+run-2026-09-05-15-43.md
+run-2026-09-05-17-49.md
+run-2026-09-05-19-46.md
+run-2026-09-05-21-49.md
+[0m
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+Reading my prior lead continuity, then running a minimal rate-compliant freshness probe set to ground this cycle's delta.
+[0m
+[0m$ [0mcurl -sk -o /dev/null -w "pluto /api/system/ -> HTTP %{http_code}, redirect=%{redirect_url}\n" --max-time 20 https://pluto.portal.ipb.de/api/system/ ; sleep 2 ; curl -sk -D - -o /dev/null --max-time 20 https://pluto.portal.ipb.de/api/system/ | rg -i "www-authenticate|^HTTP"
+pluto /api/system/ -> HTTP 401, redirect=
+/bin/bash: line 1: rg: command not found
+[0m
+[0m$ [0mcurl -sk -D - -o /dev/null --max-time 20 https://pluto.portal.ipb.de/api/system/ | grep -i "www-authenticate\|^HTTP" ; sleep 2 ; curl -ks --max-time 25 "https://nc.ipb.de/ocs/v2.php/cloud/capabilities?format=json" -H "OCS-APIRequest: true" | grep -o '"versionstring":"[^"]*"\|"app_api"[^,]*\|"bruteforce"[^}]*' | head -8
+HTTP/2 401 
+www-authenticate: Token
+"bruteforce":{"delay":0,"allow-listed":false
+"app_api":{"version":"34.0.0"}
+[0m
+[0m$ [0mfor h in my.ipb.de auth.gold.ipb.de focus.gold.ipb.de app.ipb.de prod.ipb.de; do ip=$(getent ahostsv4 "$h" 2>/dev/null | awk 'NR==1{print $1}'); echo "$h -> ${ip:-DNS-dead}"; done; echo "---"; getent ahostsv4 pluto.portal.ipb.de | awk 'NR==1{print "pluto ->",$1}'
+my.ipb.de -> DNS-dead
+auth.gold.ipb.de -> DNS-dead
+focus.gold.ipb.de -> DNS-dead
+app.ipb.de -> DNS-dead
+prod.ipb.de -> DNS-dead
+---
+pluto -> 194.29.225.140
+[0m
+STEP 1 — DELTA
+NO_DELTA — fresh probes this cycle confirm surface unchanged: pluto.portal.ipb.de/api/system/ → 401 `WWW-Authenticate: Token` (HTTP/2, no redirect); nc.ipb.de OCS caps → `app_api 34.0.0` + `bruteforce.delay=0` live; DNS canaries my/auth.gold/focus.gold/app/prod.ipb.de all DNS-dead; pluto resolves 194.29.225.140 (same IP).
+
+STEP 2 — PRIORITIZE
+[PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
+[PRIO] nc.ipb.de,7.40,attack_surface=7,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=8,freshness=9
+[PRIO] gold.ipb.de,5.30,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=8,cloud_surface=4,freshness=5
+[PRIO] piwik/webcam/cic.ipb.de,4.20,attack_surface=4,business_value=5,tech_exposure=4,gate_ease=3,cloud_surface=4,freshness=5
+[PRIO] event/www/eticket.ipb.de,3.00,attack_surface=3,business_value=4,tech_exposure=2,gate_ease=8,cloud_surface=2,freshness=3
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes tenant/user/association-request objects with sequential int IDs; all endpoints 401 Token-auth unauth (re-confirmed 401 + WWW-Authenticate: Token this cycle); per-tenant Token is the sole cross-tenant authorization control; no self-service credential path (SPA fallback on _exceptions, user-reg 401, tenant-reg 403); inventory 100% classified
+evidence_needed: two tenant accounts; tenant-A Token requesting tenant-B objects by sequential ID → 200 vs 403/404 differentiation
+verify_steps: POST /api/session/ {username,password} → Token; GET /api/multi-tenancy/v1/user/{id}/ with Authorization: Token across tenant boundary; repeat /tenant/{id}/, /association-request/{id}/
+impact: cross-tenant PII dump (user, membership, association-request data) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp registry auth mis-scoping (session-gated, 404 not 401)
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: live OCS caps (curl -k, this cycle) confirm NC with app_api 34.0.0, bruteforce.delay=0; unauth GET apps/list → 404 (route exists, no session) vs /ocs/v2.php/cloud/apps → 401 confirms session-gating; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps (prior KC overstated)
+evidence_needed: any valid NC session; enumerate ExApps then probe each ExApp registered route unauth vs authed
+verify_steps: with valid NC session GET /ocs/v2.php/apps/app_api/apps/list; then GET each returned ExApp route without session → status diff
+impact: external app runtime auth/SSRF mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+[PARKED] EdgePortal avatar uploaded-SVG stored-XSS via content-type confusion (conf 45): >=40, valid upload→/download/→staff-session chain, but same asset as BOLA and doubly credential-gated; per max-1-per-asset rule, resumes only once a tenant Token exists.
+[PARKED] Kiosk TOTP oracle (40): at threshold, low impact, enumeration WAF risk.
+[PARKED] Plesk forgery_protection_token CSRF (45): public login panel = out-of-scope class.
+[PARKED] CIC custom PHP SQLi (35): below threshold; public login panel out-of-scope.
+[PARKED] Jitsi anonymous guest room access (35): by-design, unguessable roomName, no room-URL leak.
+[FINAL] 1) Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (65) — top lead, clean verify path with any two tenant accounts, CRITICAL, HUMAN_ONLY.
+[FINAL] 2) NC AppAPI ExApp auth mis-scoping (40) — at threshold, HIGH if any validated NC session obtained, HUMAN_ONLY.
+[FINAL] 3) EdgePortal avatar stored-XSS via content-type confusion (45) — resumes immediately once any tenant Token available.
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) and run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request}/1..N with tenant-A Token (writes none; read-only GET). This cycle's fresh probes (pluto 401-Token, NC app_api 34.0.0, DNS canaries dead) reconfirm every unauth avenue is exhausted; no unauth PROBE is evidence-supported at this time.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — /api/system/ still 401 WWW-Authenticate: Token, DRF multi-tenancy prime cross-tenant chokepoint, top priority, HUMAN_ONLY.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: unchanged — live OCS caps still app_api 34.0.0 + bruteforce.delay=0 only; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps.
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift.
+
+STEP 7 — RISK
+[RISK] ipb: 58 (unchanged) — surface re-verified byte-stable this cycle; all high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) remain credential-gated with zero validated bugs; 58 reflects the large auth-gated multi-tenant attack surface that materializes only once any valid account is obtained. Validated bugs: 0.

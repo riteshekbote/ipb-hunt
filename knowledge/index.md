@@ -112,3 +112,6 @@
 - 2026-09-05 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged.
 - 2026-09-05 ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
 - 2026-09-05 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: hypothesis fully closed — 33/33 inventory names classified (Plesk panels, DNS-dead set, non-web infra, Jitsi internal components accounted); mask no longer hides undiscovered attack surface.
+- 2026-09-05 ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — /api/system/ still 401 WWW-Authenticate: Token, DRF multi-tenancy prime cross-tenant chokepoint, top priority, HUMAN_ONLY.
+- 2026-09-05 ACCEPTED framework-recon @ nc.ipb.de: unchanged — live OCS caps still app_api 34.0.0 + bruteforce.delay=0 only; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps.
+- 2026-09-05 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift.
