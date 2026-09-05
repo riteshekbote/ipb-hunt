@@ -76,3 +76,16 @@
 - 2026-09-05 ACCEPTED framework-recon @ piwik/webcam.ipb.de: both Plesk login.php → 303 (unchanged); public login panel = out-of-scope class; no new attack surface.
 - 2026-09-05 ACCEPTED framework-recon @ nc.ipb.de: Nextcloud 34.0.3 with app_api 34.0.0 confirmed live via OCS capabilities (bruteforce.delay=0); provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — prior KC entry overstated; status.php version leak; WebDAV 401
 - 2026-09-05 ACCEPTED framework-recon @ gold.ipb.de: Jitsi Meet config.js public, anonymous guest domain, XMPP backend; unguessable random roomName rooms; no room-URL leak path
+- 2026-09-05 ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: DRF multi-tenancy is prime cross-tenant chokepoint; expanded surface (association-request, user-token, self endpoints) all seq-ID auth-gated; top priority pending credentialed access. Unchanged this cycle.
+- 2026-09-05 ACCEPTED AUTH @ pluto.portal.ipb.de: kiosk_login token oracle is low-severity enumeration; distinct error message per token validity confirmed in bundle. PARKED — low impact, WAF risk.
+- 2026-09-05 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated (401, WWW-Authenticate: Token); no unauth config/schema leak (all SPA fallback)
+- 2026-09-05 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps; /ocs/v2.php/apps/app_api/apps/list → 404 (session-gated routing)
+- 2026-09-05 ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path
+- 2026-09-05 ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 login.php → 303; public login panel = out-of-scope class
+- 2026-09-05 ACCEPTED framework-recon @ cic.ipb.de: self-hosted CIC, custom PHP login, no CSRF token, PHPSESSID; login-only out-of-scope class
+- 2026-09-05 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe
+- 2026-09-05 REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject class
+- 2026-09-05 REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist; mature hardening; do not re-probe
+- 2026-09-05 REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000); wildcard mask persists
+- 2026-09-05 ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
+- 2026-09-05 ACCEPTED MISCONFIG @ eticket.ipb.de: pretix "Unknown host" (400); no custom domain configured

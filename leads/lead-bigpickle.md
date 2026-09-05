@@ -645,3 +645,60 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED framework-recon @ nc.ipb.de: unauth GET /ocs/v2.php/apps/app_api/apps/list → 404 and /ocs/v2.php/cloud/apps → 401 — AppAPI ExApp list and provisioning both require a session; confirms NC AppAPI lead is session-gated (404 routing, not unauth leak).
 [LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: both Plesk login.php → 303 (unchanged); public login panel = out-of-scope class; no new attack surface.
 [RISK] ipb: 58 (unchanged) — no new validated bug this cycle; all remaining high-value leads (pluto BOLA 65, avatar stored-XSS 45, NC AppAPI 40) are credential-gated with zero validated bugs; live surface fully surveyed, hard targets only.
+## 2026-09-05 15:17:27 UTC [target] (model bigpickle)
+[PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
+[PRIO] nc.ipb.de,7.40,attack_surface=7,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=8,freshness=9
+[PRIO] gold.ipb.de,5.35,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=8,cloud_surface=4,freshness=6
+[PRIO] piwik/webcam.ipb.de,4.20,attack_surface=4,business_value=5,tech_exposure=4,gate_ease=3,cloud_surface=4,freshness=5
+[PRIO] cic.ipb.de,3.85,attack_surface=3,business_value=5,tech_exposure=3,gate_ease=5,cloud_surface=3,freshness=5
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes tenant/user/association-request objects with sequential integer IDs; all 401 Token-auth unauthenticated; per-tenant Token is sole cross-tenant authorization control; OPTIONS on endpoints exposes seq-ID field schemas; expanded surface (association-request, user-token, self, check-in) all auth-gated with seq-IDs; no self-service credential acquisition path (SPA fallback on _exceptions, user-reg 401, tenant-reg 403)
+evidence_needed: two tenant accounts; tenant-A Token requesting tenant-B objects by sequential ID — 200 vs 403/404 differentiation
+verify_steps: POST /api/session/ {username,password} to obtain Token; GET /api/multi-tenancy/v1/user/{id}/ with Authorization: Token header across tenant boundary; repeat for /tenant/{id}/, /association-request/{id}/
+impact: cross-tenant PII dump (user records, membership, association-request data) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp registry mis-scoping (session-gated, 404 not 401)
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: live OCS capabilities (curl -k, 200) confirmed NC 34.0.3, bruteforce.delay=0, app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps (prior KC overstated); unauth GET /ocs/v2.php/apps/app_api/apps/list returns 404 (not 401) indicating routing exists but empty/no-session; NC AppAPI 34.0.0 enables external app runtime historically exposing auth bypass/SSRF once ExApps are registered; /ocs/v2.php/cloud/apps → 401 confirms session required for other OCS lists
+evidence_needed: any valid NC session; enumerate ExApps list then probe each ExApp route unauth vs authed
+verify_steps: with valid NC session GET /ocs/v2.php/apps/app_api/apps/list; check each returned ExApp's registered routes unauthenticated
+impact: external app runtime auth/SSRF mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+[HYP] EdgePortal avatar upload stored-XSS via content-type confusion
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/upload/ + /download/
+confidence: 45
+reasoning: POST multipart upload endpoint auth-gated (401); avatar served via /download/ endpoint on portal SPA origin; SVG/HTML content-type bypass or filename-extension confusion could yield stored XSS served to admin/staff across tenants; multi-tenant = any attacker tenant reaches staff viewing profiles
+evidence_needed: authed upload of SVG/HTML payload served inline from portal origin with wrong Content-Type
+verify_steps: with any tenant Token POST multipart file (svg/html) → GET /download/ observe Content-Type header + inline render behavior
+impact: stored XSS → admin session theft → full multi-tenant compromise — HIGH
+testability: HUMAN_ONLY
+[PARKED] CIC custom PHP login: public login panel = out-of-scope class per scope.yml; confidence 30; no evidence of injection
+[PARKED] Plesk forgery_protection_token CSRF: public login panel edge; token staticity unproven via automated probe (Python urllib SSL-fail); out-of-scope class borderline; confidence 45 but no verify path
+[PARKED] NC bruteforce.delay=0: rate-limit policy class = out-of-scope per program rules
+[PARKED] Jitsi anonymous guest: by-design, unguessable random roomName, no leak path, confidence 35
+[FINAL] 1. pluto.portal.ipb.de Cross-tenant BOLA (65) — highest confidence + impact, credential-gated
+[FINAL] 2. nc.ipb.de AppAPI mis-scoping (40) — at threshold, credential-gated, corrected capability basis
+[FINAL] 3. pluto.portal.ipb.de avatar stored-XSS (45) — credential-gated, high chain value
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) then (a) cross-tenant seq-ID BOLA on /api/multi-tenancy/v1/{user,tenant,association-request}/(1..N) with tenant-A token, (b) POST avatar upload/ with SVG payload → /download/ for stored-XSS chain. Also obtain one low-priv NC session to enumerate /ocs/v2.php/apps/app_api/apps/list.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: DRF multi-tenancy is prime cross-tenant chokepoint; expanded surface (association-request, user-token, self endpoints) all seq-ID auth-gated; top priority pending credentialed access. Unchanged this cycle.
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de: wildcard DNS confirmed by dedicated deep scan (0 genuinely dedicated hosts), hides real attack surface; 21 inventory hosts never individually re-confirmed; SSL cert failures on 6 subdomains confirm live TLS behind proxy
+[LEARN] ACCEPTED AUTH @ pluto.portal.ipb.de: kiosk_login token oracle is low-severity enumeration; distinct error message per token validity confirmed in bundle. PARKED — low impact, WAF risk.
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated (401, WWW-Authenticate: Token); no unauth config/schema leak (all SPA fallback)
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps; /ocs/v2.php/apps/app_api/apps/list → 404 (session-gated routing)
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path
+[LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 login.php → 303; public login panel = out-of-scope class
+[LEARN] ACCEPTED framework-recon @ cic.ipb.de: self-hosted CIC, custom PHP login, no CSRF token, PHPSESSID; login-only out-of-scope class
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe
+[LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject class
+[LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked)
+[LEARN] REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist; mature hardening; do not re-probe
+[LEARN] REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000); wildcard mask persists
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
+[LEARN] ACCEPTED MISCONFIG @ eticket.ipb.de: pretix "Unknown host" (400); no custom domain configured
+[RISK] ipb: 58 (unchanged) — no new validated bug this cycle; all remaining high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) are credential-gated; zero validated bugs; live surface fully surveyed; 58 reflects the large auth-gated attack surface that materializes once any valid account is obtained.
