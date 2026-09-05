@@ -1021,3 +1021,42 @@ testability: HUMAN_ONLY
 [LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
 [LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe.
 [RISK] ipb: 58 (unchanged) — no new validated bug this cycle; wildcard DNS masking hypothesis killed (no more hidden attack surface); all remaining high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) are credential-gated with zero validated bugs; live surface fully surveyed; 58 reflects large auth-gated attack surface that materializes once any valid account is obtained. Validated bugs: 0.
+## 2026-09-05 21:40:01 UTC [target] (model bigpickle)
+[CHANGED] gold subdomain set fully closed: focus.gold.ipb.de + moderated.gold.ipb.de DNS-dead (000) this cycle — Jitsi internal `focus`/`moderated` components are not external vhosts (mirrors guest.gold config-only status). 33/33 inventory names now classified against program scope; zero unaccounted hosts remain.
+[PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
+[PRIO] nc.ipb.de,7.40,attack_surface=7,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=8,freshness=9
+[PRIO] gold.ipb.de,5.30,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=8,cloud_surface=4,freshness=5
+[PRIO] piwik/webcam/cic.ipb.de,4.20,attack_surface=4,business_value=5,tech_exposure=4,gate_ease=3,cloud_surface=4,freshness=5
+[PRIO] event/www/eticket.ipb.de,3.00,attack_surface=3,business_value=4,tech_exposure=2,gate_ease=8,cloud_surface=2,freshness=3
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes tenant/user/association-request objects with sequential int IDs; all 401 Token-auth unauth; per-tenant Token is the sole cross-tenant authorization control; no self-service credential path (SPA fallback on _exceptions, user-reg 401, tenant-reg 403); unchanged this cycle, inventory 100% classified
+evidence_needed: two tenant accounts; tenant-A Token requesting tenant-B objects by sequential ID → 200 vs 403/404 differentiation
+verify_steps: POST /api/session/ {username,password} → Token; GET /api/multi-tenancy/v1/user/{id}/ with Authorization: Token across tenant boundary; repeat /tenant/{id}/, /association-request/{id}/
+impact: cross-tenant PII dump (user, membership, association-request data) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp registry mis-scoping (session-gated, 404 not 401)
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: live OCS caps (curl -k) confirm NC 34.0.3, bruteforce.delay=0, app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed (prior KC overstated); unauth GET apps/list → 404 (routing exists, no session), /ocs/v2.php/cloud/apps → 401 confirms session required; unchanged
+evidence_needed: any valid NC session; enumerate ExApps then probe each ExApp route unauth vs authed
+verify_steps: with valid NC session GET /ocs/v2.php/apps/app_api/apps/list; check each returned ExApp registered route unauthenticated
+impact: external app runtime auth/SSRF mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+[PARKED] EdgePortal avatar uploaded-SVG stored-XSS via content-type confusion (conf 45): >=40, valid chain, but same asset as BOLA and doubly credential-gated (upload requires any tenant Token); demoted to parked until a Token is obtained, per max-1-per-asset in top-3 block.
+[PARKED] Kiosk TOTP oracle (40): at threshold, low impact, WAF risk — unchanged.
+[PARKED] Plesk forgery_protection_token CSRF (45): public login panel = out-of-scope class — unchanged.
+[PARKED] Wildcard DNS masking: KILLED and now fully closed — 33/33 inventory names classified; no more hidden-surface hypothesis space.
+[FINAL] 1) Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (65) — top lead, clean verify path with any two tenant accounts, CRITICAL, HUMAN_ONLY.
+[FINAL] 2) NC AppAPI ExApp auth mis-scoping (40) — at threshold, HIGH if any validated NC session obtained, HUMAN_ONLY.
+[FINAL] 3) EdgePortal avatar stored-XSS via content-type confusion (45) — resumes immediately once any tenant Token available (chain: upload → /download/ inline render → staff session theft).
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) and run (a) cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request}/1..N with tenant-A Token, (b) POST avatar upload (SVG/HTML) → GET /download/ and record Content-Type + inline render for stored-XSS chain. Every live-probe avenue is now exhausted (probe-results.md + this cycle confirm 33/33 hosts classified, all remaining leads credential-gated); no further unauthenticated PROBE is supported by evidence.
+[LEARN] REJECTED MISC @ focus.gold/moderated.gold.ipb.de: DNS-dead (000) this cycle — Jitsi focus/moderated are internal components, not external vhosts; matches guest.gold config-only status; final unaccounted inventory names closed → 100% inventory classification.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged.
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: hypothesis fully closed — 33/33 inventory names classified (Plesk panels, DNS-dead set, non-web infra, Jitsi internal components accounted); mask no longer hides undiscovered attack surface.
+[RISK] ipb: 58 (unchanged) — inventory reach 100% with zero newly discovered surface this cycle; all remaining high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) remain credential-gated with zero validated bugs; 58 reflects the large auth-gated multi-tenant Attack Surface that materializes only once any valid account is obtained. Validated bugs: 0.

@@ -228,3 +228,14 @@ www.survey.ipb.de
 - NEW cloud.ipb.de resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
 - NEW app/auth.gold/my/prod/survey/www.cic.ipb.de: no DNS this cycle — Host-header wildcard-probe approach non-executable; wildcard mask does not resolve these names
 - NEW mirror/spam/spam01/spam02/ns6/mail/speedtest.ipb.de: resolve to distinct IPs but non-web infra (mail/spam/NS) or public apt mirror (mirror = out-of-scope public files)
+
+## 2026-09-05 21:41:31 UTC
+- CHANGED gold subdomain set fully closed: focus.gold.ipb.de + moderated.gold.ipb.de DNS-dead (000) this cycle — Jitsi internal `focus`/`moderated` components are not external vhosts (mirrors guest.gold config-
+- NEW guest.gold.ipb.de does not resolve (000) — Jitsi anonymousdomain config-only, not a separate live vhost
+- NEW *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de all DNS-dead (000) — wildcard mask persists, no new hidden service
+- NEW cloud.ipb.de resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
+- NEW app/auth.gold/my/prod/survey/www.cic.ipb.de: no DNS this cycle — Host-header wildcard-probe approach non-executable; wildcard mask does not resolve these names
+- NEW mirror/spam/spam01/spam02/ns6/mail/speedtest.ipb.de: resolve to distinct IPs but non-web infra (mail/spam/NS) or public apt mirror (mirror = out-of-scope public files)
+- CHANGED probe-results.md: all nc.ipb.de/eticket.ipb.de probes fail SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
+- CHANGED nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles NOT confirmed by live probe
+- CHANGED REJECTED MISCONFIG @ *.ipb.de wildcard DNS masking: app/auth.gold/my/prod/survey all DNS-dead; cloud.ipb.de resolves to shared Plesk (out-of-scope); mirror/spam/NS/mail out-of-scope; wildcard mask no 

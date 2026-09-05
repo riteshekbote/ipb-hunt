@@ -108,3 +108,7 @@
 - 2026-09-05 REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
 - 2026-09-05 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe.
 - 2026-09-05 ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token meta; public login panel = out-of-scope class
+- 2026-09-05 REJECTED MISC @ focus.gold/moderated.gold.ipb.de: DNS-dead (000) this cycle — Jitsi focus/moderated are internal components, not external vhosts; matches guest.gold config-only status; final unaccounted inventory names closed → 100% inventory classification.
+- 2026-09-05 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged.
+- 2026-09-05 ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+- 2026-09-05 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: hypothesis fully closed — 33/33 inventory names classified (Plesk panels, DNS-dead set, non-web infra, Jitsi internal components accounted); mask no longer hides undiscovered attack surface.

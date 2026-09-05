@@ -129,3 +129,7 @@ https://nc.ipb.de/remote.php/dav/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY
 
 ## 2026-09-05 19:29:42 UTC
 https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+
+## 2026-09-05 21:41:34 UTC
+https://gold.ipb.de/config.js -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://pluto.portal.ipb.de/api/system/ -> HTTP 401
