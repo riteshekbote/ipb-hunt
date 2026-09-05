@@ -6664,3 +6664,117 @@ testability: HUMAN_ONLY
 [RISK] ipb: 58 (unchanged) — no new validated bug; top leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) all credential-gated with zero validated bugs; live surface fully surveyed (cloud/mirror resolution closes wildcard-masking leads), hard targets only.
 
 I've completed the cycle with read-only probes. Key outcomes: executed the outstanding NEXT action showing `cloud.ipb.de` is just a 3rd Plesk login panel (out-of-scope class), and confirmed the other wildcard candidates (`app`, `auth.gold`, `my`, `prod`, `survey`) have no DNS so Host-spoofing isn't viable. All high-value remaining hypotheses stay credential-gated.
+===== ANALYST bigpickle 2026-09-05 19:29:40 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mpwd && ls -la
+/home/runner/work/ipb-hunt/ipb-hunt
+total 200
+drwxr-xr-x 12 runner runner  4096 Sep  5 19:24 .
+drwxr-xr-x  3 runner runner  4096 Sep  5 19:24 ..
+drwxr-xr-x  7 runner runner  4096 Sep  5 19:24 .git
+drwxr-xr-x  3 runner runner  4096 Sep  5 19:24 .github
+-rw-r--r--  1 runner runner  1817 Sep  5 19:24 README.md
+-rw-r--r--  1 runner runner    32 Sep  5 19:24 analyst-out.txt
+-rw-r--r--  1 runner runner 54030 Sep  5 19:24 analyst-prompt.txt
+-rw-r--r--  1 runner runner 50144 Sep  5 19:24 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  5 19:24 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  5 19:24 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  5 19:24 leads
+-rw-r--r--  1 runner runner  7594 Sep  5 19:24 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  5 19:24 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  5 19:24 reports
+drwxr-xr-x  2 runner runner  4096 Sep  5 19:24 reposcan-raw
+-rw-r--r--  1 runner runner  3299 Sep  5 19:24 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  5 19:24 scripts
+-rw-r--r--  1 runner runner    33 Sep  5 19:24 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  5 19:24 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  5 19:24 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  5 19:24 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  5 19:24 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  5 19:24 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  5 19:24 triage
+[0m
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead inventory
+[0m→ [0mRead knowledge
+[0m→ [0mRead leads
+[0m→ [0mRead scope.yml
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead knowledge/index.md
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=458][0m
+[0m→ [0mRead leads/lead-bigpickle.md[90m [offset=904][0m
+[0m→ [0mRead inventory/ipb.md
+[0m
+[0m$ [0mdate -u '+%Y-%m-%d %H:%M:%S UTC'
+2026-09-05 19:25:54 UTC
+[0m
+Looking at the comprehensive context, I can see the current state clearly. Let me output the structured analysis.
+## STEP 1 — DELTA
+NO_DELTA — all inventory hosts fully resolved this cycle; cloud.ipb.de confirmed shared Plesk (out-of-scope); app/auth.gold/my/prod/survey DNS-dead; no new live HTTP surface discovered; all prior hypotheses unchanged.
+
+## STEP 2 — PRIORITIZE
+[PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
+[PRIO] nc.ipb.de,7.40,attack_surface=7,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=8,freshness=9
+[PRIO] gold.ipb.de,5.35,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=8,cloud_surface=4,freshness=6
+[PRIO] piwik/webcam/cic.ipb.de,4.20,attack_surface=4,business_value=5,tech_exposure=4,gate_ease=3,cloud_surface=4,freshness=5
+[PRIO] event/www/eticket.ipb.de,3.00,attack_surface=3,business_value=4,tech_exposure=2,gate_ease=8,cloud_surface=2,freshness=3
+
+## STEP 3 — HYPOTHESES
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes tenant/user/association-request objects with sequential integer IDs; all 401 Token-auth unauthenticated; per-tenant Token is sole cross-tenant authorization control; no self-service credential path (SPA fallback on _exceptions, user-reg 401, tenant-reg 403)
+evidence_needed: two tenant accounts; tenant-A Token requesting tenant-B objects by sequential ID — 200 vs 403/404 differentiation
+verify_steps: POST /api/session/ {username,password} to obtain Token; GET /api/multi-tenancy/v1/user/{id}/ with Authorization: Token header across tenant boundary; repeat for /tenant/{id}/, /association-request/{id}/
+impact: cross-tenant PII dump (user records, membership, association-request data) — CRITICAL
+testability: HUMAN_ONLY
+
+[HYP] EdgePortal avatar upload stored-XSS via content-type confusion
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/upload/ + /download/
+confidence: 45
+reasoning: POST multipart upload endpoint auth-gated (401); avatar served via /download/ on portal SPA origin; SVG/HTML content-type bypass could yield stored XSS served to staff across tenants
+evidence_needed: authed upload of SVG/HTML payload served inline from portal origin with wrong Content-Type
+verify_steps: with any tenant Token POST multipart file (svg/html) → GET /download/ observe Content-Type header + inline render
+impact: stored XSS → admin session theft → full multi-tenant compromise — HIGH
+testability: HUMAN_ONLY
+
+[HYP] NC AppAPI ExApp registry mis-scoping (session-gated, 404 not 401)
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: live OCS capabilities (curl -k, 200) confirmed NC 34.0.3, bruteforce.delay=0, app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps (prior KC overstated); unauth GET apps/list returns 404 (routing exists but no-session); /ocs/v2.php/cloud/apps → 401 confirms session required
+evidence_needed: any valid NC session; enumerate ExApps list then probe each ExApp route unauth vs authed
+verify_steps: with valid NC session GET /ocs/v2.php/apps/app_api/apps/list; check each returned ExApp registered routes unauthenticated
+impact: external app runtime auth/SSRF mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+
+## STEP 4 — SELF-CRITIQUE
+[PARKED] Wildcard DNS masking hidden attack surface: KILLED this cycle — app/auth.gold/my/prod/survey DNS-dead; cloud.ipb.de = shared Plesk (out-of-scope); mirror/spam/NS/mail = non-web infra (out-of-scope); wildcard mask no longer hides undiscovered attack surface.
+[PARKED] Kiosk TOTP validation endpoint logic flaw: confidence 40 (at threshold), requires valid token format knowledge, enumeration at scale may trigger WAF, low impact relative to cross-tenant BOLA
+[PARKED] Plesk forgery_protection_token static → CSRF on admin panel: confidence 45 but Plesk panels are public login panels (out-of-scope per program rules); staticity unproven; needs passive confirmation first
+[PARKED] CIC custom PHP SQL injection: confidence 35, public login panel out-of-scope per program rules, no evidence of vulnerability
+[PARKED] Jitsi anonymous guest room access: by-design config, unguessable random roomName, no room-URL leak path, confidence 35
+[PARKED] NC bruteforce.delay=0: brute-force/rate-limit policy = out-of-scope class
+[FINAL] 1) Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — highest confidence, clear verify path with credentials, CRITICAL impact, HUMAN_ONLY testability
+[FINAL] 2) EdgePortal avatar upload stored-XSS via content-type confusion (confidence 45) — credential-gated, HIGH impact chain (admin session theft), HUMAN_ONLY
+[FINAL] 3) NC AppAPI ExApp auth mis-scoping (confidence 40) — at threshold, credential-gated, HIGH impact if session obtained, HUMAN_ONLY
+
+## STEP 5 — NEXT ACTION
+[HUMAN] All remaining FINAL hypotheses (BOLA 65, XSS 45, NC AppAPI 40) are exclusively credential-gated with zero path to obtain credentials passively. Required actions: (1) obtain one attacker-owned low-priv EdgePortal tenant token on pluto.portal.ipb.de via sponsorship or employee account request, then (a) test cross-tenant seq-ID BOLA on /api/multi-tenancy/v1/{user,tenant,association-request}/(1..N) with tenant-A token, (b) POST avatar upload/ SVG → /download/ for stored-XSS chain; (2) obtain one low-priv NC session on nc.ipb.de to enumerate /ocs/v2.php/apps/app_api/apps/list + probe returned ExApp routes unauth.
+
+## STEP 6 — LEARN
+[LEARN] REJECTED MISCONFIG @ *.ipb.de wildcard DNS masking: app/auth.gold/my/prod/survey all DNS-dead; cloud.ipb.de resolves to shared Plesk (out-of-scope); mirror/spam/NS/mail out-of-scope; wildcard mask no longer hides undiscovered attack surface — hypothesis killed.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated.
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path.
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe.
+
+## STEP 7 — RISK
+[RISK] ipb: 58 (unchanged) — no new validated bug this cycle; wildcard DNS masking hypothesis killed (no more hidden attack surface); all remaining high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) are credential-gated with zero validated bugs; live surface fully surveyed; 58 reflects large auth-gated attack surface that materializes once any valid account is obtained. Validated bugs: 0.

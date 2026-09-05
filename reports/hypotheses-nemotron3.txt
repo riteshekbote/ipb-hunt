@@ -1,12 +1,13 @@
-## 2026-09-05 17:25:47 UTC [target] (model nemotron3)
-[NEW] nc.ipb.de OCS capabilities endpoint confirmed live unauthenticated via curl -k — returns Nextcloud 34.0.3, bruteforce.delay=0, app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live probe (corrected from prior overstatement)
-[NEW] nc.ipb.de WebDAV (remote.php/dav/) returns 401 NotAuthenticated with Sabre DAV 4.0+ auth guidance (live probe with curl -k)
-[CHANGED] nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live probe
-[CHANGED] probe-results.md shows all nc.ipb.de and eticket.ipb.de probes still failing SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
-[NEW] guest.gold.ipb.de does not resolve (000) this cycle — Jitsi anonymousdomain config-only, not a separate live vhost
+## 2026-09-05 19:29:29 UTC [target] (model nemotron3)
+[CHANGED] nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities (curl -k); provisioning_api/impersonate/oauth2/circles remain unconfirmed by live probe
+[CHANGED] probe-results.md: all nc.ipb.de/eticket.ipb.de probes fail SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
+[NEW] guest.gold.ipb.de does not resolve (000) — Jitsi anonymousdomain config-only, not a separate live vhost
 [NEW] *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de all DNS-dead (000) — wildcard mask persists, no new hidden service
-[PRIO] nc.ipb.de,8.15,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=8,freshness=10
+[NEW] cloud.ipb.de resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
+[NEW] app/auth.gold/my/prod/survey/www.cic.ipb.de: no DNS this cycle — Host-header wildcard-probe approach non-executable; wildcard mask does not resolve these names
+[NEW] mirror/spam/spam01/spam02/ns6/mail/speedtest.ipb.de: resolve to distinct IPs but non-web infra (mail/spam/NS) or public apt mirror (mirror = out-of-scope public files)
 [PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
+[PRIO] nc.ipb.de,7.30,attack_surface=8,business_value=8,tech_exposure=7,gate_ease=5,cloud_surface=7,freshness=9
 [PRIO] *.ipb.de (wildcard),7.60,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=10,cloud_surface=9,freshness=8
 [PRIO] gold.ipb.de,5.85,attack_surface=6,business_value=6,tech_exposure=5,gate_ease=8,cloud_surface=6,freshness=7
 [PRIO] cic.ipb.de,4.20,attack_surface=4,business_value=5,tech_exposure=4,gate_ease=10,cloud_surface=3,freshness=6
@@ -21,7 +22,7 @@ impact: Cross-tenant PII dump (membership, user, association-request, check-in d
 testability: AUTH_HELPED
 [HYP] Wildcard DNS masking hidden attack surface on *.ipb.de subdomains with live TLS endpoints
 class: MISCONFIG
-asset: *.ipb.de (app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, survey.ipb.de, www.cic.ipb.de, speedtest.ipb.de)
+asset: *.ipb.de (app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, survey.ipb.de)
 confidence: 60
 reasoning: Dedicated deep scan confirms wildcard DNS — 0 genuinely dedicated hosts after shared-IP filtering; 21 inventory hosts never individually re-confirmed post-discovery; SSL cert verify failures on 6 subdomains confirm live TLS endpoints behind wildcard proxy; real services may exist behind wildcard responding only to correct Host headers or specific paths; 5 services already confirmed (Nextcloud, Jitsi, 2x Plesk, CIC)
 evidence_needed: live HTTP response on any wildcard subdomain with distinct content vs wildcard fallback
@@ -38,9 +39,6 @@ verify_steps: GET /ocs/v2.php/cloud/capabilities (200, done); with token GET /oc
 impact: external app auth/SSRF mis-scoping — HIGH if session obtained
 testability: HUMAN_ONLY
 [PARKED] NC AppAPI ExApp auth mis-scoping: confidence 40 (at threshold), HUMAN_ONLY testability, requires valid NC session which has no confirmed acquisition path; provisioning_api/impersonate/oauth2/circles NOT confirmed by live probe — attack surface unproven
-[PARKED] Kiosk TOTP validation endpoint logic flaw: confidence 40 (at threshold), requires valid token format knowledge, enumeration at scale may trigger WAF, low impact relative to cross-tenant BOLA
-[PARKED] Plesk forgery_protection_token static → CSRF on admin panel: confidence 45 but Plesk panels are public login panels (out-of-scope per program rules); staticity unproven; needs passive confirmation first
-[PARKED] CIC custom PHP SQL injection: confidence 35, public login panel out-of-scope per program rules, no evidence of vulnerability
 [FINAL] 1) Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact, AUTH_HELPED testability
 [FINAL] 2) Wildcard DNS masking hidden attack surface on *.ipb.de subdomains (confidence 60) — surviving passive hypothesis, testable now with Host header probes, HIGH impact if confirmed, PASSIVE testability
 [NEXT] PROBE: GET https://app.ipb.de/ -H "Host: app.ipb.de" -k — check for distinct content vs wildcard fallback (1 rps, GET only); repeat for auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, survey.ipb.de
@@ -57,7 +55,8 @@ testability: HUMAN_ONLY
 [LEARN] REJECTED AUTH @ pluto.portal.ipb.de _exceptions routes: all SPA fallback (354606), user-registration API 401, tenant-registration 403; self-service credential hypothesis killed
 [LEARN] ACCEPTED framework-recon @ nc.ipb.de: Nextcloud 34.0.3 with app_api 34.0.0 confirmed live via OCS capabilities (bruteforce.delay=0); provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — prior KC entry overstated; status.php version leak; WebDAV 401
 [LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi Meet config.js public, anonymous guest domain, XMPP backend; unguessable random roomName rooms; no room-URL leak path
-[LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token meta
+[LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token meta; public login panel = out-of-scope class
 [LEARN] REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000) this cycle — wildcard mask persists, no new hidden service
 [LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
+[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same panel as piwik/webcam); login-only out-of-scope class
 [RISK] ipb: 68 — 5 new live services behind wildcard proxy dramatically expand attack surface; nc.ipb.de Nextcloud with app_api 34.0.0 confirmed (bruteforce.delay=0); provisioning_api/impersonate remain unconfirmed by live probe. pluto.portal.ipb.de remains top BOLA target (65 confidence). _exceptions self-reg hypothesis killed (no credential path). Validated bugs: 0.

@@ -219,3 +219,12 @@ www.survey.ipb.de
 - CHANGED probe-results.md shows all nc.ipb.de and eticket.ipb.de probes still failing SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
 - NEW guest.gold.ipb.de does not resolve (000) this cycle — Jitsi anonymousdomain config-only, not a separate live vhost
 - NEW *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de all DNS-dead (000) — wildcard mask persists, no new hidden service
+
+## 2026-09-05 19:29:40 UTC
+- CHANGED nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities (curl -k); provisioning_api/impersonate/oauth2/circles remain unconfirmed by live probe
+- CHANGED probe-results.md: all nc.ipb.de/eticket.ipb.de probes fail SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
+- NEW guest.gold.ipb.de does not resolve (000) — Jitsi anonymousdomain config-only, not a separate live vhost
+- NEW *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de all DNS-dead (000) — wildcard mask persists, no new hidden service
+- NEW cloud.ipb.de resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
+- NEW app/auth.gold/my/prod/survey/www.cic.ipb.de: no DNS this cycle — Host-header wildcard-probe approach non-executable; wildcard mask does not resolve these names
+- NEW mirror/spam/spam01/spam02/ns6/mail/speedtest.ipb.de: resolve to distinct IPs but non-web infra (mail/spam/NS) or public apt mirror (mirror = out-of-scope public files)
