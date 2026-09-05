@@ -483,3 +483,24 @@ evidence_needed: any real meeting room URL leaks or lobby bypass
 verify_steps: GET /{room}/info static assets; no leak path evident
 impact: eavesdrop if room URL known — by-design exposure
 testability: HUMAN_ONLY
+## 2026-09-05 00:30:36 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de
+confidence: 65
+reasoning: DRF multi-tenant portal; /api/system/ live 401; all seq-ID object endpoints auth-gated; per-tenant token auth is sole cross-tenant control; no public registration route (SPA fallback, user-reg 401, tenant-reg 403)
+evidence_needed: two tenant accounts; tenant-A token accessing tenant-B sequential object IDs
+verify_steps: authenticated GET /api/multi-tenancy/v1/<obj>/<seq> iterate seq ids with cross-tenant token
+impact: cross-tenant PII/association data dump — CRITICAL
+testability: HUMAN_ONLY
+[HYP] Nextcloud authenticated provisioning/impersonate mis-scoping
+class: AUTH
+asset: nc.ipb.de
+confidence: 45
+reasoning: NC 34.0.3 live; caps confirm app_api 34.0.0 + bruteforce delay=0; activity+user OCS return 401/997 unauth; provisioning/impersonate enablement NOT confirmed by caps endpoint (earlier bundle claim unsupported by live caps); unauth leak ruled out
+evidence_needed: any valid NC session; OCS /cloud/users listing + impersonate header test
+verify_steps: GET /ocs/v2.php/cloud/users?format=json with token; replay with OC-Impersonate header
+impact: full user data + account takeover as any user — CRITICAL if session obtained
+testability: HUMAN_ONLY
+[NEXT] HUMAN: obtain one attacker-owned tenant account on pluto.portal.ipb.de EdgePortal and test token-scoped cross-tenant seq-ID access on /api/multi-tenancy/v1/{association-request,user,check-in}/* against a sibling tenant; also obtain a valid low-priv NC session for /ocs/v2.php/cloud/users + impersonate header.
+[RISK] ipb: 60 (↓ from 68) — piwik token staticity disproven, piwik/webcam reduced to shared default vhost (risk overcount corrected), nc unauth leak closed, caps contradict earlier impersonate/provisioning claim; remaining exposure: NC34 hosted file surface, Plesk panel default-vhost blast radius, wildcard hides services. Validated bugs: 0.

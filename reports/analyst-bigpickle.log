@@ -4304,3 +4304,166 @@ testability: HUMAN_ONLY
 
 **STEP 7 — RISK**
 - [RISK] ipb: 60 (↓ from 68) — passive exhaust: nc unauth-leak falsified, piwik CSRF falsified, gold config clean; pluto BOLA (65) and nc impersonate (55) real but gated on credentials; 0 validated bugs. Next jump requires credentialed (HUMAN) testing on pluto or nc, or a new discovery hosts cycle.
+===== ANALYST bigpickle 2026-09-05 00:33:13 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mcurl -sk -m 20 "https://nc.ipb.de/ocs/v2.php/cloud/capabilities?format=json" -H "OCS-APIRequest: true" -o /tmp/opencode/nc_caps.json -w "caps:%{http_code}\n"; sleep 1; curl -sk -m 20 "https://nc.ipb.de/ocs/v2.php/cloud/activity?format=json" -H "OCS-APIRequest: true" -o /tmp/opencode/nc_act.json -w "activity:%{http_code}\n"; sleep 1; curl -sk -m 20 "https://nc.ipb.de/ocs/v2.php/cloud/user?format=json" -H "OCS-APIRequest: true" -o /tmp/opencode/nc_user.json -w "user:%{http_code}\n"
+caps:200
+activity:401
+user:401
+[0m
+[0m$ [0mpython3 -c "
+import json
+d=json.load(open('/tmp/opencode/nc_caps.json'))
+oc=d.get('ocs',{}).get('data',{})
+print('VERSIONS:', oc.get('version',{}).get('string'))
+print('INSTALLED:', oc.get('installed'))
+print('APPS (enabled):', sorted(oc.get('capabilities',{}).get('theming',{}).keys()) if False else '')
+import json as j
+cap=oc.get('capabilities',{})
+print('TOP LEVEL CAPS:', sorted(cap.keys()))
+print()
+print(j.dumps(oc, indent=1)[:4000])
+"
+VERSIONS: 34.0.3
+INSTALLED: None
+APPS (enabled): 
+TOP LEVEL CAPS: ['app_api', 'bruteforce', 'theming']
+
+{
+ "version": {
+  "major": 34,
+  "minor": 0,
+  "micro": 3,
+  "string": "34.0.3",
+  "edition": "",
+  "extendedSupport": false
+ },
+ "capabilities": {
+  "bruteforce": {
+   "delay": 0,
+   "allow-listed": false
+  },
+  "app_api": {
+   "version": "34.0.0"
+  },
+  "theming": {
+   "name": "Nextcloud",
+   "productName": "Nextcloud",
+   "url": "https://nextcloud.com",
+   "imprintUrl": "",
+   "privacyUrl": "",
+   "slogan": "a safe home for all your data",
+   "color": "#00679e",
+   "color-text": "#ffffff",
+   "color-element": "#00679e",
+   "color-element-bright": "#00679e",
+   "color-element-dark": "#00679e",
+   "logo": "https://nc.ipb.de/core/img/logo/logo.svg?v=1",
+   "background": "#00679e",
+   "background-text": "#ffffff",
+   "background-plain": true,
+   "background-default": true,
+   "logoheader": "https://nc.ipb.de/core/img/logo/logo.svg?v=1",
+   "favicon": "https://nc.ipb.de/core/img/logo/logo.svg?v=1",
+   "primaryColor": "#00679e",
+   "backgroundColor": "#00679e",
+   "defaultPrimaryColor": "#00679e",
+   "defaultBackgroundColor": "#00679e",
+   "inverted": false,
+   "cacheBuster": "8855770e",
+   "enabledThemes": []
+  }
+ }
+}
+[0m
+[0m$ [0mfor i in 1 2; do curl -sk -m 20 "https://piwik.ipb.de/login.php" -o /tmp/opencode/piwik_$i.html -w "piwik_$i:%{http_code}:%{size_download}\n"; sleep 1; done; echo "---tokens---"; grep -o 'forgery_protection_token[^>]*' /tmp/opencode/piwik_1.html | head -1; grep -o 'forgery_protection_token[^>]*' /tmp/opencode/piwik_2.html | head -1; echo "---diff---"; diff <(grep -oE 'forgery_protection_token[^>]{20,80}' /tmp/opencode/piwik_1.html) <(grep -oE 'forgery_protection_token[^>]{20,80}' /tmp/opencode/piwik_2.html) && echo "TOKEN_IDENTICAL_BOTH_FETCHES"
+piwik_1:303:0
+piwik_2:303:0
+---tokens---
+---diff---
+TOKEN_IDENTICAL_BOTH_FETCHES
+[0m
+[0m$ [0mcurl -sk -m 20 "https://piwik.ipb.de/login.php" -D - -o /dev/null | grep -i location; echo "---"; for i in 1 2; do curl -sk -m 20 -L "https://piwik.ipb.de/login.php" -o /tmp/opencode/piwik_full_$i.html -w "full_$i:%{http_code}:%{size_download}:url=%{url_effective}\n"; sleep 1; done; echo "---tokens---"; grep -oE 'forgery_protection_token[^>" ]{0,60}' /tmp/opencode/piwik_full_1.html | head -2; echo; grep -oE 'forgery_protection_token[^>" ]{0,60}' /tmp/opencode/piwik_full_2.html | head -2
+location: https://piwik.ipb.de:443/login_up.php
+---
+full_1:200:99189:url=https://piwik.ipb.de:443/login_up.php
+full_2:200:99189:url=https://piwik.ipb.de:443/login_up.php
+---tokens---
+forgery_protection_token
+forgery_protection_token
+
+forgery_protection_token
+forgery_protection_token
+[0m
+[0m$ [0mgrep -oE "forgery_protection_token.{0,120}" /tmp/opencode/piwik_full_1.html | head -5; echo "===2==="; grep -oE "forgery_protection_token.{0,120}" /tmp/opencode/piwik_full_2.html | head -5
+forgery_protection_token" id="forgery_protection_token" content="48cfc9d249ac3a93a9e86d39dac34eec">
+===2===
+forgery_protection_token" id="forgery_protection_token" content="1317f50b51e1f60fb06b8a44f57c39d6">
+[0m
+[0m$ [0mfor f in /tmp/opencode/nc_act.json /tmp/opencode/nc_user.json; do echo "== $f =="; head -c 400 "$f"; echo; done; sleep 1; curl -sk -m 20 "https://cic.ipb.de/" -o /tmp/opencode/cic_root.html -w "cic_root:%{http_code}:%{size_download}\n"; sleep 1; curl -sk -m 20 -I "https://cic.ipb.de/" -o /dev/null -w "cic_headers:%{http_code}\n"
+== /tmp/opencode/nc_act.json ==
+{"ocs":{"meta":{"status":"failure","statuscode":997,"message":"Current user is not logged in"},"data":[]}}
+== /tmp/opencode/nc_user.json ==
+{"ocs":{"meta":{"status":"failure","statuscode":997,"message":"Current user is not logged in"},"data":[]}}
+cic_root:200:1886
+cic_headers:200
+[0m
+[0m→ [0mRead /tmp/opencode/cic_root.html
+[0m
+[0m$ [0mcurl -sk -m 20 "https://guest.gold.ipb.de/" -o /tmp/opencode/guest_root.html -w "guest:%{http_code}:%{size_download}\n"; sleep 1; curl -sk -m 25 "https://speedtest.ipb.de/" -o /tmp/opencode/st_root.html -w "speedtest:%{http_code}:%{size_download}\n"; echo "--- guest head ---"; head -c 300 /tmp/opencode/guest_root.html
+guest:000:0
+speedtest:000:0
+--- guest head ---
+head: cannot open '/tmp/opencode/guest_root.html' for reading: No such file or directory
+[0m
+STEP 1 — DELTA:
+- [CHANGED] nc.ipb.de /ocs/v2.php/cloud/capabilities live-verified (TLS bypass): 200 — caps expose ONLY bruteforce(delay=0)+app_api(34.0.0)+theming; prior KC claim that "capabilities API confirms provisioning_api/impersonate/oauth2/circles" is UNSUPPORTED (those apps don't surface here).
+- [CHANGED] nc.ipb.de /cloud/activity + /cloud/user unauthenticated → 401, OCS 997 "not logged in" — unauth data leak CONFIRMED closed.
+- [CHANGED] piwik.ipb.de login_up.php forgery_protection_token ROTATES per fetch (48cfc9… vs 1317f5…) — static-token CSRF hypothesis killed, size identical (99189B).
+- [NEW] cic.ipb.de root (200, 1886B): custom PHP "Customer Information Center" login, POST-to-self, no CSRF token, user/pass fields — public login panel class.
+- [LEARN] piwik.ipb.de + webcam.ipb.de = SAME Plesk default virtualhost behind wildcard (303→login_up.php, 99189B both) — of the "5 new services," only nc/gold/cic are genuine vhosts; eticket/piwik/webcam are wildcard default app responses. Risk overcount corrected.
+
+STEP 2 — PRIORITIZE:
+- [PRIO] pluto.portal.ipb.de,5.6,(a7/b9/t5/g2/c2/f3) — cross-tenant chokepoint, HUMAN_ONLY bottleneck
+- [PRIO] nc.ipb.de,5.2,(a6/b8/t6/g1/c2/f4) — NC34 app_api surface, unauth angle closed
+- [PRIO] gold.ipb.de,3.4,(a4/b5/t5/g1/c0/f2) — Jitsi anonymous guest by design
+
+STEP 3 — HYPOTHESES:
+[HYP] Cross-tenant BOLA on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de
+confidence: 65
+reasoning: DRF multi-tenant portal; /api/system/ live 401; all seq-ID object endpoints auth-gated; per-tenant token auth is sole cross-tenant control; no public registration route (SPA fallback, user-reg 401, tenant-reg 403)
+evidence_needed: two tenant accounts; tenant-A token accessing tenant-B sequential object IDs
+verify_steps: authenticated GET /api/multi-tenancy/v1/<obj>/<seq> iterate seq ids with cross-tenant token
+impact: cross-tenant PII/association data dump — CRITICAL
+testability: HUMAN_ONLY
+[HYP] Nextcloud authenticated provisioning/impersonate mis-scoping
+class: AUTH
+asset: nc.ipb.de
+confidence: 45
+reasoning: NC 34.0.3 live; caps confirm app_api 34.0.0 + bruteforce delay=0; activity+user OCS return 401/997 unauth; provisioning/impersonate enablement NOT confirmed by caps endpoint (earlier bundle claim unsupported by live caps); unauth leak ruled out
+evidence_needed: any valid NC session; OCS /cloud/users listing + impersonate header test
+verify_steps: GET /ocs/v2.php/cloud/users?format=json with token; replay with OC-Impersonate header
+impact: full user data + account takeover as any user — CRITICAL if session obtained
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE:
+- [REJECTED] Plesk forgery_protection_token CSRF: token rotates per fetch (48cfc9…→1317f5…), staticity disproven; also public-login class. Dropped.
+- [PARKED] cic.ipb.de login: public login panel, username-enum only, no CSRF; out-of-scope class.
+- [PARKED] gold.ipb.de Jitsi anonymous guest: by-design config, no room-URL leak path.
+- [FINAL] pluto.portal.ipb.de cross-tenant BOLA (65) — top overall, unchanged, needs credentialed access.
+- [FINAL] nc.ipb.de Nextcloud provisioning/impersonate (45, ↓ from 55) — caps do NOT confirm app claims; value contingent on session acquisition.
+
+STEP 5 — NEXT ACTION:
+[NEXT] HUMAN: obtain one attacker-owned tenant account on pluto.portal.ipb.de EdgePortal and test token-scoped cross-tenant seq-ID access on /api/multi-tenancy/v1/{association-request,user,check-in}/* against a sibling tenant; also obtain a valid low-priv NC session for /ocs/v2.php/cloud/users + impersonate header.
+
+STEP 6 — LEARNING:
+- [LEARN] REJECTED AUTH @ piwik.ipb.de: forgery_protection_token rotates per fetch (48cfc9 vs 1317f5), static-token CSRF disproven; do not re-probe.
+- [LEARN] ACCEPTED MISCONFIG @ piwik/webcam.ipb.de: identical Plesk default vhost behind wildcard (99189B, same 303→login_up.php) — piwik/webcam NOT distinct services; only nc/gold/cic are genuine vhosts.
+- [LEARN] ACCEPTED framework-recon @ nc.ipb.de: unauth OCS capabilities 200 (bruteforce delay=0, app_api 34.0.0); /cloud/{activity,user} 401/997 — unauth leak closed; provisioning/impersonate NOT visible in live caps.
+
+STEP 7 — RISK:
+[RISK] ipb: 60 (↓ from 68) — piwik token staticity disproven, piwik/webcam reduced to shared default vhost (risk overcount corrected), nc unauth leak closed, caps contradict earlier impersonate/provisioning claim; remaining exposure: NC34 hosted file surface, Plesk panel default-vhost blast radius, wildcard hides services. Validated bugs: 0.

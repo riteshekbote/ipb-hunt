@@ -607,3 +607,50 @@ testability: PASSIVE
 [LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi Meet config.js public, anonymous guest domain, XMPP backend  
 [LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token meta  
 [RISK] ipb: 68 — 5 new live services behind wildcard proxy dramatically expand attack surface; nc.ipb.de Nextcloud with provisioning_api + impersonate is CRITICAL value if auth obtained; gold.ipb.de Jitsi with anonymous guest access; cic.ipb.de custom PHP login; two Plesk panels. pluto.portal.ipb.de remains top BOLA target (65 confidence). _exceptions self-reg hypothesis killed (no credential path). Validated bugs: 0.
+## 2026-09-05 00:33:01 UTC [target] (model nemotron3)
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /api/multi-tenancy/v1/user/{id}/, /api/multi-tenancy/v1/association-request/{id}/, /api/check-in/v1/check-in/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface including /api/system/, motd, check-in, association-request, user-token, self endpoints
+evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation (200 vs 403/404 differentiation)
+verify_steps: 1) Obtain low-priv credentialed session (Token); 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/
+impact: Cross-tenant PII dump (membership, user, association-request, check-in data); HIGH
+testability: AUTH_HELPED
+class: AUTH
+asset: nc.ipb.de
+confidence: 55
+reasoning: status.php confirms Nextcloud 34.0.3 installed, not in maintenance; OCS capabilities API confirms provisioning_api (user CRUD), impersonate (admin act-as-user), oauth2, circles, WebDAV all enabled; bruteforce delay=0; WebDAV returns Sabre DAV 401 with auth guidance
+evidence_needed: authenticated OCS request showing user listing or impersonation; or unauthenticated endpoint leaking user data
+verify_steps: GET https://nc.ipb.de/ocs/v2.php/cloud/capabilities -H "OCS-APIRequest: true" (confirm full enabled app list); GET https://nc.ipb.de/ocs/v2.php/cloud/activity (unauth data leak check); GET https://nc.ipb.de/ocs/v2.php/cloud/user (unauth data leak check); all via curl -k to bypass SSL cert verify
+impact: Full user data access + impersonation of any user — CRITICAL if auth obtained
+testability: HUMAN_ONLY
+class: MISCONFIG
+asset: *.ipb.de (eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de, app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de)
+confidence: 60
+reasoning: Dedicated deep scan confirms wildcard DNS — 0 genuinely dedicated hosts after shared-IP filtering; 21 inventory hosts never individually re-confirmed post-discovery; SSL cert verify failures on 6 subdomains confirm live TLS endpoints behind wildcard proxy; real services may exist behind wildcard responding only to correct Host headers or specific paths
+evidence_needed: live HTTP response on any wildcard subdomain with distinct content vs wildcard fallback
+verify_steps: GET https://eticket.ipb.de/ (Host: eticket.ipb.de) — check Server header, content length, status vs wildcard; repeat for nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de at 1 rps GET/HEAD only (use curl -k for SSL cert failures)
+impact: Hidden attack surface (ticketing, Nextcloud, monitoring, webcam, customer portal, auth, cloud, prod API) — HIGH if real services exist
+testability: PASSIVE
+[PARKED] Kiosk TOTP validation endpoint logic flaw: confidence 40 (at threshold), requires valid token format knowledge, enumeration at scale may trigger WAF, low impact relative to cross-tenant BOLA
+[PARKED] Plesk forgery_protection_token static → CSRF on admin panel: confidence 45 but Plesk panels are public login panels (out-of-scope per program rules); staticity unproven; needs passive confirmation first
+[PARKED] CIC custom PHP SQL injection: confidence 35, public login panel out-of-scope per program rules, no evidence of vulnerability
+[FINAL] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact, AUTH_HELPED testability
+[FINAL] Nextcloud OCS provisioning_api + impersonate = privilege escalation vector (confidence 55) — HUMAN_ONLY but CRITICAL value if auth obtained, well-defined verify steps
+[FINAL] Wildcard DNS masking hidden attack surface on *.ipb.de subdomains with live TLS endpoints (confidence 60) — surviving passive hypothesis, testable now with Host header probes, HIGH impact if confirmed, PASSIVE testability
+[NEXT] PROBE: GET https://nc.ipb.de/ocs/v2.php/cloud/capabilities -H "OCS-APIRequest: true" — extract full enabled app list to confirm provisioning_api, impersonate, oauth2 scope; GET https://nc.ipb.de/ocs/v2.php/cloud/activity and GET https://nc.ipb.de/ocs/v2.php/cloud/user with empty credentials — check for unauthenticated data leak (use curl -k for SSL cert verify bypass)
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: DRF multi-tenancy is the prime cross-tenant chokepoint; expanded surface (association-request, user-token, self endpoints) all seq-ID auth-gated; top priority pending credentialed access
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de: wildcard DNS confirmed by dedicated deep scan (0 genuinely dedicated hosts), hides real attack surface; 21 inventory hosts never individually re-confirmed; SSL cert failures on 6 subdomains confirm live TLS behind proxy
+[LEARN] ACCEPTED AUTH @ pluto.portal.ipb.de: kiosk_login token oracle is a low-severity enumeration; distinct error message per token validity confirmed in bundle
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface (incl. /api/system/, motd, check-in, association-request) uniformly auth-gated (401, WWW-Authenticate: Token); no unauth config/schema leak (all SPA fallback)
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/openapi all return SPA fallback, not schema/config leak; do not re-probe as unauth surface
+[LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject open-redirect class here
+[LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked)
+[LEARN] REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist confirm mature hardening; do not re-probe
+[LEARN] ACCEPTED MISCONFIG @ nc/gold/piwik/webcam/cic.ipb.de: 5 new live services confirmed behind wildcard proxy — Nextcloud 34.0.3 (nc), Jitsi Meet (gold), Plesk Panel x2 (piwik/webcam), CIC PHP login (cic)
+[LEARN] ACCEPTED MISCONFIG @ eticket.ipb.de: pretix "Unknown host" — no custom domain, wildcard handling
+[LEARN] REJECTED AUTH @ pluto.portal.ipb.de _exceptions routes: all SPA fallback (354606), user-registration API 401, tenant-registration 403; self-service credential hypothesis killed
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: Nextcloud 34.0.3 with provisioning_api/impersonate/oauth2/circles/WebDAV/OCS; bruteforce delay=0; status.php version leak
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi Meet config.js public, anonymous guest domain, XMPP backend
+[LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token meta
+[RISK] ipb: 68 — 5 new live services behind wildcard proxy dramatically expand attack surface; nc.ipb.de Nextcloud with provisioning_api + impersonate is CRITICAL value if auth obtained; gold.ipb.de Jitsi with anonymous guest access; cic.ipb.de custom PHP login; two Plesk panels. pluto.portal.ipb.de remains top BOLA target (65 confidence). _exceptions self-reg hypothesis killed (no credential path). Validated bugs: 0.
