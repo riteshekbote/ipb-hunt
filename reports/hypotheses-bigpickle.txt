@@ -1,21 +1,30 @@
-## 2026-09-05 00:30:36 UTC [target] (model bigpickle)
+## 2026-09-05 05:00:45 UTC [target] (model bigpickle)
 [HYP] Cross-tenant BOLA on EdgePortal multi-tenancy API
 class: IDOR
-asset: pluto.portal.ipb.de
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{tenant,user,association-request,user-token,membership}/
 confidence: 65
-reasoning: DRF multi-tenant portal; /api/system/ live 401; all seq-ID object endpoints auth-gated; per-tenant token auth is sole cross-tenant control; no public registration route (SPA fallback, user-reg 401, tenant-reg 403)
-evidence_needed: two tenant accounts; tenant-A token accessing tenant-B sequential object IDs
-verify_steps: authenticated GET /api/multi-tenancy/v1/<obj>/<seq> iterate seq ids with cross-tenant token
-impact: cross-tenant PII/association data dump — CRITICAL
+reasoning: DRF multi-tenant portal; GET probes uniformly 401 Token-auth; per-tenant token is sole cross-tenant control. This cycle additionally confirmed public OPTIONS metadata exposes full seq-ID serializer schemas (user, tenant) useful for exact IDOR BOLA tests.
+evidence_needed: two tenant accounts; tenant-A token reading tenant-B seq-ID objects
+verify_steps: POST /api/session/ {username,password} → GET /api/multi-tenancy/v1/user/{id}/, /tenant/{id}/, /association-request/{id}/ cross-tenant
+impact: cross-tenant PII/association dump — CRITICAL
 testability: HUMAN_ONLY
-[HYP] Nextcloud authenticated provisioning/impersonate mis-scoping
+[HYP] Nextcloud OCS provisioning/impersonate mis-scoping
 class: AUTH
 asset: nc.ipb.de
 confidence: 45
-reasoning: NC 34.0.3 live; caps confirm app_api 34.0.0 + bruteforce delay=0; activity+user OCS return 401/997 unauth; provisioning/impersonate enablement NOT confirmed by caps endpoint (earlier bundle claim unsupported by live caps); unauth leak ruled out
-evidence_needed: any valid NC session; OCS /cloud/users listing + impersonate header test
-verify_steps: GET /ocs/v2.php/cloud/users?format=json with token; replay with OC-Impersonate header
-impact: full user data + account takeover as any user — CRITICAL if session obtained
+reasoning: NC 34.0.3 live, bruteforce delay=0; unauth activity/user OCS closed (401/997); live caps do NOT confirm impersonate/provisioning enablement (contradicts earlier bundle claim); any session would unlock /cloud/users + OC-Impersonate tests.
+evidence_needed: any valid low-priv NC session
+verify_steps: GET /ocs/v2.php/cloud/users?format=json with token; replay with OC-Impersonate header against /cloud/user/{id}
+impact: full user data + ATO — CRITICAL if session obtained
 testability: HUMAN_ONLY
-[NEXT] HUMAN: obtain one attacker-owned tenant account on pluto.portal.ipb.de EdgePortal and test token-scoped cross-tenant seq-ID access on /api/multi-tenancy/v1/{association-request,user,check-in}/* against a sibling tenant; also obtain a valid low-priv NC session for /ocs/v2.php/cloud/users + impersonate header.
-[RISK] ipb: 60 (↓ from 68) — piwik token staticity disproven, piwik/webcam reduced to shared default vhost (risk overcount corrected), nc unauth leak closed, caps contradict earlier impersonate/provisioning claim; remaining exposure: NC34 hosted file surface, Plesk panel default-vhost blast radius, wildcard hides services. Validated bugs: 0.
+[HYP] Profile-picture upload content-type confusion → stored XSS cross-tenant
+class: OTHER
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/upload/
+confidence: 45
+reasoning: live POST multipart upload endpoint (401 unauth = auth-gated); avatar served via /download/ on same origin as admin SPA; SVG/HTML content-type bypass or filename reuse could yield stored XSS against staff viewing a tenant's avatar; multi-tenant makes attacker reach any staff tenant.
+evidence_needed: authed upload of SVG/HTML avatar served inline from portal origin
+verify_steps: with any tenant token POST multipart file (svg/html) → GET /download/ observe Content-Type + inline rendering
+impact: stored XSS → admin session theft → full multi-tenant compromise — HIGH
+testability: HUMAN_ONLY
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant account (pluto.portal.ipb.de) — then, using the now-known public OPTIONS schemas, test cross-tenant seq-ID BOLA on /api/multi-tenancy/v1/{user,tenant,association-request,user-token}/(1..N) with the tenant-A token, AND test profile-picture upload/ with an SVG payload (stored-XSS chain). Also obtain one low-priv NC session for /ocs/v2.php/cloud/users + OC-Impersonate. All three FINAL hypotheses are purely credential-gated.
+[RISK] ipb: 60 (unchanged) — no validated bugs; genuinely new this cycle: 1 dedicated live host (mirror, nginx 404 low value), public unauth reset endpoint + DRF metadata schema leak on pluto (recon value, recovery-policy OOS), auth-gated avatar upload surface. Credential gate remains the single blocker for all CRITICAL-valued hypotheses (BOLA 65, NC 45, upload 45). Validated bugs: 0.

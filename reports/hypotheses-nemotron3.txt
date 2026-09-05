@@ -1,4 +1,5 @@
-## 2026-09-05 00:33:01 UTC [target] (model nemotron3)
+## 2026-09-05 04:55:55 UTC [target] (model nemotron3)
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
 class: IDOR
 asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /api/multi-tenancy/v1/user/{id}/, /api/multi-tenancy/v1/association-request/{id}/, /api/check-in/v1/check-in/{id}/
 confidence: 65
@@ -7,6 +8,7 @@ evidence_needed: authenticated low-priv account reading another tenant's objects
 verify_steps: 1) Obtain low-priv credentialed session (Token); 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/
 impact: Cross-tenant PII dump (membership, user, association-request, check-in data); HIGH
 testability: AUTH_HELPED
+[HYP] Nextcloud OCS provisioning_api + impersonate = privilege escalation vector
 class: AUTH
 asset: nc.ipb.de
 confidence: 55
@@ -15,6 +17,7 @@ evidence_needed: authenticated OCS request showing user listing or impersonation
 verify_steps: GET https://nc.ipb.de/ocs/v2.php/cloud/capabilities -H "OCS-APIRequest: true" (confirm full enabled app list); GET https://nc.ipb.de/ocs/v2.php/cloud/activity (unauth data leak check); GET https://nc.ipb.de/ocs/v2.php/cloud/user (unauth data leak check); all via curl -k to bypass SSL cert verify
 impact: Full user data access + impersonation of any user — CRITICAL if auth obtained
 testability: HUMAN_ONLY
+[HYP] Wildcard DNS masking hidden attack surface on *.ipb.de subdomains with live TLS endpoints
 class: MISCONFIG
 asset: *.ipb.de (eticket.ipb.de, nc.ipb.de, gold.ipb.de, piwik.ipb.de, webcam.ipb.de, cic.ipb.de, app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de)
 confidence: 60
