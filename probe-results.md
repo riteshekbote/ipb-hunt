@@ -114,3 +114,15 @@ https://nc.ipb.de/remote.php/dav/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY
 
 ## 2026-09-05 15:22:55 UTC
 https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+
+## 2026-09-05 17:26:10 UTC
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://auth.gold.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://cloud.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://my.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://prod.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://auth.gold.ipb.de/.well-known/openid-configuration -> ERR <urlopen error [Errno -2] Name or service not know
+https://auth.gold.ipb.de/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code -> ERR <urlopen error [Errno -2] Name or service not know
+https://nc.ipb.de/ocs/v2.php/cloud/capabilities -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/activity -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/remote.php/dav/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce

@@ -190,3 +190,32 @@ www.survey.ipb.de
 - NEW nc.ipb.de WebDAV (remote.php/dav/) returns 401 NotAuthenticated with Sabre DAV 4.0+ auth guidance (live probe with curl -k)
 - CHANGED nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live probe
 - CHANGED probe-results.md shows all nc.ipb.de and eticket.ipb.de probes still failing SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
+
+## 2026-09-05 17:25:57 UTC
+- NEW pluto.portal.ipb.de live — React SPA backed by DRF multi-tenancy API (HTTP 200)
+- NEW event.ipb.de live — pretix ticketing (HTTP 200), nginx/1.31.4
+- NEW www.ipb.de live — PHP/8.3.33 on PleskLin (HTTP 200)
+- NEW ipb.de → 301 → www.ipb.de
+- CHANGED `/.env`, `/server-info` on www.ipb.de → 403 (blocked, not exposed)
+- NEW app.ipb.de, auth.gold.ipb.de, my.ipb.de, prod.ipb.de, cloud.ipb.de — DNS resolution failure (Name or service not known) or SSL cert verify failed on probe attempts
+- NEW pluto.portal.ipb.de live — React SPA backed by DRF multi-tenancy API (HTTP 200), extensive /api/multi-tenancy/v1/, /api/admin/, /api/check-in/ endpoints discovered in bundle
+- NEW event.ipb.de live — pretix ticketing (HTTP 200), nginx/1.31.4, /control 403, /redirect/ allowlisted
+- NEW www.ipb.de live — PHP/8.3.33 on PleskLin (HTTP 200)
+- NEW ipb.de → 301 → www.ipb.de
+- CHANGED `/.env`, `/server-info` on www.ipb.de → 403 (blocked, not exposed)
+- NEW app.ipb.de, auth.gold.ipb.de, my.ipb.de, prod.ipb.de, cloud.ipb.de — DNS resolution failure (Name or service not known) or SSL cert verify failed on probe attempts
+- CHANGED Dedicated deep scan confirms wildcard DNS on *.ipb.de — 0 genuinely dedicated hosts after shared-IP filtering
+- NEW nc.ipb.de OCS capabilities endpoint confirmed live unauthenticated via curl -k — returns Nextcloud 34.0.3, bruteforce.delay=0, app_api 34.0.0; provisioning_api/impersonate/oauth2/circles NOT confirmed
+- NEW nc.ipb.de WebDAV (remote.php/dav/) returns 401 NotAuthenticated with Sabre DAV 4.0+ auth guidance (live probe with curl -k)
+- CHANGED nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live probe
+- CHANGED probe-results.md shows all nc.ipb.de and eticket.ipb.de probes still failing SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
+- NEW nc.ipb.de OCS capabilities endpoint confirmed live unauthenticated via curl -k — returns Nextcloud 34.0.3, bruteforce.delay=0, app_api 34.0.0; provisioning_api/impersonate/oauth2/circles NOT confirmed
+- NEW nc.ipb.de WebDAV (remote.php/dav/) returns 401 NotAuthenticated with Sabre DAV 4.0+ auth guidance (live probe with curl -k)
+- CHANGED nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live probe
+- CHANGED probe-results.md shows all nc.ipb.de and eticket.ipb.de probes still failing SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
+- NEW nc.ipb.de OCS capabilities endpoint confirmed live unauthenticated via curl -k — returns Nextcloud 34.0.3, bruteforce.delay=0, app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT conf
+- NEW nc.ipb.de WebDAV (remote.php/dav/) returns 401 NotAuthenticated with Sabre DAV 4.0+ auth guidance (live probe with curl -k)
+- CHANGED nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live probe
+- CHANGED probe-results.md shows all nc.ipb.de and eticket.ipb.de probes still failing SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
+- NEW guest.gold.ipb.de does not resolve (000) this cycle — Jitsi anonymousdomain config-only, not a separate live vhost
+- NEW *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de all DNS-dead (000) — wildcard mask persists, no new hidden service

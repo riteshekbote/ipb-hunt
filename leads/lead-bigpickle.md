@@ -702,3 +702,272 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
 [LEARN] ACCEPTED MISCONFIG @ eticket.ipb.de: pretix "Unknown host" (400); no custom domain configured
 [RISK] ipb: 58 (unchanged) — no new validated bug this cycle; all remaining high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) are credential-gated; zero validated bugs; live surface fully surveyed; 58 reflects the large auth-gated attack surface that materializes once any valid account is obtained.
+## 2026-09-05 17:24:06 UTC [target] (model bigpickle)
+[PRIO] app.ipb.de,0,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] auth.gold.ipb.de,0,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] cloud.ipb.de,0,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] my.ipb.de,0,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] prod.ipb.de,0,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] cic.ipb.de,0,attack_surface=0,business_value=7,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] gold.ipb.de,0,attack_surface=0,business_value=7,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] speedtest.ipb.de,0,attack_surface=0,business_value=5,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] www.ipb.de,0,attack_surface=0,business_value=6,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] ipb.de,0,attack_surface=0,business_value=6,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[HYP] Wildcard DNS masks real attack surface
+class: MISCONFIG
+asset: *.ipb.de
+confidence: 60
+reasoning: Dedicated deep scan found 0 genuinely dedicated hosts; all 33 inventory hosts resolve to shared/CDN/wildcard IPs. Real services may exist behind wildcard but not enumerated passively.
+evidence_needed: HTTP responses from any host showing distinct service fingerprints (Server header, app routes, tech stack) proving non-wildcard content
+verify_steps: GET https://app.ipb.de/ | HEAD https://auth.gold.ipb.de/ | GET https://cloud.ipb.de/ | GET https://my.ipb.de/ | GET https://prod.ipb.de/ (all with Host header, 1 rps, GET/HEAD only)
+impact: If real services exist behind wildcard, full attack surface (auth, cloud, customer portal, prod API) is hidden from passive recon
+testability: PASSIVE
+[HYP] Customer portal at my.ipb.de exposes IDOR/BOLA on account resources
+class: IDOR
+asset: my.ipb.de
+confidence: 35
+reasoning: Naming pattern "my." suggests customer self-service portal; such portals commonly have object-level auth flaws on /api/v1/account/{id}, /subscription/{id}, /invoice/{id} endpoints
+evidence_needed: Live HTTP 200 on my.ipb.de with authenticated session showing user-scoped resource IDs in responses
+verify_steps: GET https://my.ipb.de/ (check for login portal, API endpoints in JS, versioned /api/ paths)
+impact: Cross-tenant access to customer PII, billing, subscription data — HIGH severity
+testability: AUTH_HELPED
+[HYP] auth.gold.ipb.de OAuth/OIDC implementation vulnerable to redirect_uri validation bypass
+class: OATH
+asset: auth.gold.ipb.de
+confidence: 30
+reasoning: "auth.gold" subdomain suggests centralized auth provider (possibly Keycloak/Auth0/custom); OAuth redirect_uri flaws are high-value for ATO via code theft
+evidence_needed: Live HTTP on auth.gold.ipb.de showing /authorize, /token, /.well-known/openid-configuration endpoints
+verify_steps: GET https://auth.gold.ipb.de/.well-known/openid-configuration | GET https://auth.gold.ipb.de/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code
+impact: Full account takeover via authorization code theft — CRITICAL severity
+testability: PASSIVE
+[PARKED] Customer portal at my.ipb.de exposes IDOR/BOLA on account resources: confidence 35 < 40, no live endpoint confirmed, verify_steps require auth which we don't have
+[PARKED] auth.gold.ipb.de OAuth/OIDC implementation vulnerable to redirect_uri validation bypass: confidence 30 < 40, no live endpoint confirmed, passive verify may 404
+[FINAL] Wildcard DNS masks real attack surface (confidence 60) — only surviving hypothesis
+[NEXT] PROBE: GET https://app.ipb.de/ (Host: app.ipb.de) — check for live HTTP, Server header, distinct content vs wildcard; repeat for auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de at 1 rps GET/HEAD only
+[LEARN] REJECTED IDOR @ my.ipb.de: no live HTTP confirmed, confidence < 40, requires auth
+[LEARN] REJECTED OATH @ auth.gold.ipb.de: no live HTTP confirmed, confidence < 40, passive-only verify may 404
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de: wildcard DNS confirmed by dedicated deep scan (0 genuinely dedicated hosts), hides real attack surface
+[RISK] ipb: 15 — wildcard-dominated DNS with 0 confirmed live HTTP endpoints; attack surface currently unobservable. Risk increases to 60+ once any live customer-facing portal (my.ipb.de, auth.gold.ipb.de, cloud.ipb.de) is confirmed.
+[NEW] pluto.portal.ipb.de live — React SPA backed by DRF multi-tenancy API (HTTP 200)
+[NEW] event.ipb.de live — pretix ticketing (HTTP 200), nginx/1.31.4
+[NEW] www.ipb.de live — PHP/8.3.33 on PleskLin (HTTP 200)
+[NEW] ipb.de → 301 → www.ipb.de
+[CHANGED] `/.env`, `/server-info` on www.ipb.de → 403 (blocked, not exposed)
+[NEW] app.ipb.de, auth.gold.ipb.de, my.ipb.de, prod.ipb.de, cloud.ipb.de — DNS resolution failure (Name or service not known) or SSL cert verify failed on probe attempts
+[PRIO] pluto.portal.ipb.de,7.75,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=7,freshness=9
+[PRIO] event.ipb.de,5.45,attack_surface=5,business_value=6,tech_exposure=4,gate_ease=8,cloud_surface=3,freshness=8
+[PRIO] www.ipb.de,4.35,attack_surface=3,business_value=5,tech_exposure=3,gate_ease=8,cloud_surface=2,freshness=7
+[PRIO] auth.gold.ipb.de,2.25,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] my.ipb.de,2.25,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] cloud.ipb.de,2.00,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[HYP] Cross-tenant BOLA across membership/tenant/user endpoints on pluto.portal.ipb.de
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/
+confidence: 60
+reasoning: DRF multi-tenancy exposes per-tenant user/membership/relationship objects with EAV + bulk export endpoints; object IDs are sequential; per-tenant authorization is the prime BOLA chokepoint. All endpoints return `Authentication credentials were not provided` unauthenticated.
+evidence_needed: authenticated low-priv account reading another tenant's user/membership/relationship objects by ID
+verify_steps: POST /api/session/ {username,password} to obtain session; GET /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/ across tenant boundaries as low-priv user
+impact: cross-tenant PII dump / privilege escalation — HIGH
+testability: AUTH_HELPED
+[HYP] Admin dynamic-config mass assignment override via /api/admin/dynamic-config/v1/config-namespace/apply/
+class: MISCONFIG
+asset: pluto.portal.ipb.de /api/admin/dynamic-config/v1/config-namespace/apply/
+confidence: 45
+reasoning: SPA calls adminCreateDynamicConfig with arbitrary keys → apply/; no scoping in bundle; config namespaces (branding/motd/dns) could be overridden by elevated/admin accounts
+evidence_needed: authenticated admin (or elevated) writing to another namespace
+verify_steps: POST /api/session/ {admin_creds} to obtain session; POST /api/admin/dynamic-config/v1/config-namespace/apply/ with cross-namespace payload
+impact: config tampering / defacement / DNS hijack via branding/motd/dns namespaces — MEDIUM-HIGH
+testability: AUTH_HELPED
+[HYP] Check-in kiosk token user-enumeration via /api/check-in/v1/check-in/kiosk_login/
+class: AUTH
+asset: pluto.portal.ipb.de /api/check-in/v1/check-in/kiosk_login/
+confidence: 45
+reasoning: POST {token} returns `No User matches the given query.` vs other responses for invalid tokens — token existence oracle; no rate limit observed on endpoint
+evidence_needed: enumerate valid 32-hex kiosk tokens without auth
+verify_steps: POST /api/check-in/v1/check-in/kiosk_login/ with candidate 32-hex tokens; observe response differentiation
+impact: low alone, weakens kiosk gate; enables targeted token brute-force — LOW-MEDIUM
+testability: PASSIVE
+[PARKED] Admin dynamic-config mass assignment override: confidence 45 but requires admin/elevated creds (HUMAN_ONLY gate), no path to obtain creds
+[PARKED] Check-in kiosk token user-enumeration: confidence 45 but endpoint requires valid token format knowledge; enumeration at scale may trigger WAF
+[FINAL] Cross-tenant BOLA across membership/tenant/user endpoints (confidence 60) — highest confidence, clear verify path, HIGH impact
+[NEXT] HUMANAUTH: sponsor/obtain a valid low-privilege credentialed account on pluto.portal.ipb.de to exercise cross-tenant BOLA on /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/
+[LEARN] REJECTED IDOR @ my.ipb.de: no live HTTP confirmed, confidence < 40, requires auth
+[LEARN] REJECTED OATH @ auth.gold.ipb.de: no live HTTP confirmed, confidence < 40, passive-only verify may 404
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de: wildcard DNS confirmed by dedicated deep scan (0 genuinely dedicated hosts), hides real attack surface
+[LEARN] ACCEPTED framework recon @ pluto.portal.ipb.de — DRF with multi-tenancy; auth required, CSRF via /api/ct/
+[LEARN] REJECTED open-redirect @ event.ipb.de — /redirect/ validates against fixed allowlist
+[LEARN] ACCEPTED framework-recon AUTH @ pluto.portal.ipb.de: DRF multi-tenancy, all data endpoints auth-gated, CSRF via unbound /api/ct/
+[LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked)
+[LEARN] ACCEPTED cross-tenant BOLA @ pluto.portal.ipb.de: DRF multi-tenancy API with sequential IDs, auth-gated but per-tenant auth is sole BOLA control
+[RISK] ipb: 55 — pluto.portal.ipb.de exposes an unusually large authenticated multi-tenant API (PII, DNS, inventory, shipping, check-in, AI); surface is high but gated by auth. Unauthenticated risk moderate. Highest exposure emerges once any credentialed account is obtained. Wildcard DNS on *.ipb.de still masks potential additional attack surface (app, auth, cloud, my, prod subdomains unresolved).
+[NEW] pluto.portal.ipb.de live — React SPA backed by DRF multi-tenancy API (HTTP 200), extensive /api/multi-tenancy/v1/, /api/admin/, /api/check-in/ endpoints discovered in bundle  
+[NEW] event.ipb.de live — pretix ticketing (HTTP 200), nginx/1.31.4, /control 403, /redirect/ allowlisted  
+[NEW] www.ipb.de live — PHP/8.3.33 on PleskLin (HTTP 200)  
+[NEW] ipb.de → 301 → www.ipb.de  
+[CHANGED] `/.env`, `/server-info` on www.ipb.de → 403 (blocked, not exposed)  
+[NEW] app.ipb.de, auth.gold.ipb.de, my.ipb.de, prod.ipb.de, cloud.ipb.de — DNS resolution failure (Name or service not known) or SSL cert verify failed on probe attempts  
+[CHANGED] Dedicated deep scan confirms wildcard DNS on *.ipb.de — 0 genuinely dedicated hosts after shared-IP filtering  
+[PRIO] pluto.portal.ipb.de,7.75,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=7,freshness=9  
+[PRIO] event.ipb.de,5.45,attack_surface=5,business_value=6,tech_exposure=4,gate_ease=8,cloud_surface=3,freshness=8  
+[PRIO] www.ipb.de,4.35,attack_surface=3,business_value=5,tech_exposure=3,gate_ease=8,cloud_surface=2,freshness=7  
+[PRIO] auth.gold.ipb.de,2.25,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0  
+[PRIO] my.ipb.de,2.25,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0  
+[PRIO] cloud.ipb.de,2.00,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0  
+[HYP] Cross-tenant BOLA across membership/tenant/user endpoints on pluto.portal.ipb.de  
+class: IDOR  
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/  
+confidence: 60  
+reasoning: DRF multi-tenancy exposes per-tenant user/membership/relationship objects with EAV + bulk export endpoints; object IDs are sequential; per-tenant authorization is the sole BOLA control. All endpoints return `Authentication credentials were not provided` unauthenticated.  
+evidence_needed: authenticated low-priv account reading another tenant's user/membership/relationship objects by ID  
+verify_steps: POST /api/session/ {username,password} to obtain session; GET /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/ across tenant boundaries as low-priv user
+[NEW] nc.ipb.de OCS capabilities endpoint confirmed live unauthenticated via curl -k — returns Nextcloud 34.0.3, bruteforce.delay=0, app_api 34.0.0; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps (prior KC entry overstated)
+[NEW] nc.ipb.de WebDAV (remote.php/dav/) returns 401 NotAuthenticated with Sabre DAV 4.0+ auth guidance (live probe with curl -k)
+[CHANGED] nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live probe
+[CHANGED] probe-results.md shows all nc.ipb.de and eticket.ipb.de probes still failing SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
+[PRIO] nc.ipb.de,8.15,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=8,freshness=10
+[PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
+[PRIO] *.ipb.de (wildcard),7.60,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=10,cloud_surface=9,freshness=8
+[PRIO] gold.ipb.de,6.90,attack_surface=6,business_value=7,tech_exposure=7,gate_ease=8,cloud_surface=6,freshness=8
+[PRIO] piwik.ipb.de,5.35,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=4,cloud_surface=5,freshness=7
+[PRIO] cic.ipb.de,5.15,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=4,cloud_surface=4,freshness=7
+[PRIO] eticket.ipb.de,4.35,attack_surface=4,business_value=5,tech_exposure=4,gate_ease=3,cloud_surface=4,freshness=7
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /api/multi-tenancy/v1/user/{id}/, /api/multi-tenancy/v1/association-request/{id}/, /api/check-in/v1/check-in/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface including /api/system/, motd, check-in, association-request, user-token, self endpoints
+evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation (200 vs 403/404 differentiation)
+verify_steps: 1) Obtain low-priv credentialed session (Token); 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/
+impact: Cross-tenant PII dump (membership, user, association-request, check-in data); HIGH
+testability: AUTH_HELPED
+[HYP] Wildcard DNS masking hidden attack surface on *.ipb.de subdomains with live TLS endpoints
+class: MISCONFIG
+asset: *.ipb.de (app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, survey.ipb.de, www.cic.ipb.de, speedtest.ipb.de, de-cix.ipb.de, kinski.ipb.de, hostmaster.ipb.de, track.ipb.de, spam.ipb.de, spam01.ipb.de, spam02.ipb.de, ns6.ipb.de, dns2.ipb.de, mail.ipb.de, moderated.gold.ipb.de, focus.gold.ipb.de, mirror.ipb.de)
+confidence: 60
+reasoning: Dedicated deep scan confirms wildcard DNS — 0 genuinely dedicated hosts after shared-IP filtering; 21 inventory hosts never individually re-confirmed post-discovery; SSL cert verify failures on 6 subdomains confirm live TLS endpoints behind wildcard proxy; real services may exist behind wildcard responding only to correct Host headers or specific paths; 5 services already confirmed (Nextcloud, Jitsi, 2x Plesk, CIC)
+evidence_needed: live HTTP response on any wildcard subdomain with distinct content vs wildcard fallback
+verify_steps: GET https://app.ipb.de/ -H "Host: app.ipb.de" -k — check for distinct content vs wildcard fallback (1 rps, GET only); repeat for auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, survey.ipb.de
+impact: Hidden attack surface (ticketing, Nextcloud, monitoring, webcam, customer portal, auth, cloud, prod API) — HIGH if real services exist
+testability: PASSIVE
+[HYP] Nextcloud OCS provisioning_api + impersonate = privilege escalation vector
+class: AUTH
+asset: nc.ipb.de
+confidence: 55
+reasoning: OCS capabilities confirms Nextcloud 34.0.3, bruteforce delay=0; status.php leaks full version/install status; WebDAV returns Sabre DAV 401 with auth guidance; provisioning_api (user CRUD), impersonate (admin act-as-user), oauth2, circles, WebDAV all enabled per prior deep scan; OCS API accessible unauthenticated for capabilities
+evidence_needed: authenticated OCS request showing user listing or impersonation capability; or credentialed access demonstrating provisioning_api/impersonate abuse
+verify_steps: 1) GET https://nc.ipb.de/ocs/v2.php/cloud/capabilities -H "OCS-APIRequest: true" (confirmed: version 34.0.3, bruteforce delay=0); 2) GET https://nc.ipb.de/ocs/v2.php/cloud/activity and /cloud/user (confirmed: 997 not logged in); 3) PROPFIND https://nc.ipb.de/remote.php/dav/ (confirmed: 401 NotAuthenticated); 4) With valid credentials, test OCS provisioning_api user listing and impersonate endpoint
+impact: Full user data access + impersonation of any user — CRITICAL if auth obtained
+testability: HUMAN_ONLY
+[PARKED] Kiosk TOTP validation endpoint logic flaw: confidence 40 (at threshold), requires valid token format knowledge, enumeration at scale may trigger WAF, low impact relative to cross-tenant BOLA
+[PARKED] Plesk forgery_protection_token static → CSRF on admin panel: confidence 45 but Plesk panels are public login panels (out-of-scope per program rules); staticity unproven; needs passive confirmation first
+[PARKED] CIC custom PHP SQL injection: confidence 35, public login panel out-of-scope per program rules, no evidence of vulnerability
+[FINAL] 1) Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact, AUTH_HELPED testability
+[FINAL] 2) Wildcard DNS masking hidden attack surface on *.ipb.de subdomains (confidence 60) — surviving passive hypothesis, testable now with Host header probes, HIGH impact if confirmed, PASSIVE testability
+[FINAL] 3) Nextcloud OCS provisioning_api + impersonate = privilege escalation vector (confidence 55) — HUMAN_ONLY but CRITICAL value if auth obtained, well-defined verify steps
+[NEXT] PROBE: GET https://app.ipb.de/ -H "Host: app.ipb.de" -k — check for distinct content vs wildcard fallback (1 rps, GET only); repeat for auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: DRF multi-tenancy is the prime cross-tenant chokepoint; expanded surface (association-request, user-token, self endpoints) all seq-ID auth-gated; top priority pending credentialed access
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de: wildcard DNS confirmed by dedicated deep scan (0 genuinely dedicated hosts), hides real attack surface; 21 inventory hosts never individually re-confirmed; SSL cert failures on 6 subdomains confirm live TLS behind proxy
+[LEARN] ACCEPTED AUTH @ pluto.portal.ipb.de: kiosk_login token oracle is a low-severity enumeration; distinct error message per token validity confirmed in bundle
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface (incl. /api/system/, motd, check-in, association-request) uniformly auth-gated (401, WWW-Authenticate: Token); no unauth config/schema leak (all SPA fallback)
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/openapi all return SPA fallback, not schema/config leak; do not re-probe as unauth surface
+[LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject open-redirect class here
+[LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked)
+[LEARN] REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist confirm mature hardening; do not re-probe
+[LEARN] ACCEPTED MISCONFIG @ nc/gold/piwik/webcam/cic.ipb.de: 5 new live services confirmed behind wildcard proxy — Nextcloud 34.0.3 (nc), Jitsi Meet (gold), Plesk Panel x2 (piwik/webcam), CIC PHP login (cic)
+[LEARN] ACCEPTED MISCONFIG @ eticket.ipb.de: pretix "Unknown host" — no custom domain, wildcard handling
+[LEARN] REJECTED AUTH @ pluto.portal.ipb.de _exceptions routes: all SPA fallback (354606), user-registration API 401, tenant-registration 403; self-service credential hypothesis killed
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: Nextcloud 34.0.3 with app_api 34.0.0 confirmed live via OCS capabilities (bruteforce.delay=0); provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — prior KC entry overstated; status.php version leak; WebDAV 401
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi Meet config.js public, anonymous guest domain, XMPP backend; unguessable random roomName rooms; no room-URL leak path
+[LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token meta
+[LEARN] REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000) this cycle — wildcard mask persists, no new hidden service
+[RISK] ipb: 68 — 5 new live services behind wildcard proxy dramatically expand attack surface; nc.ipb.de Nextcloud with provisioning_api + impersonate is CRITICAL value if auth obtained; gold.ipb.de Jitsi with anonymous guest access; cic.ipb.de custom PHP login; two Plesk panels. pluto.portal.ipb.de remains top BOLA target (65 confidence). _exceptions self-reg hypothesis killed (no credential path). Validated bugs: 0.
+[NEW] nc.ipb.de OCS capabilities endpoint confirmed live unauthenticated via curl -k — returns Nextcloud 34.0.3, bruteforce.delay=0, app_api 34.0.0; provisioning_api/impersonate/oauth2/circles NOT confirmed by live probe
+[NEW] nc.ipb.de WebDAV (remote.php/dav/) returns 401 NotAuthenticated with Sabre DAV 4.0+ auth guidance (live probe with curl -k)
+[CHANGED] nc.ipb.de framework-recon corrected: only app_api 34.0.0 confirmed live via OCS capabilities; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live probe
+[CHANGED] probe-results.md shows all nc.ipb.de and eticket.ipb.de probes still failing SSL cert verify (Python urllib), but knowledge base confirms live via curl -k manual validation
+[PRIO] nc.ipb.de,8.15,attack_surface=9,business_value=10,tech_exposure=9,gate_ease=3,cloud_surface=8,freshness=10
+[PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
+[PRIO] *.ipb.de (wildcard),7.60,attack_surface=7,business_value=8,tech_exposure=6,gate_ease=10,cloud_surface=9,freshness=8
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /api/multi-tenancy/v1/user/{id}/, /api/multi-tenancy/v1/association-request/{id}/, /api/check-in/v1/check-in/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface including /api/system/, motd, check-in, association-request, user-token, self endpoints
+evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation (200 vs 403/404 differentiation)
+verify_steps: 1) Obtain low-priv credentialed session (Token); 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/
+impact: Cross-tenant PII dump (membership, user, association-request, check-in data); HIGH
+testability: AUTH_HELPED
+[HYP] Wildcard DNS masking hidden attack surface on *.ipb.de subdomains with live TLS endpoints
+class: MISCONFIG
+asset: *.ipb.de (app.ipb.de, auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, survey.ipb.de, www.cic.ipb.de, speedtest.ipb.de)
+confidence: 60
+reasoning: Dedicated deep scan confirms wildcard DNS — 0 genuinely dedicated hosts after shared-IP filtering; 21 inventory hosts never individually re-confirmed post-discovery; SSL cert verify failures on 6 subdomains confirm live TLS endpoints behind wildcard proxy; real services may exist behind wildcard responding only to correct Host headers or specific paths; 5 services already confirmed (Nextcloud, Jitsi, 2x Plesk, CIC)
+evidence_needed: live HTTP response on any wildcard subdomain with distinct content vs wildcard fallback
+verify_steps: GET https://app.ipb.de/ -H "Host: app.ipb.de" -k — check for distinct content vs wildcard fallback (1 rps, GET only); repeat for auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, survey.ipb.de
+impact: Hidden attack surface (ticketing, Nextcloud, monitoring, webcam, customer portal, auth, cloud, prod API) — HIGH if real services exist
+testability: PASSIVE
+[HYP] NC AppAPI ExApp auth mis-scoping
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list (+ app_api ExApp registry endpoints)
+confidence: 40
+reasoning: unauth GET /ocs/v2.php/apps/app_api/apps/list → 404 (not 401); prior caps confirmed NC 34.0.3, app_api 34.0.0 active, bruteforce.delay=0; app_api enables external app runtime historically exposing unauth endpoints/SSRF once registered
+evidence_needed: any valid NC session; enumerate ExApps list then probe each ExApp endpoint unauth vs authed
+verify_steps: GET /ocs/v2.php/cloud/capabilities (200, done); with token GET /ocs/v2.php/apps/app_api/apps/list; unauth GET each returned ExApp route
+impact: external app auth/SSRF mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+[PARKED] Nextcloud OCS provisioning_api + impersonate = privilege escalation vector: provisioning_api/impersonate/oauth2/circles NOT confirmed by live OCS capabilities probe; only app_api 34.0.0 confirmed; prior KC entry overstated; HUMAN_ONLY testability with no confirmed attack surface
+[PARKED] Kiosk TOTP validation endpoint logic flaw: confidence 40 (at threshold), requires valid token format knowledge, enumeration at scale may trigger WAF, low impact relative to cross-tenant BOLA
+[PARKED] Plesk forgery_protection_token static → CSRF on admin panel: confidence 45 but Plesk panels are public login panels (out-of-scope per program rules); staticity unproven; needs passive confirmation first
+[PARKED] CIC custom PHP SQL injection: confidence 35, public login panel out-of-scope per program rules, no evidence of vulnerability
+[FINAL] 1) Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact, AUTH_HELPED testability
+[FINAL] 2) Wildcard DNS masking hidden attack surface on *.ipb.de subdomains (confidence 60) — surviving passive hypothesis, testable now with Host header probes, HIGH impact if confirmed, PASSIVE testability
+[FINAL] 3) NC AppAPI ExApp auth mis-scoping (confidence 40) — at threshold, HUMAN_ONLY but well-defined verify steps, HIGH impact if session obtained
+[NEXT] PROBE: GET https://app.ipb.de/ -H "Host: app.ipb.de" -k — check for distinct content vs wildcard fallback (1 rps, GET only); repeat for auth.gold.ipb.de, cloud.ipb.de, my.ipb.de, prod.ipb.de, survey.ipb.de
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: DRF multi-tenancy is the prime cross-tenant chokepoint; expanded surface (association-request, user-token, self endpoints) all seq-ID auth-gated; top priority pending credentialed access
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de: wildcard DNS confirmed by dedicated deep scan (0 genuinely dedicated hosts), hides real attack surface; 21 inventory hosts never individually re-confirmed; SSL cert failures on 6 subdomains confirm live TLS behind proxy
+[LEARN] ACCEPTED AUTH @ pluto.portal.ipb.de: kiosk_login token oracle is a low-severity enumeration; distinct error message per token validity confirmed in bundle
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface (incl. /api/system/, motd, check-in, association-request) uniformly auth-gated (401, WWW-Authenticate: Token); no unauth config/schema leak (all SPA fallback)
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/v1/, /api/sites, /api/schema/, /swagger, /api/openapi all return SPA fallback, not schema/config leak; do not re-probe as unauth surface
+[LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject open-redirect class here
+[LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked)
+[LEARN] REJECTED MISC @ event.ipb.de: pretix /control 403 and /redirect allowlist confirm mature hardening; do not re-probe
+[LEARN] ACCEPTED MISCONFIG @ nc/gold/piwik/webcam/cic.ipb.de: 5 new live services confirmed behind wildcard proxy — Nextcloud 34.0.3 (nc), Jitsi Meet (gold), Plesk Panel x2 (piwik/webcam), CIC PHP login (cic)
+[LEARN] ACCEPTED MISCONFIG @ eticket.ipb.de: pretix "Unknown host" — no custom domain, wildcard handling
+[LEARN] REJECTED AUTH @ pluto.portal.ipb.de _exceptions routes: all SPA fallback (354606), user-registration API 401, tenant-registration 403; self-service credential hypothesis killed
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: Nextcloud 34.0.3 with app_api 34.0.0 confirmed live via OCS capabilities (bruteforce.delay=0); provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — prior KC entry overstated; status.php version leak; WebDAV 401
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi Meet config.js public, anonymous guest domain, XMPP backend; unguessable random roomName rooms; no room-URL leak path
+[LEARN] ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token meta
+[LEARN] REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000) this cycle — wildcard mask persists, no new hidden service
+[RISK] ipb: 68 — 5 new live services behind wildcard proxy dramatically expand attack surface; nc.ipb.de Nextcloud with app_api 34.0.0 confirmed (bruteforce.delay=0); provisioning_api/impersonate remain unconfirmed by live probe. pluto.portal.ipb.de remains top BOLA target (65 confidence). _exceptions self-reg hypothesis killed (no credential path). Validated bugs: 0.
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes tenant/user/association-request objects with sequential integer IDs; all 401 Token-auth unauthenticated; per-tenant Token is sole cross-tenant authorization control; no self-service credential path (SPA fallback on _exceptions, user-reg 401, tenant-reg 403)
+evidence_needed: two tenant accounts; tenant-A Token requesting tenant-B objects by sequential ID — 200 vs 403/404 differentiation
+verify_steps: POST /api/session/ {username,password} to obtain Token; GET /api/multi-tenancy/v1/user/{id}/ with Authorization: Token header across tenant boundary; repeat for /tenant/{id}/, /association-request/{id}/
+impact: cross-tenant PII dump (user records, membership, association-request data) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp registry mis-scoping (session-gated, 404 not 401)
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: live OCS capabilities (curl -k, 200) confirmed NC 34.0.3, bruteforce.delay=0, app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps; unauth GET apps/list returns 404 (routing exists but no-session); /ocs/v2.php/cloud/apps → 401 confirms session required
+evidence_needed: any valid NC session; enumerate ExApps list then probe each ExApp route unauth vs authed
+verify_steps: with valid NC session GET /ocs/v2.php/apps/app_api/apps/list; check each returned ExApp registered routes unauthenticated
+impact: external app runtime auth/SSRF mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+[HYP] EdgePortal avatar upload stored-XSS via content-type confusion
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/upload/ + /download/
+confidence: 45
+reasoning: POST multipart upload endpoint auth-gated (401); avatar served via /download/ on portal SPA origin; SVG/HTML content-type bypass could yield stored XSS served to staff across tenants
+evidence_needed: authed upload of SVG/HTML payload served inline from portal origin with wrong Content-Type
+verify_steps: with any tenant Token POST multipart file (svg/html) → GET /download/ observe Content-Type header + inline render
+impact: stored XSS → admin session theft → full multi-tenant compromise — HIGH
+testability: HUMAN_ONLY
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de), then (a) cross-tenant seq-ID BOLA on /api/multi-tenancy/v1/{user,tenant,association-request}/(1..N) with tenant-A token, (b) POST avatar upload/ SVG → /download/ for stored-XSS chain. Secondary: one low-priv NC session to enumerate /ocs/v2.php/apps/app_api/apps/list.
+[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same panel as piwik/webcam); login-only out-of-scope class; not a distinct cloud service.
+[LEARN] REJECTED MISC @ app/auth.gold/my/prod/survey/www.cic.ipb.de: no DNS this cycle — Host-header wildcard-probe approach non-executable; wildcard mask does not resolve these names.
+[LEARN] REJECTED MISC @ mirror/spam/spam01/spam02/ns6/mail/speedtest.ipb.de: now resolve to distinct IPs but are non-web infra (mail/spam/NS) or public apt mirror (mirror = out-of-scope public files); no new in-scope attack surface.
+[RISK] ipb: 58 (unchanged) — no new validated bug; top leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) all credential-gated with zero validated bugs; live surface fully surveyed (cloud/mirror resolution closes wildcard-masking leads), hard targets only.

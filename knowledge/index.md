@@ -89,3 +89,14 @@
 - 2026-09-05 REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000); wildcard mask persists
 - 2026-09-05 ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
 - 2026-09-05 ACCEPTED MISCONFIG @ eticket.ipb.de: pretix "Unknown host" (400); no custom domain configured
+- 2026-09-05 REJECTED IDOR @ my.ipb.de: no live HTTP confirmed, confidence < 40, requires auth
+- 2026-09-05 REJECTED OATH @ auth.gold.ipb.de: no live HTTP confirmed, confidence < 40, passive-only verify may 404
+- 2026-09-05 REJECTED IDOR @ my.ipb.de: no live HTTP confirmed, confidence < 40, requires auth
+- 2026-09-05 REJECTED OATH @ auth.gold.ipb.de: no live HTTP confirmed, confidence < 40, passive-only verify may 404
+- 2026-09-05 ACCEPTED framework recon @ pluto.portal.ipb.de — DRF with multi-tenancy; auth required, CSRF via /api/ct/
+- 2026-09-05 REJECTED open-redirect @ event.ipb.de — /redirect/ validates against fixed allowlist
+- 2026-09-05 ACCEPTED framework-recon AUTH @ pluto.portal.ipb.de: DRF multi-tenancy, all data endpoints auth-gated, CSRF via unbound /api/ct/
+- 2026-09-05 ACCEPTED cross-tenant BOLA @ pluto.portal.ipb.de: DRF multi-tenancy API with sequential IDs, auth-gated but per-tenant auth is sole BOLA control
+- 2026-09-05 ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same panel as piwik/webcam); login-only out-of-scope class; not a distinct cloud service.
+- 2026-09-05 REJECTED MISC @ app/auth.gold/my/prod/survey/www.cic.ipb.de: no DNS this cycle — Host-header wildcard-probe approach non-executable; wildcard mask does not resolve these names.
+- 2026-09-05 REJECTED MISC @ mirror/spam/spam01/spam02/ns6/mail/speedtest.ipb.de: now resolve to distinct IPs but are non-web infra (mail/spam/NS) or public apt mirror (mirror = out-of-scope public files); no new in-scope attack surface.
