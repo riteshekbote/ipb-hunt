@@ -534,3 +534,84 @@ impact: stored XSS → admin session theft → full multi-tenant compromise — 
 testability: HUMAN_ONLY
 [NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant account (pluto.portal.ipb.de) — then, using the now-known public OPTIONS schemas, test cross-tenant seq-ID BOLA on /api/multi-tenancy/v1/{user,tenant,association-request,user-token}/(1..N) with the tenant-A token, AND test profile-picture upload/ with an SVG payload (stored-XSS chain). Also obtain one low-priv NC session for /ocs/v2.php/cloud/users + OC-Impersonate. All three FINAL hypotheses are purely credential-gated.
 [RISK] ipb: 60 (unchanged) — no validated bugs; genuinely new this cycle: 1 dedicated live host (mirror, nginx 404 low value), public unauth reset endpoint + DRF metadata schema leak on pluto (recon value, recovery-policy OOS), auth-gated avatar upload surface. Credential gate remains the single blocker for all CRITICAL-valued hypotheses (BOLA 65, NC 45, upload 45). Validated bugs: 0.
+## 2026-09-05 08:46:29 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{tenant,user,association-request,user-token,membership}/
+confidence: 65
+reasoning: DRF multi-tenant portal; all object GET probes uniformly 401 Token-auth; public OPTIONS metadata exposes seq-ID serializer schemas; per-tenant token is sole cross-tenant control; no public reg route (SPA fallback, user-reg 401, tenant-reg 403)
+evidence_needed: two tenant accounts; tenant-A token reading tenant-B seq-ID objects
+verify_steps: POST /api/session/ {username,password} -> GET /api/multi-tenancy/v1/{user,tenant,association-request}/{id}/ cross-tenant (200 vs 403/404)
+impact: cross-tenant PII/property dump — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI (ExApps) mis-scoping on honest capability set
+class: AUTH
+asset: nc.ipb.de ocs/v2.php/cloud/capabilities + app_api 34.0.0
+confidence: 40
+reasoning: live caps (curl -k, 200) confirm NC 34.0.3, bruteforce.delay=0, app_api 34.0.0; provisioning/impersonate NOT confirmed by live caps (prior KC overstated); app_api on NC34 enables external app runtime historically exposing auth/SSRF issues — needs session
+evidence_needed: any valid NC session; AppAPI registered ExApps list + their endpoints
+verify_steps: with token GET /ocs/v2.php/apps/app_api/apps/list; check unauth /apps/app_api/ endpoints
+impact: external app runtime mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+[HYP] Profile-picture upload content-type confusion -> stored XSS cross-tenant
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/upload/
+confidence: 45
+reasoning: POST multipart upload endpoint auth-gated (401); avatar served via /download/ on admin SPA origin; SVG/HTML content-type bypass or filename reuse could yield stored XSS against staff; multi-tenant = attacker reaches any staff tenant
+evidence_needed: authed upload of SVG/HTML avatar served inline from portal origin
+verify_steps: with any tenant token POST multipart (svg/html) -> GET /download/ observe Content-Type + inline render
+impact: stored XSS -> admin session theft -> full multi-tenant compromise — HIGH
+testability: HUMAN_ONLY
+[PARKED] Jitsi anonymous guest room access: by-design config, unguessable random roomName, no room-URL leak path, confidence 35, HUMAN_ONLY, low impact
+[PARKED] CIC custom PHP login: plain user+pass form, no CSRF token, but public login panel = out-of-scope class; no evidenced vuln, confidence 30
+[PARKED] NC bruteforce.delay=0: brute-force/rate-limit policy = out-of-scope class
+[FINAL] pluto.portal.ipb.de Cross-tenant BOLA (65) — highest value, credential-gated
+[FINAL] pluto.portal.ipb.de avatar upload stored-XSS (45) — credential-gated, high impact chain
+[FINAL] nc.ipb.de AppAPI mis-scoping (40) — credential-gated, corrected capability basis
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) then (a) test cross-tenant seq-ID BOLA on /api/multi-tenancy/v1/{user,tenant,association-request}/(1..N) with tenant-A token, (b) POST avatar upload/ with SVG payload -> /download/ for stored-XSS chain. Also obtain one low-priv NC session to enumerate /ocs/v2.php/apps/app_api/apps/list.
+[LEARN] CHANGED framework-recon @ nc.ipb.de: live OCS capabilities (curl -k, 200) shows NC 34.0.3 with bruteforce.delay=0 and app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — prior KC entry overstated
+[LEARN] ACCEPTED framework-recon @ cic.ipb.de: self-hosted CIC, plain custom PHP user+pass self-POST form, no CSRF token, PHPSESSID; login-only (out-of-scope class)
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000) this cycle — Jitsi anonymousdomain config-only, not a separate live vhost
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi root confirms unguessable random roomName rooms; anonymous guest by-design; no room-URL leak path
+[LEARN] REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000) this cycle — wildcard mask persists, no new hidden service
+[RISK] ipb: 58 (down from 60) — live caps correction removes overstated provision/impersonate claim from risk basis; guest.gold non-vhost, CIC/login panels out-of-scope, remaining wildcard hosts DNS-dead; remaining exposure: NC34 hosted-file + app_api surface (auth-gated), Plesk default-vhost blast radius, pluto multi-tenant BOLA (top, 65, credential-gated). Validated bugs: 0.
+[HYP] Cross-tenant BOLA on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{tenant,user,association-request,user-token,membership}/
+confidence: 65
+reasoning: DRF multi-tenant portal; all object GET probes uniformly 401 Token-auth; public OPTIONS metadata exposes seq-ID serializer schemas; per-tenant token is sole cross-tenant control; no public reg route (SPA fallback, user-reg 401, tenant-reg 403)
+evidence_needed: two tenant accounts; tenant-A token reading tenant-B seq-ID objects
+verify_steps: POST /api/session/ {username,password} -> GET /api/multi-tenancy/v1/{user,tenant,association-request}/{id}/ cross-tenant (200 vs 403/404)
+impact: cross-tenant PII/property dump — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI (ExApps) mis-scoping on honest capability set
+class: AUTH
+asset: nc.ipb.de ocs/v2.php/cloud/capabilities + app_api 34.0.0
+confidence: 40
+reasoning: live caps (curl -k, 200) confirm NC 34.0.3, bruteforce.delay=0, app_api 34.0.0; provisioning/impersonate NOT confirmed by live caps (prior KC overstated); app_api on NC34 enables external app runtime historically exposing auth/SSRF issues — needs session
+evidence_needed: any valid NC session; AppAPI registered ExApps list + their endpoints
+verify_steps: with token GET /ocs/v2.php/apps/app_api/apps/list; check unauth /apps/app_api/ endpoints
+impact: external app runtime mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+[HYP] Profile-picture upload content-type confusion -> stored XSS cross-tenant
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/upload/
+confidence: 45
+reasoning: POST multipart upload endpoint auth-gated (401); avatar served via /download/ on admin SPA origin; SVG/HTML content-type bypass or filename reuse could yield stored XSS against staff; multi-tenant = attacker reaches any staff tenant
+evidence_needed: authed upload of SVG/HTML avatar served inline from portal origin
+verify_steps: with any tenant token POST multipart (svg/html) -> GET /download/ observe Content-Type + inline render
+impact: stored XSS -> admin session theft -> full multi-tenant compromise — HIGH
+testability: HUMAN_ONLY
+[PARKED] Jitsi anonymous guest room access: by-design config, unguessable random roomName, no room-URL leak path, confidence 35, HUMAN_ONLY, low impact
+[PARKED] CIC custom PHP login: plain user+pass form, no CSRF token, but public login panel = out-of-scope class; no evidenced vuln, confidence 30
+[PARKED] NC bruteforce.delay=0: brute-force/rate-limit policy = out-of-scope class
+[FINAL] pluto.portal.ipb.de Cross-tenant BOLA (65) — highest value, credential-gated
+[FINAL] pluto.portal.ipb.de avatar upload stored-XSS (45) — credential-gated, high impact chain
+[FINAL] nc.ipb.de AppAPI mis-scoping (40) — credential-gated, corrected capability basis
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) then (a) test cross-tenant seq-ID BOLA on /api/multi-tenancy/v1/{user,tenant,association-request}/(1..N) with tenant-A token, (b) POST avatar upload/ with SVG payload -> /download/ for stored-XSS chain. Also obtain one low-priv NC session to enumerate /ocs/v2.php/apps/app_api/apps/list.
+[LEARN] CHANGED framework-recon @ nc.ipb.de: live OCS capabilities (curl -k, 200) shows NC 34.0.3 with bruteforce.delay=0 and app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — prior KC entry overstated
+[LEARN] ACCEPTED framework-recon @ cic.ipb.de: self-hosted CIC, plain custom PHP user+pass self-POST form, no CSRF token, PHPSESSID; login-only (out-of-scope class)
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000) this cycle — Jitsi anonymousdomain config-only, not a separate live vhost
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi root confirms unguessable random roomName rooms; anonymous guest by-design; no room-URL leak path
+[LEARN] REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000) this cycle — wildcard mask persists, no new hidden service
+[RISK] ipb: 58 (down from 60) — live caps correction removes overstated provision/impersonate claim from risk basis; guest.gold non-vhost, CIC/login panels out-of-scope, remaining wildcard hosts DNS-dead; remaining exposure: NC34 hosted-file + app_api surface (auth-gated), Plesk default-vhost blast radius, pluto multi-tenant BOLA (top, 65, credential-gated). Validated bugs: 0.

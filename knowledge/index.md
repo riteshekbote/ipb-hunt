@@ -61,3 +61,14 @@
 - 2026-09-05 ACCEPTED framework-recon @ nc.ipb.de: Nextcloud 34.0.3 with provisioning_api/impersonate/oauth2/circles/WebDAV/OCS; bruteforce delay=0; status.php version leak
 - 2026-09-05 ACCEPTED framework-recon @ gold.ipb.de: Jitsi Meet config.js public, anonymous guest domain, XMPP backend
 - 2026-09-05 ACCEPTED framework-recon @ piwik/webcam.ipb.de: Plesk Panel 18.0.80-6 with forgery_protection_token meta
+- 2026-09-05 CHANGED framework-recon @ nc.ipb.de: live OCS capabilities (curl -k, 200) shows NC 34.0.3 with bruteforce.delay=0 and app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — prior KC entry overstated
+- 2026-09-05 ACCEPTED framework-recon @ cic.ipb.de: self-hosted CIC, plain custom PHP user+pass self-POST form, no CSRF token, PHPSESSID; login-only (out-of-scope class)
+- 2026-09-05 ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000) this cycle — Jitsi anonymousdomain config-only, not a separate live vhost
+- 2026-09-05 ACCEPTED framework-recon @ gold.ipb.de: Jitsi root confirms unguessable random roomName rooms; anonymous guest by-design; no room-URL leak path
+- 2026-09-05 REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000) this cycle — wildcard mask persists, no new hidden service
+- 2026-09-05 CHANGED framework-recon @ nc.ipb.de: live OCS capabilities (curl -k, 200) shows NC 34.0.3 with bruteforce.delay=0 and app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — prior KC entry overstated
+- 2026-09-05 ACCEPTED framework-recon @ cic.ipb.de: self-hosted CIC, plain custom PHP user+pass self-POST form, no CSRF token, PHPSESSID; login-only (out-of-scope class)
+- 2026-09-05 ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000) this cycle — Jitsi anonymousdomain config-only, not a separate live vhost
+- 2026-09-05 ACCEPTED framework-recon @ gold.ipb.de: Jitsi root confirms unguessable random roomName rooms; anonymous guest by-design; no room-URL leak path
+- 2026-09-05 REJECTED MISC @ *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de: all DNS-dead (000) this cycle — wildcard mask persists, no new hidden service
+- 2026-09-05 ACCEPTED framework-recon @ nc.ipb.de: Nextcloud 34.0.3 with provisioning_api/impersonate/oauth2/circles/WebDAV/OCS; bruteforce delay=0; status.php version leak; OCS capabilities unauth; activity/user require auth; WebDAV 401

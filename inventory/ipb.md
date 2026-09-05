@@ -174,3 +174,7 @@ www.survey.ipb.de
 ## 2026-09-05 00:33:13 UTC
 
 ## 2026-09-05 05:01:02 UTC
+
+## 2026-09-05 08:46:36 UTC
+- CHANGED nc.ipb.de OCS capabilities endpoint confirmed live unauthenticated — returns Nextcloud 34.0.3 version, bruteforce delay=0, theming config; activity/user endpoints require auth (997)
+- CHANGED nc.ipb.de WebDAV (remote.php/dav/) returns 401 NotAuthenticated with Sabre DAV 4.0+ auth guidance
