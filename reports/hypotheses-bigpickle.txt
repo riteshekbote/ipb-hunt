@@ -1,4 +1,4 @@
-## 2026-09-06 16:19:26 UTC [target] (model bigpickle)
+## 2026-09-06 18:23:56 UTC [target] (model bigpickle)
 [PRIO] pluto.portal.ipb.de, 7.5, attack_surface=8 business_value=9 tech_exposure=7 gate_ease=2 cloud_surface=6 freshness=5
 [PRIO] nc.ipb.de, 4.5, attack_surface=5 business_value=6 tech_exposure=5 gate_ease=3 cloud_surface=4 freshness=5
 [PRIO] event.ipb.de, 2.5, attack_surface=2 business_value=3 tech_exposure=2 gate_ease=2 cloud_surface=1 freshness=5

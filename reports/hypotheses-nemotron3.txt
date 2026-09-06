@@ -1,5 +1,5 @@
-## 2026-09-06 16:29:14 UTC [target] (model nemotron3)
-[NEW] None — no new live hosts or endpoints discovered this cycle
+## 2026-09-06 18:30:11 UTC [target] (model nemotron3)
+[NEW] None — no new live hosts or endpoints discovered this cycle (2026-09-06 16:29)
 [CHANGED] pluto.portal.ipb.de/api/system/ consistently HTTP 401 (WWW-Authenticate: Token) across 5 consecutive probe cycles — DRF endpoint stability confirmed
 [CHANGED] nc.ipb.de OCS capabilities confirmed: app_api 34.0.0 ONLY live; requires OCS-APIRequest: true header (without → CSRF check failed JSON); provisioning_api/impersonate/oauth2/circles remain unconfirmed by live caps
 [CHANGED] gold.ipb.de/config.js accessible via curl -k but fails SSL verify in automated probes — Jitsi config.js confirmed live
@@ -44,7 +44,7 @@ testability: PASSIVE
 [PARKED] NC AppAPI ExApp SSRF/auth-bypass via registered external apps: confidence 40 (at threshold), HUMAN_ONLY testability, requires valid NC session with no confirmed acquisition path; provisioning_api/impersonate/oauth2/circles NOT confirmed by live probe — attack surface unproven
 [PARKED] Jitsi Meet config.js information disclosure: confidence 25 (<40), no sensitive config leak confirmed, guest.gold.ipb.de does not resolve (000), unguessable roomName by-design — no viable verify path
 [FINAL] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact, AUTH_HELPED testability
-[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) and run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{tenant,user,association-request,check-in}/{id}/
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via kiosk_login or admin-provisioned account; run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{tenant,user,association-request,check-in}/{id}/
 [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
 [LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged
 [LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated
