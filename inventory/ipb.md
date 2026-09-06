@@ -263,3 +263,13 @@ www.survey.ipb.de
 - CHANGED nc.ipb.de OCS capabilities confirmed: app_api 34.0.0 ONLY live; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live caps — prior KC overstatement corrected and stable
 - CHANGED cloud.ipb.de resolves to 194.29.230.41 → 3rd Plesk "I/P/B/ Cloudhosting Panel" (same as piwik/webcam); login-only out-of-scope class confirmed
 - CHANGED focus.gold.ipb.de + moderated.gold.ipb.de DNS-dead (000) — Jitsi internal focus/moderated components not external vhosts; gold subdomain set fully closed
+
+## 2026-09-06 16:29:22 UTC
+- NEW None — no new live hosts or endpoints discovered this cycle
+- CHANGED pluto.portal.ipb.de/api/system/ consistently HTTP 401 (WWW-Authenticate: Token) across 5 consecutive probe cycles — DRF endpoint stability confirmed
+- CHANGED nc.ipb.de OCS capabilities confirmed: app_api 34.0.0 ONLY live; requires OCS-APIRequest: true header (without → CSRF check failed JSON); provisioning_api/impersonate/oauth2/circles remain unconfirmed 
+- CHANGED gold.ipb.de/config.js accessible via curl -k but fails SSL verify in automated probes — Jitsi config.js confirmed live
+- CHANGED Wildcard DNS masking hypothesis fully killed — 33/33 inventory names classified (Plesk×3, DNS-dead×15, non-web infra×6, Jitsi internal×3, live services×7)
+- CHANGED cloud.ipb.de resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk (same as piwik/webcam); login-only out-of-scope class confirmed
+- CHANGED focus.gold.ipb.de + moderated.gold.ipb.de DNS-dead (000) — Jitsi internal components not external vhosts; gold subdomain set fully closed
+- CHANGED event.ipb.de pretix REST /api/v1/ + /api/v1/organizers/ → 401@58 (Token-gated) — first public pretix API probe, consistent with mature hardening

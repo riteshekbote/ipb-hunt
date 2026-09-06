@@ -1,10 +1,12 @@
-## 2026-09-06 13:16:09 UTC [target] (model nemotron3)
-[CHANGED] pluto.portal.ipb.de/api/system/ consistently returns HTTP 401 (WWW-Authenticate: Token) across 5 consecutive probe cycles (2026-09-05 21:41 through 2026-09-06 09:42) — DRF endpoint stability confirmed
-[CHANGED] gold.ipb.de/config.js consistently fails SSL cert verify in automated probes but KB confirms live via curl -k — Jitsi config.js accessible
-[CHANGED] Wildcard DNS masking hypothesis fully killed — 33/33 inventory names classified (Plesk panels ×3, DNS-dead set ×15, non-web infra ×6, Jitsi internal components ×3, pluto/event/www/eticket/nc/gold/cic live); no surface drift
-[CHANGED] nc.ipb.de OCS capabilities confirmed: app_api 34.0.0 ONLY live; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live caps — prior KC overstatement corrected and stable
-[CHANGED] cloud.ipb.de resolves to 194.29.230.41 → 3rd Plesk "I/P/B/ Cloudhosting Panel" (same as piwik/webcam); login-only out-of-scope class confirmed
-[CHANGED] focus.gold.ipb.de + moderated.gold.ipb.de DNS-dead (000) — Jitsi internal focus/moderated components not external vhosts; gold subdomain set fully closed
+## 2026-09-06 16:29:14 UTC [target] (model nemotron3)
+[NEW] None — no new live hosts or endpoints discovered this cycle
+[CHANGED] pluto.portal.ipb.de/api/system/ consistently HTTP 401 (WWW-Authenticate: Token) across 5 consecutive probe cycles — DRF endpoint stability confirmed
+[CHANGED] nc.ipb.de OCS capabilities confirmed: app_api 34.0.0 ONLY live; requires OCS-APIRequest: true header (without → CSRF check failed JSON); provisioning_api/impersonate/oauth2/circles remain unconfirmed by live caps
+[CHANGED] gold.ipb.de/config.js accessible via curl -k but fails SSL verify in automated probes — Jitsi config.js confirmed live
+[CHANGED] Wildcard DNS masking hypothesis fully killed — 33/33 inventory names classified (Plesk×3, DNS-dead×15, non-web infra×6, Jitsi internal×3, live services×7)
+[CHANGED] cloud.ipb.de resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk (same as piwik/webcam); login-only out-of-scope class confirmed
+[CHANGED] focus.gold.ipb.de + moderated.gold.ipb.de DNS-dead (000) — Jitsi internal components not external vhosts; gold subdomain set fully closed
+[CHANGED] event.ipb.de pretix REST /api/v1/ + /api/v1/organizers/ → 401@58 (Token-gated) — first public pretix API probe, consistent with mature hardening
 [PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
 [PRIO] nc.ipb.de,7.10,attack_surface=8,business_value=8,tech_exposure=6,gate_ease=5,cloud_surface=7,freshness=9
 [PRIO] gold.ipb.de,5.60,attack_surface=6,business_value=6,tech_exposure=4,gate_ease=8,cloud_surface=6,freshness=7
@@ -34,14 +36,14 @@ testability: HUMAN_ONLY
 class: MISCONFIG
 asset: gold.ipb.de /config.js
 confidence: 25
-reasoning: Jitsi Meet config.js publicly accessible; contains domain config, feature flags; anonymous guest domain configured (guest.gold.ipb.de) but does not resolve (000); unguessable random roomName rooms by-design; XMPP backend at auth.gold.ipb.de (no live HTTP confirmed); no sensitive API keys or internal endpoints observed in config.js
+reasoning: Jitsi Meet config.js publicly accessible via curl -k; contains domain config, feature flags; anonymous guest domain configured (guest.gold.ipb.de) but does not resolve (000); unguessable random roomName rooms by-design; XMPP backend at auth.gold.ipb.de (no live HTTP confirmed); no sensitive API keys or internal endpoints observed in config.js
 evidence_needed: distinct sensitive config in config.js (API keys, internal endpoints, feature flags) or resolution of guest.gold.ipb.de exposing anonymous join flow
 verify_steps: 1) GET https://gold.ipb.de/config.js -k; 2) Parse for sensitive keys, internal URLs, feature flags; 3) Monitor guest.gold.ipb.de resolution over time
 impact: Information disclosure (internal config, feature flags); LOW
 testability: PASSIVE
 [PARKED] NC AppAPI ExApp SSRF/auth-bypass via registered external apps: confidence 40 (at threshold), HUMAN_ONLY testability, requires valid NC session with no confirmed acquisition path; provisioning_api/impersonate/oauth2/circles NOT confirmed by live probe — attack surface unproven
 [PARKED] Jitsi Meet config.js information disclosure: confidence 25 (<40), no sensitive config leak confirmed, guest.gold.ipb.de does not resolve (000), unguessable roomName by-design — no viable verify path
-[FINAL] 1) Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact, AUTH_HELPED testability
+[FINAL] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact, AUTH_HELPED testability
 [NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) and run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{tenant,user,association-request,check-in}/{id}/
 [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
 [LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged
