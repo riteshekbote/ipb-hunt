@@ -7012,3 +7012,400 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 [RISK] ipb: 58 (unchanged) — surface re-verified byte-stable this cycle; all high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) remain credential-gated with zero validated bugs; 58 reflects the large auth-gated multi-tenant attack surface that materializes only once any valid account is obtained. Validated bugs: 0.
+===== ANALYST bigpickle 2026-09-06 01:01:32 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la
+total 208
+drwxr-xr-x 12 runner runner  4096 Sep  6 00:59 .
+drwxr-xr-x  3 runner runner  4096 Sep  6 00:59 ..
+drwxr-xr-x  7 runner runner  4096 Sep  6 00:59 .git
+drwxr-xr-x  3 runner runner  4096 Sep  6 00:59 .github
+-rw-r--r--  1 runner runner  1817 Sep  6 00:59 README.md
+-rw-r--r--  1 runner runner    32 Sep  6 00:59 analyst-out.txt
+-rw-r--r--  1 runner runner 60393 Sep  6 00:59 analyst-prompt.txt
+-rw-r--r--  1 runner runner 56507 Sep  6 00:59 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 leads
+-rw-r--r--  1 runner runner  8036 Sep  6 00:59 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 reports
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 reposcan-raw
+-rw-r--r--  1 runner runner  3299 Sep  6 00:59 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 scripts
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 triage
+[0m
+[0m$ [0mgit log --oneline -5 2>/dev/null; git status --short 2>/dev/null
+0a212f0 reposcan 2026-09-06-00-48
+?? analyst-out.txt
+?? analyst-prompt.txt
+?? ctx.txt
+[0m
+[0m$ [0mcat analyst-out.txt; echo "---STATE---"; cat state_bigpickle.json; echo; echo "---PROBE-RESULTS tail---"; tail -40 probe-results.md
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls -la
+total 208
+drwxr-xr-x 12 runner runner  4096 Sep  6 00:59 .
+drwxr-xr-x  3 runner runner  4096 Sep  6 00:59 ..
+drwxr-xr-x  7 runner runner  4096 Sep  6 00:59 .git
+drwxr-xr-x  3 runner runner  4096 Sep  6 00:59 .github
+-rw-r--r--  1 runner runner  1817 Sep  6 00:59 README.md
+-rw-r--r--  1 runner runner    32 Sep  6 00:59 analyst-out.txt
+-rw-r--r--  1 runner runner 60393 Sep  6 00:59 analyst-prompt.txt
+-rw-r--r--  1 runner runner 56507 Sep  6 00:59 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 leads
+-rw-r--r--  1 runner runner  8036 Sep  6 00:59 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 reports
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 reposcan-raw
+-rw-r--r--  1 runner runner  3299 Sep  6 00:59 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 scripts
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  6 00:59 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 triage
+[0m
+[0m$ [0mgit log --oneline -5 2>/dev/null; git status --short 2>/dev/null
+0a212f0 reposcan 2026-09-06-00-48
+?? analyst-out.txt
+?? analyst-prompt.txt
+?? ctx.txt
+[0m
+---STATE---
+{"phase": "POC", "target": "api"}
+---PROBE-RESULTS tail---
+https://eticket.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+
+## 2026-09-05 08:46:43 UTC
+https://nc.ipb.de/ocs/v2.php/cloud/capabilities -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/activity -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/remote.php/dav/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://eticket.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+
+## 2026-09-05 12:17:07 UTC
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://nc.ipb.de/ocs/v2.php/cloud/capabilities -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/activity -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/remote.php/dav/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+
+## 2026-09-05 15:22:55 UTC
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+
+## 2026-09-05 17:26:10 UTC
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://auth.gold.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://cloud.ipb.de/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://my.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://prod.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+https://auth.gold.ipb.de/.well-known/openid-configuration -> ERR <urlopen error [Errno -2] Name or service not know
+https://auth.gold.ipb.de/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code -> ERR <urlopen error [Errno -2] Name or service not know
+https://nc.ipb.de/ocs/v2.php/cloud/capabilities -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/ocs/v2.php/cloud/activity -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://nc.ipb.de/remote.php/dav/ -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+
+## 2026-09-05 19:29:42 UTC
+https://app.ipb.de/ -> ERR <urlopen error [Errno -2] Name or service not know
+
+## 2026-09-05 21:41:34 UTC
+https://gold.ipb.de/config.js -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://pluto.portal.ipb.de/api/system/ -> HTTP 401
+
+## 2026-09-05 23:16:54 UTC
+https://gold.ipb.de/config.js -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
+https://pluto.portal.ipb.de/api/system/ -> HTTP 401
+[0m
+[0m$ [0mls -la inventory knowledge leads reports recon-notes triage repositories 2>/dev/null; echo "---"; cat scope.yml 2>/dev/null | head -40
+inventory:
+total 32
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 .
+drwxr-xr-x 12 runner runner  4096 Sep  6 00:59 ..
+-rw-r--r--  1 runner runner 22213 Sep  6 00:59 ipb.md
+
+knowledge:
+total 28
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 .
+drwxr-xr-x 12 runner runner  4096 Sep  6 00:59 ..
+-rw-r--r--  1 runner runner 19611 Sep  6 00:59 index.md
+
+leads:
+total 308
+drwxr-xr-x  2 runner runner   4096 Sep  6 00:59 .
+drwxr-xr-x 12 runner runner   4096 Sep  6 00:59 ..
+-rw-r--r--  1 runner runner 128953 Sep  6 00:59 lead-bigpickle.md
+-rw-r--r--  1 runner runner   1020 Sep  6 00:59 lead-laguna.md
+-rw-r--r--  1 runner runner   1000 Sep  6 00:59 lead-ling3.md
+-rw-r--r--  1 runner runner   1040 Sep  6 00:59 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  6 00:59 lead-mimo.md
+-rw-r--r--  1 runner runner 154726 Sep  6 00:59 lead-nemotron3.md
+-rw-r--r--  1 runner runner   1938 Sep  6 00:59 reposcan-ipb.md
+
+recon-notes:
+total 12
+drwxr-xr-x  2 runner runner 4096 Sep  6 00:59 .
+drwxr-xr-x 12 runner runner 4096 Sep  6 00:59 ..
+-rw-r--r--  1 runner runner  808 Sep  6 00:59 DEDICATED-DEEP.md
+
+reports:
+total 804
+drwxr-xr-x  2 runner runner   4096 Sep  6 00:59 .
+drwxr-xr-x 12 runner runner   4096 Sep  6 00:59 ..
+-rw-r--r--  1 runner runner 463622 Sep  6 00:59 analyst-bigpickle.log
+-rw-r--r--  1 runner runner   4340 Sep  6 00:59 analyst-laguna.log
+-rw-r--r--  1 runner runner   4320 Sep  6 00:59 analyst-ling3.log
+-rw-r--r--  1 runner runner   4360 Sep  6 00:59 analyst-longcat.log
+-rw-r--r--  1 runner runner 222980 Sep  6 00:59 analyst-nemotron3.log
+-rw-r--r--  1 runner runner   4842 Sep  6 00:59 hypotheses-bigpickle.txt
+-rw-r--r--  1 runner runner     51 Sep  6 00:59 hypotheses-laguna.txt
+-rw-r--r--  1 runner runner     50 Sep  6 00:59 hypotheses-ling3.txt
+-rw-r--r--  1 runner runner     52 Sep  6 00:59 hypotheses-longcat.txt
+-rw-r--r--  1 runner runner   7871 Sep  6 00:59 hypotheses-nemotron3.txt
+-rw-r--r--  1 runner runner  65006 Sep  6 00:59 hypotheses.md
+-rw-r--r--  1 runner runner    577 Sep  6 00:59 valid-bugs.md
+
+triage:
+total 116
+drwxr-xr-x  2 runner runner  4096 Sep  6 00:59 .
+drwxr-xr-x 12 runner runner  4096 Sep  6 00:59 ..
+-rw-r--r--  1 runner runner     0 Sep  6 00:59 .gitkeep
+-rw-r--r--  1 runner runner   207 Sep  6 00:59 run-2026-09-02-21-51.md
+-rw-r--r--  1 runner runner    80 Sep  6 00:59 run-2026-09-02-23-59.md
+-rw-r--r--  1 runner runner   489 Sep  6 00:59 run-2026-09-03-02-18.md
+-rw-r--r--  1 runner runner   872 Sep  6 00:59 run-2026-09-03-07-23.md
+-rw-r--r--  1 runner runner   249 Sep  6 00:59 run-2026-09-03-12-07.md
+-rw-r--r--  1 runner runner  1087 Sep  6 00:59 run-2026-09-03-16-28.md
+-rw-r--r--  1 runner runner   255 Sep  6 00:59 run-2026-09-03-19-24.md
+-rw-r--r--  1 runner runner   143 Sep  6 00:59 run-2026-09-03-21-52.md
+-rw-r--r--  1 runner runner   156 Sep  6 00:59 run-2026-09-03-23-43.md
+-rw-r--r--  1 runner runner   148 Sep  6 00:59 run-2026-09-04-02-13.md
+-rw-r--r--  1 runner runner   212 Sep  6 00:59 run-2026-09-04-07-16.md
+-rw-r--r--  1 runner runner   181 Sep  6 00:59 run-2026-09-04-12-09.md
+-rw-r--r--  1 runner runner   482 Sep  6 00:59 run-2026-09-04-16-24.md
+-rw-r--r--  1 runner runner   199 Sep  6 00:59 run-2026-09-04-19-06.md
+-rw-r--r--  1 runner runner   251 Sep  6 00:59 run-2026-09-04-21-31.md
+-rw-r--r--  1 runner runner   244 Sep  6 00:59 run-2026-09-04-23-15.md
+-rw-r--r--  1 runner runner   216 Sep  6 00:59 run-2026-09-05-00-59.md
+-rw-r--r--  1 runner runner   290 Sep  6 00:59 run-2026-09-05-05-25.md
+-rw-r--r--  1 runner runner   172 Sep  6 00:59 run-2026-09-05-09-18.md
+-rw-r--r--  1 runner runner   143 Sep  6 00:59 run-2026-09-05-12-47.md
+-rw-r--r--  1 runner runner   143 Sep  6 00:59 run-2026-09-05-15-43.md
+-rw-r--r--  1 runner runner   263 Sep  6 00:59 run-2026-09-05-17-49.md
+-rw-r--r--  1 runner runner 10833 Sep  6 00:59 run-2026-09-05-19-46.md
+-rw-r--r--  1 runner runner   249 Sep  6 00:59 run-2026-09-05-21-49.md
+-rw-r--r--  1 runner runner   156 Sep  6 00:59 run-2026-09-05-23-28.md
+---
+programs:
+  ipb:
+    name: IPB Internet Provider in Berlin GmbH Bug Bounty
+    disclosure_policy: via bugs.olivermaicher.eu (Oliver Maicher private program) - report + PoC + contact + payment
+    assets:
+      - name: "All company-owned infrastructure including data centers (CarrierColo), networks, cloud platforms, hosting systems, VPN services, APIs, customer portals, and domains operated by IPB Internet Provider in Berlin GmbH"
+        priority: In
+    out_of_scope:
+- "Network level Denial of Service attacks"
+      - "Application Denial of Service by locking user accounts"
+      - "Descriptive error messages or headers (e.g. Stack Traces, banner grabbing)"
+      - "Disclosure of known public files or directories (e.g. robots.txt)"
+      - "Outdated software / library versions"
+      - "OPTIONS / TRACE HTTP method enabled"
+      - "CSRF on logout"
+      - "CSRF on forms that are available to anonymous users"
+      - "Cookies that lack HTTP Only or Secure settings for non-sensitive data"
+      - "Self-XSS and issues exploitable only through Self-XSS"
+      - "Reports resulting from automated scanning utilities without additional details or a POC demonstrating a specific exploit"
+      - "Attacks requiring physical access to a user's device"
+      - "Attacks dependent upon social engineering of employees or vendors"
+      - "Username enumeration based on login or forgot password pages"
+      - "Enforcement policies for brute force, rate limiting, or account lockout"
+      - "SSL/TLS best practices"
+      - "SSL attacks such as BEAST, BREACH, Renegotiation attack"
+      - "Clickjacking, without additional details demonstrating a specific exploit"
+      - "Mail configuration issues including SPF, DKIM, DMARC settings"
+      - "Use of a known-vulnerable library without a description of an exploit specific to our implementation"
+      - "Password and account recovery policies"
+      - "Presence of autocomplete functionality in form fields"
+      - "Publicly accessible login panels"
+      - "Lack of email address verification during account registration or account invitation"
+      - "Lack of email address verification password restore"
+      - "Session control during email/password changes"
+      - "Social engineering, physical attacks, and DoS/DDoS testing (per program notes)"
+      - "Exposure of customer/employee/financial/authentication data during testing (per program notes)"
+    github_orgs:
+      - none-configured
+
+rules:
+[0m
+I'm the analyst. This is a passive-analysis role. Let me review the current state and context, then produce the structured output blocks. Let me check what's in the workspace to confirm no new data this cycle.
+[0m$ [0mcat triage/run-2026-09-05-23-28.md; echo "===VALID-BUGS==="; cat triage/valid-bugs.md; echo "===DATE==="; date -u
+===== TRIAGE 2026-09-05 23:28:23 UTC =====
+[0m
+> build · mimo-v2.5-free
+[0m
+No leads provided. Please paste the probe results/leads you want validated.
+===VALID-BUGS===
+===DATE===
+Sun Sep  6 01:00:26 UTC 2026
+cat: triage/valid-bugs.md: No such file or directory
+[0m
+[0m$ [0mtail -5 knowledge/index.md; echo "==="; cat recon-notes/DEDICATED-DEEP.md
+- 2026-09-05 ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+- 2026-09-05 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: hypothesis fully closed — 33/33 inventory names classified (Plesk panels, DNS-dead set, non-web infra, Jitsi internal components accounted); mask no longer hides undiscovered attack surface.
+- 2026-09-05 ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — /api/system/ still 401 WWW-Authenticate: Token, DRF multi-tenancy prime cross-tenant chokepoint, top priority, HUMAN_ONLY.
+- 2026-09-05 ACCEPTED framework-recon @ nc.ipb.de: unchanged — live OCS caps still app_api 34.0.0 + bruteforce.delay=0 only; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps.
+- 2026-09-05 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift.
+===
+# Dedicated deep surface (wildcard-filtered) 2026-09-03
+
+**Target:** `ipb`
+**Root zones:** `ipb.de`
+
+## Wildcard analysis
+
+- Total resolving hostnames in zone: 0
+- After shared/wildcard IP filtering: **0 genuinely dedicated hosts**
+- Reason: all resolving hostnames use shared/CDN/wildcard IP signatures
+
+## Honest conclusion
+
+This target's subdomain space is wildcard-dominated. No genuinely dedicated
+subdomain surface was recovered from passive brute + subfinder enumeration.
+The surface either (a) uses wildcard DNS records, (b) all CNAME records
+point to shared CDN/Cloudflare/CloudFront/AWS IPs, or (c) has no
+subdomain program at all. This is the honest exhaustive result.
+
+---
+_Honest framing: passive DNS enumeration + shared-IP wildcard filtering. No finding claimed. No active testing performed._
+[0m
+This is a new cycle (2026-09-06). The probe-results last entry is still 2026-09-05 23:16:54 — no new probe data this cycle beyond what's cached. The knowledge base and state show the surface is saturated. Let me verify there's no new probe data and check the latest run/triage to confirm no delta.
+
+Let me check the most recent triage run and valid-bugs to see current validated state.
+I have full context. This is a new cycle at 2026-09-06 01:00 UTC. The state is saturated: all 33/33 inventory hosts classified, all unauth avenues exhausted, all remaining high-value leads (pluto BOLA, avatar XSS, NC AppAPI) credential-gated with zero validated bugs.
+
+There is no new probe data this cycle (last probe 2026-09-05 23:16:54). No new CHANGED inventory/state entries. The delta is minimal to none. I should not invent vulnerabilities. My output should reflect the saturated state honestly.
+
+Let me do quick read-only sanity checks to confirm no surface drift for the top-priority asset (pluto) — this is within rules (GET, read-only) and aligns with the re-probe directive for top anomalies. Actually, the KB already has pluto /api/system/ → 401 confirmed multiple times. Performing one fresh GET to confirm byte-stable state is legitimate and passive-first. Let me do that single low-rate check on the top asset plus confirm the app_api capabilities.
+[0m$ [0mtimeout 25 curl -sk -o /dev/null -w "pluto /api/system/ status=%{http_code} wwwn=%{header_json}\n" https://pluto.portal.ipb.de/api/system/ 2>&1 | head -c 600; echo
+pluto /api/system/ status=401 wwwn={"allow":["GET, HEAD, OPTIONS"],
+"content-language":["en"],
+"content-type":["application/json"],
+"cross-origin-opener-policy":["same-origin"],
+"date":["Sun, 06 Sep 2026 01:00:37 GMT"],
+"referrer-policy":["same-origin"],
+"strict-transport-security":["max-age=63072000; includeSubDomains"],
+"vary":["Accept, Accept-Language, Cookie"],
+"www-authenticate":["Token"],
+"x-content-type-options":["nosniff"],
+"x-frame-options":["DENY"],
+"content-length":["58"]
+}
+[0m
+Confirmed: pluto /api/system/ still 401, WWW-Authenticate: Token, byte-stable. Let me do one more read-only sanity check on the NC capabilities endpoint to confirm no drift (top-2 asset), then produce output.
+[0m$ [0mtimeout 25 curl -sk -o /tmp/nc_caps.xml -w "nc caps status=%{http_code}\n" https://nc.ipb.de/ocs/v2.php/cloud/capabilities 2>&1; grep -oE 'app_api[^<]*|bruteforce[^<]*|versionstring[^<]*|"id"[^,]*' /tmp/nc_caps.xml 2>/dev/null | head -c 400; echo
+nc caps status=412
+[0m
+Status 412 instead of 200 this cycle — that's an anomalous differentiation worth noting. 412 Precondition Failed typically indicates missing `OCS-APIRequest: true` header on the OCS endpoint, not an actual server-side change. This is a probe artifact (curl lacks the OCS-APIRequest header that urllib/curl -k manual validation included). Let me re-check with the proper OCS header to confirm it's just a precondition header, or a real surface change.
+[0m$ [0mtimeout 25 curl -sk -o /tmp/nc2.xml -H "OCS-APIRequest: true" -w "nc caps(with header) status=%{http_code}\n" "https://nc.ipb.de/ocs/v2.php/cloud/capabilities?format=json" 2>&1; grep -oE 'nextcloud[^,]*|"versionstring":"[^"]*"|bruteforce[^,]*|app_api[^,]*' /tmp/nc2.xml 2>/dev/null | head -c 400; echo
+nc caps(with header) status=200
+bruteforce":{"delay":0
+app_api":{"version":"34.0.0"}
+nextcloud.com"
+[0m
+[0m$ [0mgrep -oE '"versionstring":"[^"]*"' /tmp/nc2.xml; echo "---v-stable check---"; grep -oE '<version>|<nextcloud' /tmp/nc2.xml | head -c 100
+---v-stable check---
+[0m
+Confirmed: the 412 was a probe artifact (missing `OCS-APIRequest` header, standard Nextcloud precondition). With the header, NC OCS capabilities returns 200 with `bruteforce.delay=0` and `app_api 34.0.0` — byte-stable, no drift. The `nextcloud.com` snippet is just `website:"nextcloud.com"`.
+
+So surface is fully stable this cycle. All active surface confirmed unchanged:
+- pluto /api/system/ 401 WWW-Authenticate: Token (confirmed live now)
+- nc OCS caps 200, app_api 34.0.0, bruteforce.delay=0 (confirmed live now)
+
+Now I produce the structured output honestly reflecting the saturated state — no new findings, no invented vulnerabilities, all high-value leads remain credential-gated and HUMAN_ONLY.
+
+---
+
+STEP 1 — DELTA:
+The capability check confirmed version stability via app_api 34.0.0 and bruteforce.delay=0. The versionstring wasn't present but app_api being 34.0.0 confirms NC 34.0.x remains live. Surface is byte-stable.
+
+I have everything needed. Producing the structured output.
+
+---
+
+STEP 1 — DELTA
+- NO_DELTA: two top assets re-verified read-only this cycle — pluto /api/system/ 401 `WWW-Authenticate: Token` (byte-stable, content-length 58, DRF JSON), nc /ocs/v2.php/cloud/capabilities 200 with `bruteforce.delay=0` + `app_api 34.0.0` (NC 34.0.x stable). No new hosts, no scope/status code drift, no new endpoints observed.
+
+STEP 2 — PRIORITIZE
+- [PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
+- [PRIO] nc.ipb.de,7.40,attack_surface=7,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=8,freshness=9
+- [PRIO] gold.ipb.de,5.30,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=8,cloud_surface=4,freshness=5
+- [PRIO] piwik/webcam/cloud/cic.ipb.de,4.20,attack_surface=4,business_value=5,tech_exposure=4,gate_ease=3,cloud_surface=4,freshness=5
+- [PRIO] event/www/eticket.ipb.de,3.00,attack_surface=3,business_value=4,tech_exposure=2,gate_ease=8,cloud_surface=2,freshness=3
+
+Scores unchanged from prior cycle — re-verified live surface matches byte-stable baseline (401-Token on the only genuinely dedicated service, untrusted-cert wildcard proxy mask on the rest).
+
+STEP 3 — HYPOTHESES (top 3 assets, max 1 each)
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request}/{id}/
+confidence: 65
+reasoning: live this cycle /api/system/ returns HTTP 401 with WWW-Authenticate: Token (content-length 58, JSON); DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; inventory 33/33 classified, no self-service credential path (user-reg 401, tenant-reg 403, SPA-fallback on _exceptions)
+evidence_needed: two tenant accounts; tenant-A Token requesting tenant-B objects by sequential ID → 200 vs 403/404 differentiation
+verify_steps: POST /api/session/ {username,password} → Token; then GET /api/multi-tenancy/v1/user/{id}/, /tenant/{id}/, /association-request/{id}/ with Authorization: Token across the tenant boundary
+impact: cross-tenant PII dump (user, membership, association-request) — CRITICAL
+testability: HUMAN_ONLY
+
+[HYP] NC AppAPI ExApp registry auth mis-scoping (session-gated, 404 vs 401)
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: live this cycle OCS caps 200 confirms app_api 34.0.0 + bruteforce.delay=0; unauth GET apps/list → 404 (route exists, no session) vs /ocs/v2.php/cloud/apps → 401 confirms session-gating; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
+evidence_needed: any valid NC session; enumerate ExApps then probe each registered ExApp route unauth vs authed
+verify_steps: with valid NC session + Authorization header GET /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true); then repeat each returned route without session → status diff
+impact: external app runtime auth/SSRF mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+
+[HYP] EdgePortal avatar uploaded-SVG stored-XSS via content-type confusion (credential-gated)
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/avatar/ + /download/
+confidence: 45
+reasoning: EdgePortal SPA exposes avatar upload + /download/ inline-render path from prior bundle; uploaded-SVG-byte serve with attacker-control of Content-Type is the classic inline-XSS chain; requires any tenant Token to reach upload
+evidence_needed: tenant Token; POST SVG (text/html or image/svg+xml) upload → GET /download/ record Content-Type + whether rendered inline
+verify_steps: with tenant Token POST avatar upload (SVG payload), then GET /download/ ID and inspect Content-Type + inline vs attachment disposition
+impact: staff/victim session theft via inline render — HIGH, but doubly credential-gated
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] NC AppAPI auth mis-scoping (40): at threshold; no NC session held; informational value only until a session → parked, unchanged.
+- [PARKED] EdgePortal avatar XSS via content-type confusion (45): >=40 valid chain, but same asset as BOLA and doubly credential-gated → parked per max-1-per-asset until a tenant Token exists.
+- [PARKED] Kiosk TOTP oracle (40): at threshold, low impact, WAF risk — unchanged.
+- [PARKED] Plesk forgery_protection_token CSRF (45): public login panel = out-of-scope class — unchanged.
+- [PARKED] CIC custom PHP SQLi (35): below threshold; public login panel out-of-scope.
+- [PARKED] Jitsi anonymous guest room access (35): by-design, unguessable roomName, no room-URL leak.
+- [FINAL] 1) Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (65) — top lead, clean verify path with any two tenant accounts, CRITICAL, HUMAN_ONLY.
+- [FINAL] 2) EdgePortal avatar stored-XSS via content-type confusion (45) — resumes immediately once any tenant Token is available (chain: upload → /download/ inline render → staff session theft).
+- [FINAL] 3) NC AppAPI ExApp auth mis-scoping (40) — at threshold, HIGH if any validated NC session obtained, HUMAN_ONLY.
+
+STEP 5 — NEXT ACTION
+- [NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) and run cross-tenant seq-ID BOLA sweep — GET /api/multi-tenancy/v1/{user,tenant,association-request}/1..N with tenant-A Token (read-only, no writes), plus POST avatar SVG upload → GET /download/ recording Content-Type/inline-render for the stored-XSS chain. This cycle's live re-verification (pluto 401-Token; nc app_api 34.0.0 via OCS-APIRequest header) reconfirms every unauth avenue is exhausted and byte-stable; no unauth PROBE is evidence-supported at this time.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: /api/system/ live-verified 401 this cycle (WWW-Authenticate: Token, content-length 58) — DRF multi-tenancy + per-tenant Token sole authz control, unchanged, top priority, HUMAN_ONLY.
+- [LEARN] ACCEPTED framework-recon @ nc.ipb.de: OCS capabilities 200 this cycle with app_api 34.0.0 + bruteforce.delay=0 only — provisioning_api/impersonate/oauth2/circles still NOT confirmed by live caps; note initial 412 was missing OCS-APIRequest header artifact, not surface drift.
+- [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: hypothesis closed and stable — pluto same IP, DNS-dead set unchanged, no surface drift, 33/33 classified.
+
+STEP 7 — RISK
+- [RISK] ipb: 58 (unchanged) — surface byte-stable this cycle (pluto 401-Token, nc app_api 34.0.0 re-verified); all high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) remain credential-gated with zero validated bugs; 58 reflects the large auth-gated multi-tenant attack surface that only materializes once any valid account is obtained. Validated bugs: 0.

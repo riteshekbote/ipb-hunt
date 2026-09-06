@@ -1097,3 +1097,31 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED framework-recon @ nc.ipb.de: unchanged — live OCS caps still app_api 34.0.0 + bruteforce.delay=0 only; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps.
 [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift.
 [RISK] ipb: 58 (unchanged) — surface re-verified byte-stable this cycle; all high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) remain credential-gated with zero validated bugs; 58 reflects the large auth-gated multi-tenant attack surface that materializes only once any valid account is obtained. Validated bugs: 0.
+## 2026-09-06 01:01:22 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request}/{id}/
+confidence: 65
+reasoning: live this cycle /api/system/ returns HTTP 401 with WWW-Authenticate: Token (content-length 58, JSON); DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; inventory 33/33 classified, no self-service credential path (user-reg 401, tenant-reg 403, SPA-fallback on _exceptions)
+evidence_needed: two tenant accounts; tenant-A Token requesting tenant-B objects by sequential ID → 200 vs 403/404 differentiation
+verify_steps: POST /api/session/ {username,password} → Token; then GET /api/multi-tenancy/v1/user/{id}/, /tenant/{id}/, /association-request/{id}/ with Authorization: Token across the tenant boundary
+impact: cross-tenant PII dump (user, membership, association-request) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp registry auth mis-scoping (session-gated, 404 vs 401)
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: live this cycle OCS caps 200 confirms app_api 34.0.0 + bruteforce.delay=0; unauth GET apps/list → 404 (route exists, no session) vs /ocs/v2.php/cloud/apps → 401 confirms session-gating; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
+evidence_needed: any valid NC session; enumerate ExApps then probe each registered ExApp route unauth vs authed
+verify_steps: with valid NC session + Authorization header GET /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true); then repeat each returned route without session → status diff
+impact: external app runtime auth/SSRF mis-scoping — HIGH if session obtained
+testability: HUMAN_ONLY
+[HYP] EdgePortal avatar uploaded-SVG stored-XSS via content-type confusion (credential-gated)
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/avatar/ + /download/
+confidence: 45
+reasoning: EdgePortal SPA exposes avatar upload + /download/ inline-render path from prior bundle; uploaded-SVG-byte serve with attacker-control of Content-Type is the classic inline-XSS chain; requires any tenant Token to reach upload
+evidence_needed: tenant Token; POST SVG (text/html or image/svg+xml) upload → GET /download/ record Content-Type + whether rendered inline
+verify_steps: with tenant Token POST avatar upload (SVG payload), then GET /download/ ID and inspect Content-Type + inline vs attachment disposition
+impact: staff/victim session theft via inline render — HIGH, but doubly credential-gated
+testability: HUMAN_ONLY

@@ -249,3 +249,5 @@ www.survey.ipb.de
 - CHANGED cloud.ipb.de resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope
 - CHANGED focus.gold.ipb.de + moderated.gold.ipb.de DNS-dead (000) — Jitsi internal components, not external vhosts
 - CHANGED *.{de-cix,kinski,hostmaster,track,spam,spam01,spam02,ns6,dns2,mail,moderated,focus}.ipb.de all DNS-dead (000)
+
+## 2026-09-06 01:01:32 UTC
