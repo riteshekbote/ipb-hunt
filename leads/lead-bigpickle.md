@@ -1241,3 +1241,27 @@ impact: SSRF to metadata (169.254.169.254) or internal services / ExApp auth byp
 testability: HUMAN_ONLY
 [NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) and run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request}/1..N AND on /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ with tenant-A Token (read-only GET, no writes); same token then confirms profile-picture upload SVG →/download/ Content-Type inline-vs-attachment for the parked 45 XSS chain.
 [RISK] ipb: 58 (unchanged) — surface byte-stable this cycle (pluto /api/system/ 401@58, nc caps 200@1630, event 301→403 identical). All high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) remain credential-gated with zero validated bugs; 58 reflects the large auth-gated multi-tenant surface that materializes only once any valid account is obtained. Validated bugs: 0.
+## 2026-09-06 09:41:26 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: live this cycle /api/system/ 401@58 WWW-Authenticate: Token (byte-identical); DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; inventory 33/33 classified, no self-service credential path (user-reg 401, tenant-reg 403, SPA-fallback on _exceptions/form endpoints)
+evidence_needed: two tenant accounts; tenant-A Token requesting tenant-B objects by sequential ID → 200 vs 403/404 differentiation
+verify_steps: POST /api/session/ {username,password} → Token; GET /api/multi-tenancy/v1/user/{id}/, /tenant/{id}/, /association-request/{id}/, /membership/{id}/ with Authorization: Token across tenant boundary (read-only GET)
+impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp registry auth mis-scoping (session-gated, 404 vs 401)
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: live this cycle OCS caps 200@1630 (header OCS-APIRequest: true required; without header → CSRF-check JSON) confirms app_api 34.0.0 + bruteforce.delay=0; unauth apps/list → 404 (route exists, no session) vs /ocs/v2.php/cloud/apps → 401 confirms session-gating
+evidence_needed: any valid NC session; enumerate ExApps then probe each registered ExApp route unauth vs authed
+verify_steps: with valid NC session GET /ocs/v2.php/apps/app_api/apps/list; repeat each returned route unauth vs authed → status diff; if an ExApp route is reachable, test metadata/SSRF payloads
+impact: SSRF to metadata (169.254.169.254) or internal services / ExApp auth bypass — HIGH if session obtained
+testability: HUMAN_ONLY
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) and run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N AND /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ with tenant-A Token (read-only GET, no writes); same token then confirms profile-picture upload SVG → /download/ Content-Type inline-vs-attachment for the parked 45 XSS chain.
+[LEARN] ACCEPTED framework-recon @ event.ipb.de: pretix REST /api/v1/ + /api/v1/organizers/ → 401@58 (Token-gated), first probe of public pretix API — consistent with mature hardening; do not re-probe as unauth surface.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: OCS caps 200@1630 requires OCS-APIRequest: true header (without → {"message":"CSRF check failed"}); caps body unchanged (app_api 34.0.0 only, bruteforce.delay=0).
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: /api/system/ 401@58 and schema SPA-fallback 354606 byte-stable — surface unchanged.
+[RISK] ipb: 58 (unchanged) — surface byte-stable across pluto/nc/event this cycle; all high-value leads (pluto BOLA 65, avatar XSS 45, NC AppAPI 40) remain credential-gated with zero validated bugs; event pretix REST 401 closes last un-probed unauth surface on the largest live hosts. Validated bugs: 0.

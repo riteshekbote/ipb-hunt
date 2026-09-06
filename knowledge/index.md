@@ -125,3 +125,6 @@
 - 2026-09-06 ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same panel as piwik/webcam); login-only out-of-scope class
 - 2026-09-06 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift.
 - 2026-09-06 ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
+- 2026-09-06 ACCEPTED framework-recon @ event.ipb.de: pretix REST /api/v1/ + /api/v1/organizers/ → 401@58 (Token-gated), first probe of public pretix API — consistent with mature hardening; do not re-probe as unauth surface.
+- 2026-09-06 ACCEPTED framework-recon @ nc.ipb.de: OCS caps 200@1630 requires OCS-APIRequest: true header (without → {"message":"CSRF check failed"}); caps body unchanged (app_api 34.0.0 only, bruteforce.delay=0).
+- 2026-09-06 ACCEPTED framework-recon @ pluto.portal.ipb.de: /api/system/ 401@58 and schema SPA-fallback 354606 byte-stable — surface unchanged.

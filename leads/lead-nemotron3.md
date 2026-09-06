@@ -1210,3 +1210,52 @@ testability: PASSIVE
 [LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
 [LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
 [RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0
+## 2026-09-06 09:41:51 UTC [target] (model nemotron3)
+[PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
+[PRIO] nc.ipb.de,7.10,attack_surface=8,business_value=8,tech_exposure=6,gate_ease=5,cloud_surface=7,freshness=9
+[PRIO] gold.ipb.de,5.60,attack_surface=6,business_value=6,tech_exposure=4,gate_ease=8,cloud_surface=6,freshness=7
+[PRIO] cloud.ipb.de,3.20,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=7,cloud_surface=3,freshness=6
+[PRIO] cic.ipb.de,3.20,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=7,cloud_surface=3,freshness=6
+[PRIO] piwik.ipb.de,3.10,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=8,cloud_surface=3,freshness=6
+[PRIO] webcam.ipb.de,3.10,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=8,cloud_surface=3,freshness=6
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /api/multi-tenancy/v1/user/{id}/, /api/multi-tenancy/v1/association-request/{id}/, /api/check-in/v1/check-in/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface including /api/system/, motd, check-in, association-request, user-token, self endpoints
+evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation (200 vs 403/404 differentiation)
+verify_steps: 1) Obtain low-priv credentialed session (Token); 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/
+impact: Cross-tenant PII dump (membership, user, association-request, check-in data); HIGH
+testability: AUTH_HELPED
+[HYP] NC AppAPI ExApp SSRF/auth-bypass via registered external apps
+class: SSRF
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list (auth), then each ExApp endpoint unauth
+confidence: 40
+reasoning: NC 34.0.3 with app_api 34.0.0 confirmed live via OCS capabilities (bruteforce.delay=0); unauth GET /ocs/v2.php/apps/app_api/apps/list → 404 (routing), /ocs/v2.php/cloud/apps → 401; app_api enables external app runtime historically exposing unauth endpoints/SSRF once registered; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
+evidence_needed: valid NC session; enumerate ExApps list then probe each ExApp endpoint unauth vs authed for SSRF or auth bypass
+verify_steps: 1) Obtain valid NC session (HUMAN_ONLY); 2) GET /ocs/v2.php/apps/app_api/apps/list with session; 3) For each returned ExApp route, GET unauth and observe status/code; 4) Test SSRF payloads on ExApp endpoints if accessible
+impact: SSRF to cloud metadata (169.254.169.254) or internal services; auth bypass on ExApp endpoints; HIGH if exploitable
+testability: HUMAN_ONLY
+[HYP] Jitsi Meet config.js information disclosure
+class: MISCONFIG
+asset: gold.ipb.de /config.js
+confidence: 25
+reasoning: Jitsi Meet config.js publicly accessible; contains domain config, feature flags; anonymous guest domain configured (guest.gold.ipb.de) but does not resolve (000); unguessable random roomName rooms by-design; XMPP backend at auth.gold.ipb.de (no live HTTP confirmed); no sensitive API keys or internal endpoints observed in config.js
+evidence_needed: distinct sensitive config in config.js (API keys, internal endpoints, feature flags) or resolution of guest.gold.ipb.de exposing anonymous join flow
+verify_steps: 1) GET https://gold.ipb.de/config.js -k; 2) Parse for sensitive keys, internal URLs, feature flags; 3) Monitor guest.gold.ipb.de resolution over time
+impact: Information disclosure (internal config, feature flags); LOW
+testability: PASSIVE
+[PARKED] NC AppAPI ExApp SSRF/auth-bypass via registered external apps: confidence 40 (at threshold), HUMAN_ONLY testability, requires valid NC session with no confirmed acquisition path; provisioning_api/impersonate/oauth2/circles NOT confirmed by live probe — attack surface unproven
+[PARKED] Jitsi Meet config.js information disclosure: confidence 25 (<40), no sensitive config leak confirmed, guest.gold.ipb.de does not resolve (000), unguessable roomName by-design — no viable verify path
+[FINAL] 1) Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — highest confidence, clear verify path with credentials, HIGH impact, AUTH_HELPED testability
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) and run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{tenant,user,association-request,check-in}/{id}/
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
+[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift
+[RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0

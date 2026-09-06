@@ -1,7 +1,8 @@
-## 2026-09-06 05:41:21 UTC [target] (model nemotron3)
+## 2026-09-06 09:41:51 UTC [target] (model nemotron3)
 [PRIO] pluto.portal.ipb.de,7.65,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=3,cloud_surface=7,freshness=8
 [PRIO] nc.ipb.de,7.10,attack_surface=8,business_value=8,tech_exposure=6,gate_ease=5,cloud_surface=7,freshness=9
 [PRIO] gold.ipb.de,5.60,attack_surface=6,business_value=6,tech_exposure=4,gate_ease=8,cloud_surface=6,freshness=7
+[PRIO] cloud.ipb.de,3.20,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=7,cloud_surface=3,freshness=6
 [PRIO] cic.ipb.de,3.20,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=7,cloud_surface=3,freshness=6
 [PRIO] piwik.ipb.de,3.10,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=8,cloud_surface=3,freshness=6
 [PRIO] webcam.ipb.de,3.10,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=8,cloud_surface=3,freshness=6
@@ -44,4 +45,5 @@ testability: PASSIVE
 [LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe
 [LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
 [LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift
 [RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0
