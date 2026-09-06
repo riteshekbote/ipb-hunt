@@ -135,3 +135,5 @@
 - 2026-09-06 ACCEPTED framework-recon @ pluto.portal.ipb.de: /api/system/ 401@58 byte-stable 6 consecutive cycles (re-confirmed live this cycle) — surface unchanged, do not re-probe.
 - 2026-09-06 ACCEPTED framework-recon @ nc.ipb.de: OCS caps 200@1630 re-confirmed this cycle (OCS-APIRequest: true header required; app_api 34.0.0 only, bruteforce.delay=0) — unchanged, do not re-probe.
 - 2026-09-06 ACCEPTED framework-recon @ event.ipb.de: pretix REST /api/v1/ 401@58 Token-gated — mature hardening, do not re-probe.
+- 2026-09-06 ACCEPTED framework-recon @ pluto.portal.ipb.de: /api/system/ 401@58 byte-stable 6+ consecutive cycles — surface unchanged, do not re-probe.
+- 2026-09-06 ACCEPTED framework-recon @ nc.ipb.de: OCS caps 200@1630 (OCS-APIRequest: true required; app_api 34.0.0 only, bruteforce.delay=0) — unchanged, do not re-probe.
