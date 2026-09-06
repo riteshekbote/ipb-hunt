@@ -128,3 +128,4 @@
 - 2026-09-06 ACCEPTED framework-recon @ event.ipb.de: pretix REST /api/v1/ + /api/v1/organizers/ → 401@58 (Token-gated), first probe of public pretix API — consistent with mature hardening; do not re-probe as unauth surface.
 - 2026-09-06 ACCEPTED framework-recon @ nc.ipb.de: OCS caps 200@1630 requires OCS-APIRequest: true header (without → {"message":"CSRF check failed"}); caps body unchanged (app_api 34.0.0 only, bruteforce.delay=0).
 - 2026-09-06 ACCEPTED framework-recon @ pluto.portal.ipb.de: /api/system/ 401@58 and schema SPA-fallback 354606 byte-stable — surface unchanged.
+- 2026-09-06 ACCEPTED framework-recon @ nc.ipb.de: OCS caps 200@1630 requires OCS-APIRequest: true header (without → CSRF-check JSON); caps body unchanged (app_api 34.0.0 only, bruteforce.delay=0).

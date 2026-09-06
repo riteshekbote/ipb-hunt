@@ -255,3 +255,11 @@ www.survey.ipb.de
 ## 2026-09-06 05:42:15 UTC
 
 ## 2026-09-06 09:42:02 UTC
+
+## 2026-09-06 13:16:20 UTC
+- CHANGED pluto.portal.ipb.de/api/system/ consistently returns HTTP 401 (WWW-Authenticate: Token) across 5 consecutive probe cycles (2026-09-05 21:41 through 2026-09-06 09:42) — DRF endpoint stability confirmed
+- CHANGED gold.ipb.de/config.js consistently fails SSL cert verify in automated probes but KB confirms live via curl -k — Jitsi config.js accessible
+- CHANGED Wildcard DNS masking hypothesis fully killed — 33/33 inventory names classified (Plesk panels ×3, DNS-dead set ×15, non-web infra ×6, Jitsi internal components ×3, pluto/event/www/eticket/nc/gold/cic 
+- CHANGED nc.ipb.de OCS capabilities confirmed: app_api 34.0.0 ONLY live; provisioning_api/impersonate/oauth2/circles remain unconfirmed by live caps — prior KC overstatement corrected and stable
+- CHANGED cloud.ipb.de resolves to 194.29.230.41 → 3rd Plesk "I/P/B/ Cloudhosting Panel" (same as piwik/webcam); login-only out-of-scope class confirmed
+- CHANGED focus.gold.ipb.de + moderated.gold.ipb.de DNS-dead (000) — Jitsi internal focus/moderated components not external vhosts; gold subdomain set fully closed
