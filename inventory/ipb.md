@@ -304,3 +304,10 @@ www.survey.ipb.de
 - CHANGED focus.gold.ipb.de + moderated.gold.ipb.de DNS-dead (000) — Jitsi internal components not external vhosts; gold subdomain set fully closed
 - NEW None — no new live hosts or endpoints discovered this cycle (2026-09-06)
 - NEW EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion (from bigpickle model, confidence 45) — new hypothesis class on pluto.portal.ipb.de
+
+## 2026-09-07 00:20:36 UTC
+- CHANGED pluto.portal.ipb.de/api/system/ HTTP 401 stable across 7+ consecutive cycles (confirmed live via curl -k)
+- CHANGED nc.ipb.de OCS capabilities 200 with OCS-APIRequest: true header; app_api 34.0.0 only; provisioning_api/impersonate/oauth2/circles unconfirmed by live caps
+- CHANGED gold.ipb.de/config.js 200 via curl -k (SSL cert fails in automated probes)
+- CHANGED event.ipb.de pretix REST /api/v1/ + /api/v1/organizers/ → 401 Token-gated (mature hardening)
+- NEW EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion hypothesis (confidence 45) on /api/multi-tenancy/v1/user/profile-picture/{upload,download}/ (both 401 auth-gated)
