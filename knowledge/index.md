@@ -148,3 +148,11 @@
 - 2026-09-07 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift
 - 2026-09-07 ACCEPTED MISC @ *.ipb.de: cycle converged without new data — all live surfaces byte-stable (pluto 401@58, nc OCS 200@1630, gold config.js, event /api/v1 401), 33/33 inventory classified; no new unauth vector; earlier "do not re-probe" constraints honored.
 - 2026-09-07 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 8+ consecutive stable cycles
+- 2026-09-07 ACCEPTED MISC @ *.ipb.de: cycle converged again without new data — DNS map re-confirmed passive (getent, no HTTP; cloud=194.29.230.41 Plesk, gold=194.29.226.155, my DNS-dead), 9th consecutive byte-stable cycle; reposcan/triage produced no leads; earlier "do not re-probe" constraints honored; no new unauth vector.
+- 2026-09-07 ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+- 2026-09-07 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 9 consecutive stable cycles.
+- 2026-09-07 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged.
+- 2026-09-07 ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+- 2026-09-07 REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+- 2026-09-07 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe.
+- 2026-09-07 ACCEPTED MISC @ *.ipb.de: cycle converged without new data — all live surfaces byte-stable, 33/33 inventory classified; no new unauth vector; earlier "do not re-probe" constraints honored
