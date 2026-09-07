@@ -1707,3 +1707,28 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
 [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift
 [RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0
+## 2026-09-07 15:30:41 UTC [target] (model nemotron3)
+class: IDOR  
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /api/multi-tenancy/v1/user/{id}/, /api/multi-tenancy/v1/association-request/{id}/, /api/check-in/v1/check-in/{id}/, /api/admin/multi-tenancy/v1/{user,tenant}/{id}/  
+confidence: 65  
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface; /api/system/ 401@58 byte-stable 8+ cycles  
+evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation (200 vs 403/404 differentiation)  
+verify_steps: 1) Obtain low-priv credentialed session (Token) via kiosk_login or admin-provisioned account; 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/, /membership/{id}/, /admin/multi-tenancy/v1/{user,tenant}/{id}/  
+impact: Cross-tenant PII dump (membership, user, association-request, check-in, tenant relationship data); CRITICAL  
+testability: AUTH_HELPED
+class: XSS  
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/upload/, /api/multi-tenancy/v1/user/profile-picture/download/  
+confidence: 45  
+reasoning: upload + download endpoints live-confirmed DRF (401 Token-auth, JSON); classic inline-render XSS chain if attacker-controlled SVG bytes served with inline Content-Type; doubly credential-gated (upload + victim session)  
+evidence_needed: tenant Token; POST SVG (image/svg+xml or text/html) → GET /download/ record Content-Type + Content-Disposition (inline vs attachment)  
+verify_steps: 1) Obtain tenant Token; 2) POST /api/multi-tenancy/v1/user/profile-picture/upload/ with SVG payload (Content-Type: image/svg+xml); 3) GET /api/multi-tenancy/v1/user/profile-picture/download/ and inspect Content-Type + Content-Disposition headers  
+impact: Staff/victim session theft via inline render — HIGH, credential-gated  
+testability: HUMAN_ONLY
+class: SSRF  
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list  
+confidence: 40  
+reasoning: live OCS caps 200 confirmed (requires OCS-APIRequest: true header; app_api 34.0.0 + bruteforce.delay=0); unauth GET /ocs/v2.php/apps/app_api/apps/list → 404 (route exists, no session) vs /ocs/v2.php/cloud/apps → 401 confirms session-gating; app_api enables external app runtime historically exposing unauth endpoints/SSRF once registered; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps  
+evidence_needed: valid NC session; enumerate ExApps then probe each registered ExApp route unauth vs authed  
+verify_steps: 1) Obtain valid NC session (HUMAN_ONLY); 2) GET /ocs/v2.php/apps/app_api/apps/list with OCS-APIRequest: true header and session; 3) For each returned ExApp route, GET unauth and authed → status diff; 4) If ExApp route reachable, test SSRF payloads (169.254.169.254) on ExApp endpoints  
+impact: SSRF to cloud metadata (169.254.169.254) or internal services; ExApp auth bypass — HIGH if session obtained  
+testability: HUMAN_ONLY

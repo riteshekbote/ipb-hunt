@@ -326,3 +326,5 @@ www.survey.ipb.de
 - CHANGED gold.ipb.de `/config.js` 200 via curl -k (SSL cert fails in automated probes)
 - CHANGED event.ipb.de pretix REST `/api/v1/` + `/api/v1/organizers/` → 401 Token-gated (mature hardening)
 - CHANGED Wildcard DNS masking hypothesis fully closed — 33/33 inventory names classified (Plesk×3, DNS-dead×15, non-web infra×6, Jitsi internal×3, live services×7); no surface drift
+
+## 2026-09-07 15:30:49 UTC
