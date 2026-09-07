@@ -146,3 +146,4 @@
 - 2026-09-07 ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
 - 2026-09-07 ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
 - 2026-09-07 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift
+- 2026-09-07 ACCEPTED MISC @ *.ipb.de: cycle converged without new data — all live surfaces byte-stable (pluto 401@58, nc OCS 200@1630, gold config.js, event /api/v1 401), 33/33 inventory classified; no new unauth vector; earlier "do not re-probe" constraints honored.

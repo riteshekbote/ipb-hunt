@@ -311,3 +311,10 @@ www.survey.ipb.de
 - CHANGED gold.ipb.de/config.js 200 via curl -k (SSL cert fails in automated probes)
 - CHANGED event.ipb.de pretix REST /api/v1/ + /api/v1/organizers/ → 401 Token-gated (mature hardening)
 - NEW EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion hypothesis (confidence 45) on /api/multi-tenancy/v1/user/profile-picture/{upload,download}/ (both 401 auth-gated)
+
+## 2026-09-07 04:52:18 UTC
+- CHANGED pluto.portal.ipb.de/api/system/ HTTP 401 stable across 7+ consecutive cycles (curl -k confirmed live)
+- CHANGED nc.ipb.de OCS capabilities 200 with OCS-APIRequest: true header; app_api 34.0.0 only; provisioning_api/impersonate/oauth2/circles unconfirmed by live caps
+- CHANGED gold.ipb.de/config.js 200 via curl -k (SSL cert fails in automated probes)
+- CHANGED event.ipb.de pretix REST /api/v1/ + /api/v1/organizers/ → 401 Token-gated (mature hardening)
+- NEW EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion hypothesis (confidence 45) on /api/multi-tenancy/v1/user/profile-picture/{upload,download}/ (both 401 auth-gated)
