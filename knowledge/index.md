@@ -156,3 +156,4 @@
 - 2026-09-07 REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
 - 2026-09-07 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe.
 - 2026-09-07 ACCEPTED MISC @ *.ipb.de: cycle converged without new data — all live surfaces byte-stable, 33/33 inventory classified; no new unauth vector; earlier "do not re-probe" constraints honored
+- 2026-09-07 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 9+ consecutive stable cycles
