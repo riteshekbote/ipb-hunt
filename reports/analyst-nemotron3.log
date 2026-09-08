@@ -5350,3 +5350,71 @@ testability: HUMAN_ONLY
 ## STEP 7 — RISK
 
 [RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0
+===== ANALYST nemotron3 2026-09-08 23:00:52 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/ipb-hunt/ipb-hunt
+total 260
+drwxr-xr-x 12 runner runner  4096 Sep  8 22:56 .
+drwxr-xr-x  3 runner runner  4096 Sep  8 22:56 ..
+drwxr-xr-x  7 runner runner  4096 Sep  8 22:56 .git
+drwxr-xr-x  3 runner runner  4096 Sep  8 22:56 .github
+-rw-r--r--  1 runner runner  1817 Sep  8 22:56 README.md
+-rw-r--r--  1 runner runner    43 Sep  8 22:56 analyst-out.txt
+-rw-r--r--  1 runner runner 83315 Sep  8 22:56 analyst-prompt.txt
+-rw-r--r--  1 runner runner 79429 Sep  8 22:56 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  8 22:56 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  8 22:56 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  8 22:56 leads
+-rw-r--r--  1 runner runner  9500 Sep  8 22:56 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  8 22:56 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  8 22:56 reports
+drwxr-xr-x  2 runner runner  4096 Sep  8 22:56 reposcan-raw
+-rw-r--r--  1 runner runner  3299 Sep  8 22:56 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  8 22:56 scripts
+-rw-r--r--  1 runner runner    33 Sep  8 22:56 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  8 22:56 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  8 22:56 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  8 22:56 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  8 22:56 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  8 22:56 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  8 22:56 triage
+[0m
+[0m✗ [0mRead leads/lead_nemotron3.txt failed
+[91m[1mError: [0mFile not found: /home/runner/work/ipb-hunt/ipb-hunt/leads/lead_nemotron3.txt
+[0m→ [0mRead state_nemotron3.json
+[0m
+[0m$ [0mls -la /home/runner/work/ipb-hunt/ipb-hunt/leads/ /home/runner/work/ipb-hunt/ipb-hunt/knowledge/
+/home/runner/work/ipb-hunt/ipb-hunt/knowledge/:
+total 40
+drwxr-xr-x  2 runner runner  4096 Sep  8 22:56 .
+drwxr-xr-x 12 runner runner  4096 Sep  8 22:56 ..
+-rw-r--r--  1 runner runner 30495 Sep  8 22:56 index.md
+
+/home/runner/work/ipb-hunt/ipb-hunt/leads/:
+total 576
+drwxr-xr-x  2 runner runner   4096 Sep  8 22:56 .
+drwxr-xr-x 12 runner runner   4096 Sep  8 22:56 ..
+-rw-r--r--  1 runner runner 255867 Sep  8 22:56 lead-bigpickle.md
+-rw-r--r--  1 runner runner   2040 Sep  8 22:56 lead-laguna.md
+-rw-r--r--  1 runner runner   2000 Sep  8 22:56 lead-ling3.md
+-rw-r--r--  1 runner runner   2080 Sep  8 22:56 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  8 22:56 lead-mimo.md
+-rw-r--r--  1 runner runner 299889 Sep  8 22:56 lead-nemotron3.md
+-rw-r--r--  1 runner runner   3889 Sep  8 22:56 reposcan-ipb.md
+[0m
+[0m→ [0mRead leads/lead-nemotron3.md
+[0m→ [0mRead knowledge/index.md
+[0m
+[0m← [0mWrite analyst-output.txt
+Wrote file successfully.
+[0m
+Now I have a complete picture. Let me produce the 8-step analysis.
+[0m→ [0mRead analyst-output.txt
+Output written to `/home/runner/work/ipb-hunt/ipb-hunt/analyst-output.txt` with all 7 structured steps completed. The analysis confirms:
+
+- **Zero surface drift** — 11th consecutive converged cycle, all live endpoints byte-stable
+- **Single surviving high-impact hypothesis** — Cross-tenant BOLA on pluto.portal.ipb.de (confidence 65, CRITICAL, AUTH_HELPED)
+- **Two parked hypotheses** — Nextcloud SSRF (40) and EdgePortal SVG XSS (45), both HUMAN_ONLY blocked
+- **Blocker** — No credentialed access path for pluto.portal.ipb.de; requires HUMAN to obtain a low-priv tenant token

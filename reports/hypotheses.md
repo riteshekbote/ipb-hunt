@@ -894,3 +894,7 @@
 - LEARN: ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope cl
 - LEARN: ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift
 - LEARN: ACCEPTED MISC @ *.ipb.de: 10th consecutive converged cycle — passive DNS re-confirmed stable map, zero surface drift; no new unauth vector; "do not re-probe" co
+
+## RANKED HYPOTHESES 2026-09-08 23:00:52 UTC
+- [65] pluto.portal.ipb.de: Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned account or a clean self-registered kiosk_login cre
