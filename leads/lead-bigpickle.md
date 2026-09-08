@@ -1900,3 +1900,4 @@ testability: HUMAN_ONLY
 [LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
 [LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe.
 [RISK] ipb: 58 (unchanged) — program at credential-acquisition plateau for 10 consecutive cycles: all three leads alive but gated behind a tenant/NC token with no self-service path (user-reg 401, tenant-reg 403, SPA-fallback 354606); 0 validated bugs; zero surface drift (passive DNS re-confirmed this cycle, no live HTTP needed); further unauthenticated probing adds only WAF/log noise with zero information gain; bounded upside rests solely on the pluto token (BOLA 65 → avatar XSS 45) once provisioned, then NC (40).
+## 2026-09-08 05:08:49 UTC [target] (model bigpickle)
