@@ -1901,3 +1901,19 @@ testability: HUMAN_ONLY
 [LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe.
 [RISK] ipb: 58 (unchanged) — program at credential-acquisition plateau for 10 consecutive cycles: all three leads alive but gated behind a tenant/NC token with no self-service path (user-reg 401, tenant-reg 403, SPA-fallback 354606); 0 validated bugs; zero surface drift (passive DNS re-confirmed this cycle, no live HTTP needed); further unauthenticated probing adds only WAF/log noise with zero information gain; bounded upside rests solely on the pluto token (BOLA 65 → avatar XSS 45) once provisioned, then NC (40).
 ## 2026-09-08 05:08:49 UTC [target] (model bigpickle)
+## 2026-09-08 09:43:28 UTC [target] (model bigpickle)
+[PRIO] pluto.portal.ipb.de, 6.7, attack_surface=8 business_value=9 tech_exposure=7 gate_ease=2 cloud_surface=6 freshness=5
+[PRIO] nc.ipb.de, 4.9, attack_surface=5 business_value=6 tech_exposure=5 gate_ease=3 cloud_surface=4 freshness=5
+[PRIO] event.ipb.de, 2.5, attack_surface=2 business_value=4 tech_exposure=3 gate_ease=2 cloud_surface=1 freshness=5
+[PARKED] None — all three hypotheses ≥40, no REJECTED class, each has concrete verify steps; credential-gating lowers gate_ease not confidence (intrinsic flaw, not artifact).
+[FINAL] 1. Cross-tenant BOLA @ pluto.portal.ipb.de (65) — CRITICAL, most promising path
+[FINAL] 2. Profile-picture upload-SVG stored-XSS @ pluto.portal.ipb.de (45) — HIGH, credential-gated
+[FINAL] 3. NC AppAPI auth mis-scoping @ nc.ipb.de (40) — HIGH, session-gated
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned account or a clean self-registered kiosk_login credential (parked oracle has WAF risk — prefer admin-provisioned); with that single token run the read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N and /api/admin/multi-tenancy/v1/{user,tenant}/{id}/, plus the profile-picture SVG upload→/download/ Content-Type chain; a separate NC session unlocks the AppAPI ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged.
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe.
+[RISK] ipb: 58 (unchanged) — program at credential-acquisition plateau for 10 consecutive cycles: all three leads alive but gated behind a tenant/NC token with no self-service path (user-reg 401, tenant-reg 403, SPA-fallback 354606); 0 validated bugs; zero surface drift (passive DNS re-confirmed this cycle, no live HTTP needed); further unauthenticated probing adds only WAF/log noise with zero information gain; bounded upside rests solely on the pluto token (BOLA 65 → avatar XSS 45) once provisioned, then NC (40).

@@ -341,3 +341,10 @@ www.survey.ipb.de
 - CHANGED gold.ipb.de/config.js → HTTP 200 via curl -k (SSL cert fails in automated probes) — unchanged
 - CHANGED event.ipb.de pretix REST /api/v1/ + /api/v1/organizers/ → 401 Token-gated — mature hardening, saturated
 - CHANGED *.ipb.de wildcard DNS masking → 10th consecutive converged cycle; passive DNS stable (pluto/gold/cloud unchanged, my/prod/app/guest/focus/survey DNS-dead), zero surface drift; vrle.de (49.13.50.5, Het
+
+## 2026-09-08 09:56:43 UTC
+- CHANGED pluto.portal.ipb.de/api/system/ → HTTP 401 stable across 10+ consecutive cycles (live re-confirmed this cycle)
+- CHANGED nc.ipb.de OCS capabilities → HTTP 200 with OCS-APIRequest: true header; app_api 34.0.0 only; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — unchanged
+- CHANGED gold.ipb.de/config.js → HTTP 200 via curl -k (SSL cert fails in automated probes) — unchanged
+- CHANGED event.ipb.de pretix REST /api/v1/ + /api/v1/organizers/ → 401 Token-gated — mature hardening, saturated
+- CHANGED *.ipb.de wildcard DNS masking → 10th consecutive converged cycle; passive DNS stable (pluto/gold/cloud unchanged, my/prod/app/guest/focus/survey DNS-dead), zero surface drift; vrle.de (49.13.50.5, Het
