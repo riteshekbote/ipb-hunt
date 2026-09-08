@@ -4504,3 +4504,191 @@ testability: HUMAN_ONLY
 
 **STEP 7 — RISK**  
 [RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0
+===== ANALYST nemotron3 2026-09-08 00:32:59 UTC =====
+[0m
+> build · nemotron-3-ultra-free
+[0m
+[0m$ [0mls -la /home/runner/work/ipb-hunt/ipb-hunt/
+total 252
+drwxr-xr-x 12 runner runner  4096 Sep  8 00:26 .
+drwxr-xr-x  3 runner runner  4096 Sep  8 00:26 ..
+drwxr-xr-x  7 runner runner  4096 Sep  8 00:26 .git
+drwxr-xr-x  3 runner runner  4096 Sep  8 00:26 .github
+-rw-r--r--  1 runner runner  1817 Sep  8 00:26 README.md
+-rw-r--r--  1 runner runner    43 Sep  8 00:26 analyst-out.txt
+-rw-r--r--  1 runner runner 77885 Sep  8 00:26 analyst-prompt.txt
+-rw-r--r--  1 runner runner 73999 Sep  8 00:26 ctx.txt
+drwxr-xr-x  2 runner runner  4096 Sep  8 00:26 inventory
+drwxr-xr-x  2 runner runner  4096 Sep  8 00:26 knowledge
+drwxr-xr-x  2 runner runner  4096 Sep  8 00:26 leads
+-rw-r--r--  1 runner runner  9326 Sep  8 00:26 probe-results.md
+drwxr-xr-x  2 runner runner  4096 Sep  8 00:26 recon-notes
+drwxr-xr-x  2 runner runner  4096 Sep  8 00:26 reports
+drwxr-xr-x  2 runner runner  4096 Sep  8 00:26 reposcan-raw
+-rw-r--r--  1 runner runner  3299 Sep  8 00:26 scope.yml
+drwxr-xr-x  2 runner runner  4096 Sep  8 00:26 scripts
+-rw-r--r--  1 runner runner    33 Sep  8 00:26 state_bigpickle.json
+-rw-r--r--  1 runner runner    33 Sep  8 00:26 state_laguna.json
+-rw-r--r--  1 runner runner    33 Sep  8 00:26 state_ling3.json
+-rw-r--r--  1 runner runner    33 Sep  8 00:26 state_longcat.json
+-rw-r--r--  1 runner runner    33 Sep  8 00:26 state_mimo.json
+-rw-r--r--  1 runner runner    33 Sep  8 00:26 state_nemotron3.json
+drwxr-xr-x  2 runner runner  4096 Sep  8 00:26 triage
+[0m
+[0m→ [0mRead state_nemotron3.json
+[0m→ [0mRead scope.yml
+[0m✱ [0mGlob "leads/*.txt"[90m 0 matches[0m
+[0m✱ [0mGlob "knowledge/*.txt"[90m 0 matches[0m
+[0m→ [0mRead inventory/ipb.md
+[0m→ [0mRead probe-results.md
+[0m
+[0m$ [0mls -la /home/runner/work/ipb-hunt/ipb-hunt/knowledge/ /home/runner/work/ipb-hunt/ipb-hunt/leads/ /home/runner/work/ipb-hunt/ipb-hunt/triage/
+/home/runner/work/ipb-hunt/ipb-hunt/knowledge/:
+total 36
+drwxr-xr-x  2 runner runner  4096 Sep  8 00:26 .
+drwxr-xr-x 12 runner runner  4096 Sep  8 00:26 ..
+-rw-r--r--  1 runner runner 26946 Sep  8 00:26 index.md
+
+/home/runner/work/ipb-hunt/ipb-hunt/leads/:
+total 508
+drwxr-xr-x  2 runner runner   4096 Sep  8 00:26 .
+drwxr-xr-x 12 runner runner   4096 Sep  8 00:26 ..
+-rw-r--r--  1 runner runner 230166 Sep  8 00:26 lead-bigpickle.md
+-rw-r--r--  1 runner runner   1734 Sep  8 00:26 lead-laguna.md
+-rw-r--r--  1 runner runner   1700 Sep  8 00:26 lead-ling3.md
+-rw-r--r--  1 runner runner   1768 Sep  8 00:26 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep  8 00:26 lead-mimo.md
+-rw-r--r--  1 runner runner 255387 Sep  8 00:26 lead-nemotron3.md
+-rw-r--r--  1 runner runner   3264 Sep  8 00:26 reposcan-ipb.md
+
+/home/runner/work/ipb-hunt/ipb-hunt/triage/:
+total 172
+drwxr-xr-x  2 runner runner  4096 Sep  8 00:26 .
+drwxr-xr-x 12 runner runner  4096 Sep  8 00:26 ..
+-rw-r--r--  1 runner runner     0 Sep  8 00:26 .gitkeep
+-rw-r--r--  1 runner runner   207 Sep  8 00:26 run-2026-09-02-21-51.md
+-rw-r--r--  1 runner runner    80 Sep  8 00:26 run-2026-09-02-23-59.md
+-rw-r--r--  1 runner runner   489 Sep  8 00:26 run-2026-09-03-02-18.md
+-rw-r--r--  1 runner runner   872 Sep  8 00:26 run-2026-09-03-07-23.md
+-rw-r--r--  1 runner runner   249 Sep  8 00:26 run-2026-09-03-12-07.md
+-rw-r--r--  1 runner runner  1087 Sep  8 00:26 run-2026-09-03-16-28.md
+-rw-r--r--  1 runner runner   255 Sep  8 00:26 run-2026-09-03-19-24.md
+-rw-r--r--  1 runner runner   143 Sep  8 00:26 run-2026-09-03-21-52.md
+-rw-r--r--  1 runner runner   156 Sep  8 00:26 run-2026-09-03-23-43.md
+-rw-r--r--  1 runner runner   148 Sep  8 00:26 run-2026-09-04-02-13.md
+-rw-r--r--  1 runner runner   212 Sep  8 00:26 run-2026-09-04-07-16.md
+-rw-r--r--  1 runner runner   181 Sep  8 00:26 run-2026-09-04-12-09.md
+-rw-r--r--  1 runner runner   482 Sep  8 00:26 run-2026-09-04-16-24.md
+-rw-r--r--  1 runner runner   199 Sep  8 00:26 run-2026-09-04-19-06.md
+-rw-r--r--  1 runner runner   251 Sep  8 00:26 run-2026-09-04-21-31.md
+-rw-r--r--  1 runner runner   244 Sep  8 00:26 run-2026-09-04-23-15.md
+-rw-r--r--  1 runner runner   216 Sep  8 00:26 run-2026-09-05-00-59.md
+-rw-r--r--  1 runner runner   290 Sep  8 00:26 run-2026-09-05-05-25.md
+-rw-r--r--  1 runner runner   172 Sep  8 00:26 run-2026-09-05-09-18.md
+-rw-r--r--  1 runner runner   143 Sep  8 00:26 run-2026-09-05-12-47.md
+-rw-r--r--  1 runner runner   143 Sep  8 00:26 run-2026-09-05-15-43.md
+-rw-r--r--  1 runner runner   263 Sep  8 00:26 run-2026-09-05-17-49.md
+-rw-r--r--  1 runner runner 10833 Sep  8 00:26 run-2026-09-05-19-46.md
+-rw-r--r--  1 runner runner   249 Sep  8 00:26 run-2026-09-05-21-49.md
+-rw-r--r--  1 runner runner   156 Sep  8 00:26 run-2026-09-05-23-28.md
+-rw-r--r--  1 runner runner   174 Sep  8 00:26 run-2026-09-06-01-18.md
+-rw-r--r--  1 runner runner   283 Sep  8 00:26 run-2026-09-06-06-02.md
+-rw-r--r--  1 runner runner   149 Sep  8 00:26 run-2026-09-06-11-01.md
+-rw-r--r--  1 runner runner   222 Sep  8 00:26 run-2026-09-06-14-12.md
+-rw-r--r--  1 runner runner   190 Sep  8 00:26 run-2026-09-06-17-05.md
+-rw-r--r--  1 runner runner   219 Sep  8 00:26 run-2026-09-06-19-14.md
+-rw-r--r--  1 runner runner   206 Sep  8 00:26 run-2026-09-06-21-23.md
+-rw-r--r--  1 runner runner   171 Sep  8 00:26 run-2026-09-06-23-05.md
+-rw-r--r--  1 runner runner   352 Sep  8 00:26 run-2026-09-07-01-03.md
+-rw-r--r--  1 runner runner   176 Sep  8 00:26 run-2026-09-07-06-09.md
+-rw-r--r--  1 runner runner   167 Sep  8 00:26 run-2026-09-07-12-38.md
+-rw-r--r--  1 runner runner   477 Sep  8 00:26 run-2026-09-07-17-54.md
+-rw-r--r--  1 runner runner   222 Sep  8 00:26 run-2026-09-07-20-56.md
+-rw-r--r--  1 runner runner   177 Sep  8 00:26 run-2026-09-07-23-15.md
+[0m
+[0m→ [0mRead knowledge/index.md
+Now I have full context. Let me execute the 8 analysis steps.
+
+---
+
+**STEP 1 — DELTA**
+
+NO_DELTA — all 33 inventory hosts classified; live surfaces byte-stable for 9+ consecutive cycles (pluto `/api/system/` 401@58, nc OCS 200@1630 with `OCS-APIRequest: true`, gold `config.js` 200 via curl -k, event `/api/v1/` 401 Token-gated); wildcard DNS masking hypothesis killed; no new endpoints, no status-code drift, no new unauth vectors.
+
+---
+
+**STEP 2 — PRIORITIZE**
+
+[PRIO] pluto.portal.ipb.de,7.1,attack_surface=9 business_value=9 tech_exposure=7 gate_ease=2 cloud_surface=3 freshness=2  
+[PRIO] nc.ipb.de,5.2,attack_surface=6 business_value=6 tech_exposure=6 gate_ease=3 cloud_surface=5 freshness=2  
+[PRIO] gold.ipb.de,3.8,attack_surface=4 business_value=4 tech_exposure=3 gate_ease=6 cloud_surface=2 freshness=2  
+
+---
+
+**STEP 3 — HYPOTHESES**
+
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API  
+class: IDOR  
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/tenant/{id}/, /api/multi-tenancy/v1/user/{id}/, /api/multi-tenancy/v1/association-request/{id}/, /api/check-in/v1/check-in/{id}/, /api/multi-tenancy/v1/membership/{id}/, /api/admin/multi-tenancy/v1/{user,tenant}/{id}/  
+confidence: 65  
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface; /api/system/ 401@58 byte-stable 9+ cycles  
+evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation (200 vs 403/404 differentiation)  
+verify_steps: 1) Obtain low-priv credentialed session (Token) via kiosk_login or admin-provisioned account; 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/, /membership/{id}/, /admin/multi-tenancy/v1/{user,tenant}/{id}/  
+impact: Cross-tenant PII dump (membership, user, association-request, check-in, tenant relationship data); CRITICAL  
+testability: AUTH_HELPED  
+
+[HYP] EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion  
+class: XSS  
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/upload/, /api/multi-tenancy/v1/user/profile-picture/download/  
+confidence: 45  
+reasoning: upload + download endpoints live-confirmed DRF (401 Token-auth, JSON); classic inline-render XSS chain if attacker-controlled SVG bytes served with inline Content-Type; doubly credential-gated (upload + victim session)  
+evidence_needed: tenant Token; POST SVG (image/svg+xml or text/html) → GET /download/ record Content-Type + Content-Disposition (inline vs attachment)  
+verify_steps: 1) Obtain tenant Token; 2) POST /api/multi-tenancy/v1/user/profile-picture/upload/ with SVG payload (Content-Type: image/svg+xml); 3) GET /api/multi-tenancy/v1/user/profile-picture/download/ and inspect Content-Type + Content-Disposition headers  
+impact: Staff/victim session theft via inline render — HIGH, credential-gated  
+testability: HUMAN_ONLY  
+
+[HYP] Nextcloud AppAPI ExApp registry auth mis-scoping enabling SSRF  
+class: SSRF  
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list  
+confidence: 40  
+reasoning: live OCS caps 200 confirmed (requires OCS-APIRequest: true header; app_api 34.0.0 + bruteforce.delay=0); unauth GET /ocs/v2.php/apps/app_api/apps/list → 404 (route exists, no session) vs /ocs/v2.php/cloud/apps → 401 confirms session-gating; app_api enables external app runtime historically exposing unauth endpoints/SSRF once registered; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps  
+evidence_needed: valid NC session; enumerate ExApps then probe each registered ExApp route unauth vs authed  
+verify_steps: 1) Obtain valid NC session (HUMAN_ONLY); 2) GET /ocs/v2.php/apps/app_api/apps/list with OCS-APIRequest: true header and session; 3) For each returned ExApp route, GET unauth and authed → status diff; 4) If ExApp route reachable, test SSRF payloads (169.254.169.254) on ExApp endpoints  
+impact: SSRF to cloud metadata (169.254.169.254) or internal services; ExApp auth bypass — HIGH if session obtained  
+testability: HUMAN_ONLY  
+
+---
+
+**STEP 4 — SELF-CRITIQUE**
+
+[PARKED] Nextcloud AppAPI ExApp registry auth mis-scoping enabling SSRF: confidence 40 at threshold, but no NC session acquisition path confirmed (HUMAN_ONLY blocker); provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — attack surface unvalidated without session  
+
+[FINAL] 1. Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — CRITICAL impact, clear verify path with credentials, AUTH_HELPED testability  
+[FINAL] 2. EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion (confidence 45) — HIGH impact, credential-gated, HUMAN_ONLY testability (same asset as #1)  
+
+---
+
+**STEP 5 — NEXT ACTION**
+
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via kiosk_login flow or admin-provisioned account; with that single token run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/1..N AND /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET); same token then confirms profile-picture upload SVG → /download/ Content-Type inline-vs-attachment for the 45 XSS chain
+
+---
+
+**STEP 6 — LEARNING**
+
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY  
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 9+ consecutive stable cycles  
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated  
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged  
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe  
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe  
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost  
+[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class  
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift  
+[LEARN] ACCEPTED MISC @ *.ipb.de: cycle converged without new data — all live surfaces byte-stable, 33/33 inventory classified; no new unauth vector; earlier "do not re-probe" constraints honored  
+
+---
+
+**STEP 7 — RISK**
+
+[RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0
