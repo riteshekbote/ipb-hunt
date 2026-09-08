@@ -348,3 +348,5 @@ www.survey.ipb.de
 - CHANGED gold.ipb.de/config.js → HTTP 200 via curl -k (SSL cert fails in automated probes) — unchanged
 - CHANGED event.ipb.de pretix REST /api/v1/ + /api/v1/organizers/ → 401 Token-gated — mature hardening, saturated
 - CHANGED *.ipb.de wildcard DNS masking → 10th consecutive converged cycle; passive DNS stable (pluto/gold/cloud unchanged, my/prod/app/guest/focus/survey DNS-dead), zero surface drift; vrle.de (49.13.50.5, Het
+
+## 2026-09-08 14:06:23 UTC
