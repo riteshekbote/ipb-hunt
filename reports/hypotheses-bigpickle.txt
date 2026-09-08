@@ -1,4 +1,4 @@
-## 2026-09-08 13:59:26 UTC [target] (model bigpickle)
+## 2026-09-08 17:46:19 UTC [target] (model bigpickle)
 [PRIO] pluto.portal.ipb.de, 6.7, attack_surface=8 business_value=9 tech_exposure=7 gate_ease=2 cloud_surface=6 freshness=5
 [PRIO] nc.ipb.de, 4.9, attack_surface=5 business_value=6 tech_exposure=5 gate_ease=3 cloud_surface=4 freshness=5
 [PRIO] event.ipb.de, 2.5, attack_surface=2 business_value=4 tech_exposure=3 gate_ease=2 cloud_surface=1 freshness=5
@@ -6,7 +6,7 @@
 class: IDOR
 asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
 confidence: 65
-reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; /api/system/ 401@58 byte-stable 11+ cycles; all expanded endpoints uniformly 401 Token-auth; no self-service credential path (user-reg 401, tenant-reg 403, _exceptions SPA-fallback 354606); DNS-stable this cycle
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; /api/system/ 401@58 byte-stable 11+ cycles; all expanded endpoints uniformly 401 Token-auth; no self-service credential path (user-reg 401, tenant-reg 403, SPA-fallback 354606); DNS-stable this cycle
 evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
 verify_steps: POST /api/session/ {username,password} → Token; GET /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{1..N}/ with Authorization: Token across tenant boundary, read-only GET
 impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
