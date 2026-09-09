@@ -368,3 +368,5 @@ www.survey.ipb.de
 - NEW www.ipb.de live — PHP/8.3.33 on PleskLin
 - NEW ipb.de → 301 → www.ipb.de
 - CHANGED `/.env`, `/server-info` on www.ipb.de → 403 (blocked, not exposed)
+
+## 2026-09-09 05:46:07 UTC
