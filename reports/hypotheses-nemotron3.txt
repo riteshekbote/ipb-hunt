@@ -1,4 +1,10 @@
-## 2026-09-09 14:44:21 UTC [target] (model nemotron3)
+## 2026-09-09 18:00:09 UTC [target] (model nemotron3)
+[NEW] None — 15+ consecutive converged cycles, zero surface drift across all live endpoints
+[CHANGED] pluto.portal.ipb.de/api/system/ → HTTP 401 stable (15+ cycles, byte-stable 354606 SPA fallback)
+[CHANGED] nc.ipb.de OCS capabilities → HTTP 200 with OCS-APIRequest: true; app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
+[CHANGED] gold.ipb.de/config.js → HTTP 200 via curl -k; Jitsi config.js public, anonymous guest by-design, unguessable roomName
+[CHANGED] event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated
+[CHANGED] *.ipb.de wildcard DNS masking → 15th consecutive converged cycle; passive DNS stable map (pluto/nc/gold/cloud/event resolve, my/prod/app/guest.gold/focus/survey DNS-dead), zero surface drift
 [PRIO] pluto.portal.ipb.de,6.30,attack_surface=9,business_value=9,tech_exposure=7,gate_ease=2,cloud_surface=3,freshness=1
 [PRIO] nc.ipb.de,5.00,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=1
 [PRIO] gold.ipb.de,3.70,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=6,cloud_surface=2,freshness=1

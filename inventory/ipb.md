@@ -374,3 +374,11 @@ www.survey.ipb.de
 ## 2026-09-09 10:11:05 UTC
 
 ## 2026-09-09 14:44:32 UTC
+
+## 2026-09-09 18:00:18 UTC
+- NEW None — 15+ consecutive converged cycles, zero surface drift across all live endpoints
+- CHANGED pluto.portal.ipb.de/api/system/ → HTTP 401 stable (15+ cycles, byte-stable 354606 SPA fallback)
+- CHANGED nc.ipb.de OCS capabilities → HTTP 200 with OCS-APIRequest: true; app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
+- CHANGED gold.ipb.de/config.js → HTTP 200 via curl -k; Jitsi config.js public, anonymous guest by-design, unguessable roomName
+- CHANGED event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated
+- CHANGED *.ipb.de wildcard DNS masking → 15th consecutive converged cycle; passive DNS stable map (pluto/nc/gold/cloud/event resolve, my/prod/app/guest.gold/focus/survey DNS-dead), zero surface drift
