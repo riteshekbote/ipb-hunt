@@ -1051,3 +1051,7 @@
 - LEARN: ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope cl
 - LEARN: ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift
 - LEARN: ACCEPTED MISC @ *.ipb.de: 15th consecutive converged cycle — passive DNS re-confirmed stable map (pluto/nc/gold/cloud/event resolve, my/prod/app/guest.gold/focu
+
+## RANKED HYPOTHESES 2026-09-09 23:03:26 UTC
+- [100] cands.txt: N/A — No Org Candidates (from art/lead_bigpickle.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned account (kiosk_login oracle is parked WAF risk — p

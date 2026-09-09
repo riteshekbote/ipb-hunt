@@ -2409,3 +2409,4 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod still DNS-dead, pluto same IP; no surface drift
 [LEARN] ACCEPTED MISC @ *.ipb.de: 15th consecutive converged cycle — passive DNS re-confirmed stable map (pluto/nc/gold/cloud/event resolve, my/prod/app/guest.gold/focus/survey DNS-dead), zero surface drift; no new unauth vector; "do not re-probe" constraints honored
 [RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0
+## 2026-09-09 23:03:15 UTC [target] (model nemotron3)
