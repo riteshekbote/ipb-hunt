@@ -1,4 +1,4 @@
-## 2026-09-09 10:06:58 UTC [target] (model bigpickle)
+## 2026-09-09 14:38:22 UTC [target] (model bigpickle)
 [PRIO] pluto.portal.ipb.de, 6.7, attack_surface=8 business_value=9 tech_exposure=7 gate_ease=2 cloud_surface=6 freshness=4
 [PRIO] nc.ipb.de, 4.9, attack_surface=5 business_value=6 tech_exposure=5 gate_ease=3 cloud_surface=4 freshness=4
 [PRIO] event.ipb.de, 2.5, attack_surface=2 business_value=4 tech_exposure=3 gate_ease=2 cloud_surface=1 freshness=4
@@ -6,7 +6,7 @@
 class: IDOR
 asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
 confidence: 65
-reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; /api/system/ 401@58 byte-stable 14+ cycles; all expanded endpoints uniformly 401 Token-auth; no self-service credential path (user-reg 401, tenant-reg 403, SPA-fallback 354606); DNS-stable this cycle
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; /api/system/ 401@58 byte-stable 15 cycles; all expanded endpoints uniformly 401 Token-auth; no self-service credential path (user-reg 401, tenant-reg 403, SPA-fallback 354606); DNS-stable this cycle
 evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
 verify_steps: POST /api/session/ {username,password} → Token; GET /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{1..N}/ with Authorization: Token across tenant boundary, read-only GET
 impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
@@ -34,7 +34,7 @@ testability: HUMAN_ONLY
 [FINAL] 2. Profile-picture SVG stored-XSS @ pluto.portal.ipb.de (45) — HIGH, credential-gated
 [FINAL] 3. NC AppAPI auth mis-scoping @ nc.ipb.de (40) — HIGH, session-gated
 [NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned account or a clean self-registered kiosk_login credential (parked oracle has WAF risk — prefer admin-provisioned); with that single token run the read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N and /api/admin/multi-tenancy/v1/{user,tenant}/{id}/, plus the profile-picture SVG upload→/download/ Content-Type chain; a separate NC session unlocks the AppAPI ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list.
-[LEARN] ACCEPTED MISC @ *.ipb.de: 15th consecutive converged cycle — passive DNS re-confirmed stable map (pluto/nc/gold/cloud/event resolve, my/prod/app/guest.gold/focus/survey DNS-dead), zero surface drift; no new unauth vector; "do not re-probe" constraints honored.
+[LEARN] ACCEPTED MISC @ *.ipb.de: 15th consecutive converged cycle — passive DNS re-confirmed stable map, zero surface drift; no new unauth vector; "do not re-probe" constraints honored.
 [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
 [LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 15+ consecutive stable cycles.
 [LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged.
