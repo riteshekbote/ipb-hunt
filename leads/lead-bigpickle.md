@@ -2079,3 +2079,177 @@ impact: SSRF to 169.254.169.254 or internal services / ExApp authz bypass — HI
 testability: HUMAN_ONLY
 [NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned account or a clean self-registered kiosk_login credential (parked oracle has WAF risk — prefer admin-provisioned); with that single token run the read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N and /api/admin/multi-tenancy/v1/{user,tenant}/{id}/, plus the profile-picture SVG upload→/download/ Content-Type chain; a separate NC session unlocks the AppAPI ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list.
 [RISK] ipb: 58 (unchanged) — program at credential-acquisition plateau for 12+ consecutive cycles: all three leads alive but gated behind a tenant/NC token with no self-service path (user-reg 401, tenant-reg 403, SPA-fallback 354606); 0 validated bugs; zero surface drift (passive DNS re-confirmed, 33/33 classified); further unauthenticated probing adds only WAF/log noise with zero information gain; bounded upside rests solely on the pluto token (BOLA 65 → avatar XSS 45) once provisioned, then NC (40).
+## 2026-09-09 00:57:49 UTC [target] (model bigpickle)
+[PRIO] pluto.portal.ipb.de,7.7,multi-tenancy/admin API (auth-gated IDOR/BOLA surface)
+[PRIO] event.ipb.de,4.5,pretix ticketing/control
+[PRIO] www.ipb.de,3.0,Plesk PHP static
+[NEW] pluto.portal.ipb.de live — React SPA backed by DRF multi-tenancy API (200)
+[NEW] event.ipb.de live — pretix ticketing (200), nginx/1.31.4
+[NEW] www.ipb.de live — PHP/8.3.33 on PleskLin (200)
+[NEW] ipb.de → 301 → www.ipb.de
+[CHANGED] `.env`/`server-info` on www.ipb.de → 403 (blocked, not exposed)
+[HYP] Multi-tenancy IDOR/BOLA across user/membership/tenant endpoints
+[HYP] Kiosk token check-in auth bypass / user enumeration
+[HYP] Unauthenticated CSRF token issuance via /api/ct/
+[PARKED] Kiosk token bypass: token unknown, cannot test without token → confidence <40
+[PARKED] CSRF token leak: rotates per request, no session binding → low impact
+[FINAL] Multi-tenancy IDOR (needs auth) / check-in enumeration
+[NEXT] HUMANAUTH — need a valid account on pluto.portal.ipb.de to test the multi-tenant IDOR/BOLA surface (user/me, membership, tenant-relationship, user-token)
+[LEARN] ACCEPTED framework recon @ pluto.portal.ipb.de — DRF with multi-tenancy; auth required, CSRF via /api/ct/
+[LEARN] REJECTED open-redirect @ event.ipb.de — /redirect/ validates against fixed allowlist
+[RISK] ipb: 55 — pluto portal exposes a very large authenticated API; any account grants deep multi-tenant access; gated by auth so unauthenticated risk moderate
+[NEW] pluto.portal.ipb.de live — Django REST Framework multi-tenant customer portal (React SPA)
+[NEW] event.ipb.de live — pretix ticketing (nginx/1.31.4)
+[NEW] www.ipb.de live — PHP/8.3.33 on PleskLin
+[NEW] ipb.de → 301 → www.ipb.de
+[CHANGED] `/.env`, `/server-info` on www.ipb.de → 403 (blocked, not exposed)
+[PRIO] pluto.portal.ipb.de,7.15,BOLA-IDOR (DRF multi-tenancy + admin exports; auth-gated but high business value)
+[PRIO] event.ipb.de,4.95,pretix-broken-auth (mature hardening: /control 403, /redirect allowlisted)
+[PRIO] www.ipb.de,3.00,Plesk-static
+[HYP] Cross-tenant BOLA across membership/tenant/user endpoints
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/... and /api/admin/multi-tenancy/v1/...
+confidence: 60
+reasoning: DRF multi-tenancy exposes per-tenant user/membership/relationship objects with EAV + bulk export endpoints; object IDs are sequential; per-tenant authorization is the prime BOLA chokepoint. All endpoints return `Authentication credentials were not provided` unauthenticated.
+evidence_needed: authenticated low-priv account reading another tenant's user/membership/relationship objects by ID
+verify_steps: POST /api/session/ {username,password} to obtain session; GET /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/ across tenant boundaries as low-priv user
+impact: cross-tenant PII dump / privilege escalation — HIGH
+testability: AUTH_HELPED
+[HYP] Admin dynamic-config mass assignment override
+class: MISCONFIG
+asset: pluto.portal.ipb.de /api/admin/dynamic-config/v1/config-namespace/apply/
+confidence: 45
+reasoning: SPA calls adminCreateDynamicConfig with arbitrary keys → apply/; no scoping in bundle; config namespaces (branding/motd/dns) could be overridden.
+evidence_needed: authenticated admin (or elevated) writing to another namespace
+impact: config tampering / defacement
+testability: AUTH_HELPED
+[HYP] Check-in kiosk token user-enumeration
+class: AUTH
+asset: pluto.portal.ipb.de /api/check-in/v1/check-in/kiosk_login/
+confidence: 45
+reasoning: POST {token} returns `No User matches the given query.` vs other responses for invalid — token existence oracle; no rate limit observed.
+evidence_needed: enumerate valid 32-hex kiosk tokens without auth
+impact: low alone, weakens kiosk gate
+testability: AUTH_HELPED
+[PARKED] CSRF token leak via /api/ct/: token rotates per request, not bound to any session — no replay/CSRF value. <40.
+[PARKED] open-redirect on event.ipb.de /redirect/: allowlisted (400 on arbitrary URLs); rejected class anyway.
+[PARKED] www.ipb.de .env/server-info: 403, not exposed.
+[FINAL] Cross-tenant BOLA (60) > dynamic-config mass-assignment (45) > kiosk enumeration (45)
+[NEXT] HUMANAUTH: sponsor a low-privilege credentialed account on pluto.portal.ipb.de to exercise cross-tenant BOLA on /api/multi-tenancy/v1/tenant/{id}/ and /api/multi-tenancy/v1/user/{id}/
+[LEARN] ACCEPTED framework-recon AUTH @ pluto.portal.ipb.de: DRF multi-tenancy, all data endpoints auth-gated, CSRF via unbound /api/ct/.
+[LEARN] REJECTED open-redirect @ event.ipb.de: /redirect/ enforces fixed allowlist; reject open-redirect class here.
+[LEARN] REJECTED config-exposure @ www.ipb.de: .env/server-info 403 (blocked).
+[PRIO] app.ipb.de,0,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] auth.gold.ipb.de,0,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] cloud.ipb.de,0,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] my.ipb.de,0,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] prod.ipb.de,0,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] cic.ipb.de,0,attack_surface=0,business_value=7,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] gold.ipb.de,0,attack_surface=0,business_value=7,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] speedtest.ipb.de,0,attack_surface=0,business_value=5,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] www.ipb.de,0,attack_surface=0,business_value=6,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[PRIO] ipb.de,0,attack_surface=0,business_value=6,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
+[HYP] Wildcard DNS masks real attack surface
+class: MISCONFIG
+asset: *.ipb.de
+confidence: 60
+reasoning: Dedicated deep scan found 0 genuinely dedicated hosts; all 33 inventory hosts resolve to shared/CDN/wildcard IPs. Real services may exist behind wildcard but not enumerated passively.
+evidence_needed: HTTP responses from any host showing distinct service fingerprints (Server header, app routes, tech stack) proving non-wildcard content
+verify_steps: GET https://app.ipb.de/ | HEAD https://auth.gold.ipb.de/ | GET https://cloud.ipb.de/ | GET https://my.ipb.de/ | GET https://prod.ipb.de/ (all with Host header, 1 rps, GET/HEAD only)
+impact: If real services exist behind wildcard, full attack surface (auth, cloud, customer portal, prod API) is hidden from passive recon
+testability: PASSIVE
+[HYP] Customer portal at my.ipb.de exposes IDOR/BOLA on account resources
+class: IDOR
+asset: my.ipb.de
+confidence: 35
+reasoning: Naming pattern "my." suggests customer self-service portal; such portals commonly have object-level auth flaws on /api/v1/account/{id}, /subscription/{id}, /invoice/{id} endpoints
+evidence_needed: Live HTTP 200 on my.ipb.de with authenticated session showing user-scoped resource IDs in responses
+verify_steps: GET https://my.ipb.de/ (check for login portal, API endpoints in JS, versioned /api/ paths)
+impact: Cross-tenant access to customer PII, billing, subscription data — HIGH severity
+testability: AUTH_HELPED
+[HYP] auth.gold.ipb.de OAuth/OIDC implementation vulnerable to redirect_uri validation bypass
+class: OATH
+asset: auth.gold.ipb.de
+confidence: 30
+reasoning: "auth.gold" subdomain suggests centralized auth provider (possibly Keycloak/Auth0/custom); OAuth redirect_uri flaws are high-value for ATO via code theft
+evidence_needed: Live HTTP on auth.gold.ipb.de showing /authorize, /token, /.well-known/openid-configuration endpoints
+verify_steps: GET https://auth.gold.ipb.de/.well-known/openid-configuration | GET https://auth.gold.ipb.de/authorize?client_id=test&redirect_uri=https://evil.com&response_type=code
+impact: Full account takeover via authorization code theft — CRITICAL severity
+testability: PASSIVE
+[PARKED] Customer portal at my.ipb.de exposes IDOR/BOLA on account resources: confidence 35 < 40, no live endpoint confirmed, verify_steps require auth which we don't have
+[PARKED] auth.gold.ipb.de OAuth/OIDC implementation vulnerable to redirect_uri validation bypass: confidence 30 < 40, no live endpoint confirmed, passive verify may 404
+[PRIO] pluto.portal.ipb.de, 6.7, attack_surface=8 business_value=9 tech_exposure=7 gate_ease=2 cloud_surface=6 freshness=5
+[PRIO] nc.ipb.de, 4.9, attack_surface=5 business_value=6 tech_exposure=5 gate_ease=3 cloud_surface=4 freshness=5
+[PRIO] event.ipb.de, 2.5, attack_surface=2 business_value=4 tech_exposure=3 gate_ease=2 cloud_surface=1 freshness=5
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; /api/system/ 401@58 byte-stable 12+ cycles; all expanded endpoints uniformly 401 Token-auth; no self-service credential path (user-reg 401, tenant-reg 403, SPA-fallback 354606); DNS-stable this cycle
+evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
+verify_steps: POST /api/session/ {username,password} → Token; GET /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{1..N}/ with Authorization: Token across tenant boundary, read-only GET
+impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] Profile-picture upload-SVG stored-XSS via content-type confusion
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/{upload,download}/
+confidence: 45
+reasoning: Both endpoints confirmed 401 auth-gated; download serves user content; Content-Type trust on upload + reflection on download is the only open chain; unchanged 12 cycles
+evidence_needed: valid tenant Token; upload SVG with image/svg+xml Content-Type; re-download to observe served Content-Type/body
+verify_steps: with tenant Token POST /api/multi-tenancy/v1/user/profile-picture/upload/ Content-Type: image/svg+xml body=<svg onload=alert(1)>; GET /api/multi-tenancy/v1/user/profile-picture/download/ Accept: image/svg+xml
+impact: stored XSS in user profile context — HIGH, credential-gated
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp registry auth mis-scoping (404 vs 401 session gate)
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (OCS-APIRequest: true required; app_api 34.0.0 only, bruteforce.delay=0); unauth apps/list → 404 (route registered, no session) vs /ocs/v2.php/cloud/apps → 401 confirms session-gated routing, not unauth leak
+evidence_needed: valid NC session; enumerate ExApps then re-probe each returned route unauth vs authed for status diff
+verify_steps: with NC session GET /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true); re-request each returned route without session → status diff; if ExApp route reachable unauth, test metadata/SSRF payloads
+impact: SSRF to 169.254.169.254 or internal services / ExApp authz bypass — HIGH, session-gated
+testability: HUMAN_ONLY
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned account or a clean self-registered kiosk_login credential (parked oracle has WAF risk — prefer admin-provisioned); with that single token run the read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N and /api/admin/multi-tenancy/v1/{user,tenant}/{id}/, plus the profile-picture SVG upload→/download/ Content-Type chain; a separate NC session unlocks the AppAPI ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list.
+[RISK] ipb: 58 (unchanged) — program at credential-acquisition plateau for 12+ consecutive cycles: all three leads alive but gated behind a tenant/NC token with no self-service path (user-reg 401, tenant-reg 403, SPA-fallback 354606); 0 validated bugs; zero surface drift (passive DNS re-confirmed, 33/33 classified); further unauthenticated probing adds only WAF/log noise with zero information gain; bounded upside rests solely on the pluto token (BOLA 65 → avatar XSS 45) once provisioned, then NC (40).
+[PRIO] pluto.portal.ipb.de, 6.7, attack_surface=8 business_value=9 tech_exposure=7 gate_ease=2 cloud_surface=6 freshness=5
+[PRIO] nc.ipb.de, 4.9, attack_surface=5 business_value=6 tech_exposure=5 gate_ease=3 cloud_surface=4 freshness=5
+[PRIO] event.ipb.de, 2.5, attack_surface=2 business_value=4 tech_exposure=3 gate_ease=2 cloud_surface=1 freshness=5
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; /api/system/ 401@58 byte-stable 13+ cycles; all expanded endpoints uniformly 401 Token-auth; no self-service credential path (user-reg 401, tenant-reg 403, SPA-fallback 354606); DNS-stable this cycle (pluto 2a02:f28:1:16::140 same prefix)
+evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
+verify_steps: POST /api/session/ {username,password} → Token; GET /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{1..N}/ with Authorization: Token across tenant boundary, read-only GET
+impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] Profile-picture upload-SVG stored-XSS via content-type confusion
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/{upload,download}/
+confidence: 45
+reasoning: Both endpoints confirmed 401 auth-gated; download serves user content; Content-Type trust on upload + reflection on download is the only open chain; unchanged 13 cycles
+evidence_needed: valid tenant Token; upload SVG with image/svg+xml Content-Type; re-download to observe served Content-Type/body
+verify_steps: with tenant Token POST /api/multi-tenancy/v1/user/profile-picture/upload/ Content-Type: image/svg+xml body=<svg onload=alert(1)>; GET /api/multi-tenancy/v1/user/profile-picture/download/ Accept: image/svg+xml
+impact: stored XSS in user profile context — HIGH, credential-gated
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp registry auth mis-scoping (404 vs 401 session gate)
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (OCS-APIRequest: true required; app_api 34.0.0 only, bruteforce.delay=0); unauth apps/list → 404 (route registered, no session) vs /ocs/v2.php/cloud/apps → 401 confirms session-gated routing, not unauth leak
+evidence_needed: valid NC session; enumerate ExApps then re-probe each returned route unauth vs authed for status diff
+verify_steps: with NC session GET /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true); re-request each returned route without session → status diff; if ExApp route reachable unauth, test metadata/SSRF payloads
+impact: SSRF to 169.254.169.254 or internal services / ExApp authz bypass — HIGH, session-gated
+testability: HUMAN_ONLY
+[PARKED] Chromium/base64 SVG inline render chains — speculative, no new surface. 
+[FINAL] 1. Cross-tenant BOLA @ pluto.portal.ipb.de (65) — CRITICAL, top path
+[FINAL] 2. Profile-picture SVG stored-XSS @ pluto.portal.ipb.de (45) — HIGH, credential-gated
+[FINAL] 3. NC AppAPI auth mis-scoping @ nc.ipb.de (40) — HIGH, session-gated
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned account or a clean self-registered kiosk_login credential (parked oracle has WAF risk — prefer admin-provisioned); with that single token run the read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N and /api/admin/multi-tenancy/v1/{user,tenant}/{id}/, plus the profile-picture SVG upload→/download/ Content-Type chain; a separate NC session unlocks the AppAPI ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 13+ consecutive stable cycles.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged.
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+[LEARN] ACCEPTED MISC @ *.ipb.de: cycle converged without new data — passive DNS re-confirmed stable map (13th consecutive converged cycle), 33/33 inventory classified; reposcan produced no leads; no new unauth vector; "do not re-probe" constraints honored.
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe.
+[RISK] ipb: 58 (unchanged) — program at credential-acquisition plateau for 13+ consecutive cycles: all three leads alive but gated behind a tenant/NC token with no self-service path (user-reg 401, tenant-reg 403, SPA-fallback 354606); 0 validated bugs; zero surface drift (passive DNS re-confirmed this cycle, no HTTP needed); further unauthenticated probing adds only WAF/log noise with zero information gain; bounded upside rests solely on the pluto token (BOLA 65 → avatar XSS 45) once provisioned, then NC (40).
