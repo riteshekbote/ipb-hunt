@@ -1,10 +1,4 @@
-## 2026-09-09 18:00:09 UTC [target] (model nemotron3)
-[NEW] None — 15+ consecutive converged cycles, zero surface drift across all live endpoints
-[CHANGED] pluto.portal.ipb.de/api/system/ → HTTP 401 stable (15+ cycles, byte-stable 354606 SPA fallback)
-[CHANGED] nc.ipb.de OCS capabilities → HTTP 200 with OCS-APIRequest: true; app_api 34.0.0 ONLY; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
-[CHANGED] gold.ipb.de/config.js → HTTP 200 via curl -k; Jitsi config.js public, anonymous guest by-design, unguessable roomName
-[CHANGED] event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated
-[CHANGED] *.ipb.de wildcard DNS masking → 15th consecutive converged cycle; passive DNS stable map (pluto/nc/gold/cloud/event resolve, my/prod/app/guest.gold/focus/survey DNS-dead), zero surface drift
+## 2026-09-09 20:24:42 UTC [target] (model nemotron3)
 [PRIO] pluto.portal.ipb.de,6.30,attack_surface=9,business_value=9,tech_exposure=7,gate_ease=2,cloud_surface=3,freshness=1
 [PRIO] nc.ipb.de,5.00,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=1
 [PRIO] gold.ipb.de,3.70,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=6,cloud_surface=2,freshness=1
@@ -40,7 +34,7 @@ testability: HUMAN_ONLY
 [PARKED] Profile-picture upload SVG stored-XSS via content-type confusion: confidence 45 at threshold but HUMAN_ONLY blocker — no credentialed access path for pluto; same token acquisition dependency as BOLA lead
 [PARKED] NC AppAPI ExApp registry auth mis-scoping enabling SSRF: confidence 40 at threshold but HUMAN_ONLY blocker — no NC session acquisition path confirmed; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps; attack surface unvalidated without session
 [FINAL] 1. Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — CRITICAL impact, clear verify path with credentials, AUTH_HELPED testability
-[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via kiosk_login flow or admin-provisioned account; with that single token run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/1..N AND /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET); same token then confirms profile-picture upload SVG → /download/ Content-Type inline-vs-attachment for the 45 XSS chain
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned account or a clean self-registered kiosk_login credential; with that single token run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/1..N AND /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET)
 [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
 [LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 15+ consecutive stable cycles
 [LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated
