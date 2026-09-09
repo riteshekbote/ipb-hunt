@@ -79,3 +79,12 @@ TARGET_ORG not configured for ipb; skipping public-org deep scan.
 TARGET_ORG not configured for ipb; skipping public-org deep scan.
 ## REPOSCAN 2026-09-09 06:07:26 UTC
 TARGET_ORG not configured for ipb; skipping public-org deep scan.
+## REPOSCAN 2026-09-09 11:38:29 UTC
+[HYP] N/A — No Org Candidates
+class: OTHER
+asset: cands.txt
+confidence: 100
+reasoning: scope.yml line 38 explicitly sets github_orgs to none-configured; cands.txt contains only "no org candidates". No repositories exist to audit.
+impact: None
+verify_steps: None — no action required; no in-scope repos identified.
+TARGET_ORG not configured for ipb; skipping public-org deep scan.
