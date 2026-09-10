@@ -229,3 +229,6 @@ https://auth.gold.ipb.de/authorize?client_id=test&redirect_uri=https://evil.com&
 
 ## 2026-09-09 23:03:26 UTC
 
+
+## 2026-09-10 00:44:02 UTC
+https://gold.ipb.de/config.js -> ERR <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] ce
