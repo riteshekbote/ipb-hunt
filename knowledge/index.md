@@ -238,3 +238,6 @@
 - 2026-09-10 ACCEPTED MISC @ *.ipb.de: 18th consecutive converged cycle — passive DNS re-confirmed identical stable map, zero surface drift; no new unauth vector; "do not re-probe" constraints honored
 - 2026-09-10 ACCEPTED MISC @ *.ipb.de: 20th consecutive converged cycle — passive DNS re-confirmed identical stable map, zero surface drift; no new unauth vector; "do not re-probe" constraints honored.
 - 2026-09-10 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 19+ consecutive stable cycles.
+- 2026-09-10 ACCEPTED MISC @ *.ipb.de: 21st consecutive converged cycle — passive DNS re-confirmed identical stable map, zero surface drift; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-10 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 20+ consecutive stable cycles.
+- 2026-09-10 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod/survey still DNS-dead, live hosts byte-stable; no surface drift.
