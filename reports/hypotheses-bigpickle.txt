@@ -1,7 +1,8 @@
-## 2026-09-11 13:56:48 UTC [target] (model bigpickle)
+## 2026-09-11 17:27:12 UTC [target] (model bigpickle)
 [PRIO] pluto.portal.ipb.de,7.40,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=7,freshness=7
 [PRIO] nc.ipb.de,7.00,attack_surface=7,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=8,freshness=7
 [PRIO] gold.ipb.de,5.50,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=8,cloud_surface=4,freshness=4
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
 class: IDOR
 asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
 confidence: 65
@@ -10,6 +11,7 @@ evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by
 verify_steps: with tenant-A Token GET read-only seq-ID sweep {1..N} on the 5 resource endpoints (<=1 rps); compare cross-tenant 200 vs 403/404
 impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
 testability: HUMAN_ONLY
+[HYP] Profile-picture SVG stored-XSS via content-type confusion
 class: XSS
 asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/{upload,download}/
 confidence: 45
@@ -18,6 +20,7 @@ evidence_needed: valid tenant Token; upload SVG with image/svg+xml; observe serv
 verify_steps: with tenant Token POST upload (Content-Type: image/svg+xml, body <svg onload=alert(1)>); GET download; compare served Content-Type
 impact: stored XSS in user/profile context viewed by staff across tenants → session theft — HIGH
 testability: HUMAN_ONLY
+[HYP] NC AppAPI auth mis-scoping
 class: AUTH
 asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
 confidence: 40
