@@ -267,3 +267,5 @@
 - 2026-09-11 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated; unchanged.
 - 2026-09-11 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
 - 2026-09-11 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
+- 2026-09-11 ACCEPTED MISC @ *.ipb.de: 24th consecutive converged cycle — passive DNS (getent, no HTTP) re-confirmed identical stable map (pluto/nc/gold/cloud/event/eticket/www/cic/piwik/webcam resolve, IPv4 unchanged; my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN), zero surface drift; probe-results/triage empty; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-11 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior entry overstated; unchanged.
