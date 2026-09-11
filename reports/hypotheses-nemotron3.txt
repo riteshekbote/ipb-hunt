@@ -1,9 +1,4 @@
-## 2026-09-11 00:32:58 UTC [target] (model nemotron3)
-[CHANGED] pluto.portal.ipb.de/api/system/ → HTTP 401 stable across 20+ consecutive cycles (byte-stable 354606 SPA fallback on schema endpoints)
-[CHANGED] nc.ipb.de OCS capabilities → HTTP 200 with OCS-APIRequest: true header; app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — unchanged
-[CHANGED] gold.ipb.de/config.js → HTTP 200 via curl -k (SSL cert fails in automated probes) — unchanged
-[CHANGED] event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated
-[CHANGED] *.ipb.de wildcard DNS masking → 21st consecutive converged cycle; passive DNS stable map (pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud=194.29.230.41, event/eticket=194.29.230.43, www=194.29.230.44, cic=194.29.226.24, piwik/webcam=194.29.230.41; my/prod/app/survey/guest.gold/focus.gold DNS-dead), zero surface drift
+## 2026-09-11 05:10:29 UTC [target] (model nemotron3)
 [PRIO] pluto.portal.ipb.de,6.25,attack_surface=9,business_value=9,tech_exposure=7,gate_ease=2,cloud_surface=3,freshness=1
 [PRIO] nc.ipb.de,4.95,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=1
 [PRIO] gold.ipb.de,3.65,attack_surface=4,business_value=4,tech_exposure=3,gate_ease=6,cloud_surface=2,freshness=1
@@ -38,14 +33,14 @@ testability: HUMAN_ONLY
 [FINAL] 1. Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — CRITICAL impact, clear verify path with credentials, AUTH_HELPED testability
 [FINAL] 2. EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion (confidence 45) — HIGH impact if upload accepts SVG, AUTH_HELPED testability, requires auth
 [NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned test account (kiosk_login oracle parked — WAF risk, low impact); with that single token run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/1..N AND /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET) + profile-picture SVG upload test
-[LEARN] ACCEPTED MISC @ *.ipb.de: 21st consecutive converged cycle — passive DNS re-confirmed identical stable map, zero surface drift; no new unauth vector; "do not re-probe" constraints honored
+[LEARN] ACCEPTED MISC @ *.ipb.de: 22nd consecutive converged cycle — passive DNS re-confirmed identical stable map, zero surface drift; no new unauth vector; "do not re-probe" constraints honored
 [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
-[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 20+ consecutive stable cycles
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 21+ consecutive stable cycles
 [LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated
 [LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged
 [LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe
 [LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback; do not re-probe
 [LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
 [LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
-[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod/survey still DNS-dead, live hosts byte-stable; no surface drift
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold still DNS-dead, live hosts byte-stable; no surface drift
 [RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0

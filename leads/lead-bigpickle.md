@@ -2835,3 +2835,4 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class.
 [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold still DNS-dead, live hosts byte-stable; no surface drift.
 [RISK] ipb: 61 (+0) — 22nd consecutive converged cycle at the credential-acquisition plateau: passive DNS re-confirmed zero drift, reposcan/triage empty; all three leads alive but gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Further unauthenticated probing = WAF/log noise with zero information gain; bounded upside rests solely on an admin-provisioned pluto token (BOLA 65 → avatar XSS 45), then NC (40).
+## 2026-09-11 05:10:08 UTC [target] (model bigpickle)
