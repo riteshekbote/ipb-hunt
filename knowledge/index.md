@@ -262,3 +262,8 @@
 - 2026-09-11 ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
 - 2026-09-11 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/auth.gold/focus.gold/app/prod/survey still DNS-dead, live hosts byte-stable; no surface drift
 - 2026-09-11 ACCEPTED MISC @ *.ipb.de: 22nd consecutive converged cycle — passive DNS re-confirmed identical stable map, zero surface drift; no new unauth vector; "do not re-probe" constraints honored
+- 2026-09-11 ACCEPTED MISC @ *.ipb.de: 23rd consecutive converged cycle — passive DNS (getent, no HTTP) re-confirmed identical stable map, zero surface drift; probe-results/triage empty; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-11 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 20+ consecutive stable cycles.
+- 2026-09-11 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated; unchanged.
+- 2026-09-11 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+- 2026-09-11 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
