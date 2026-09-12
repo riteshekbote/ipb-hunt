@@ -192,3 +192,5 @@ reasoning: Both printPDOException() and printGenericException() output
 impact: Low — information disclosure on unhandled exceptions; depends on
 verify_steps: Read wwwroot/inc/exceptions.php lines 266-272 and 291-297.
 TARGET_ORG not configured for ipb; skipping public-org deep scan.
+## REPOSCAN 2026-09-12 23:22:25 UTC
+TARGET_ORG not configured for ipb; skipping public-org deep scan.
