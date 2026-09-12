@@ -155,3 +155,40 @@ TARGET_ORG not configured for ipb; skipping public-org deep scan.
 TARGET_ORG not configured for ipb; skipping public-org deep scan.
 ## REPOSCAN 2026-09-12 18:47:25 UTC
 TARGET_ORG not configured for ipb; skipping public-org deep scan.
+## REPOSCAN 2026-09-12 21:26:30 UTC
+[HYP] SHA-1 password hashing for all user authentication
+class: MISCONFIG
+asset: ipberlin/racktables/wwwroot/inc/auth.php:582, wwwroot/inc/ophandlers.php:1004,1021
+confidence: 95
+reasoning: All user passwords are hashed with bare sha1() (unsalted). Used for
+impact: Medium — credential theft if DB is compromised; enables offline
+verify_steps: Grep the repo for 'sha1.*password' or 'sha1.*REQUEST'; check
+[HYP] Insecure file permission recommendation for secret.php
+class: MISCONFIG
+asset: ipberlin/racktables/wwwroot/inc/install.php:148
+confidence: 85
+reasoning: Installer prints instructions: touch '$path_to_secret_php';
+impact: Medium — any local user on the server can read DB credentials and
+verify_steps: Read wwwroot/inc/install.php line 148; grep for 'chmod 666'.
+[HYP] SSH StrictHostKeyChecking disabled for device management
+class: MISCONFIG
+asset: ipberlin/racktables/wwwroot/inc/remote.php:328
+confidence: 90
+reasoning: SSH connections to managed network devices use
+impact: High — MITM on network device management; credential theft for
+verify_steps: Read wwwroot/inc/remote.php lines 326-331.
+[HYP] Reflected XSS via error messages in AJAX handlers
+class: MISCONFIG
+asset: ipberlin/racktables/wwwroot/inc/ajax-interface.php:122,148
+confidence: 80
+reasoning: User-supplied $_REQUEST['tagid'] is reflected into error messages
+impact: Medium — session hijacking via XSS in the DCIM web interface.
+verify_steps: Read wwwroot/inc/ajax-interface.php lines 119-122 and 145-148.
+[HYP] Debug exception handlers dump all request parameters to page
+class: OTHER
+asset: ipberlin/racktables/wwwroot/inc/exceptions.php:268-272,293-297
+confidence: 70
+reasoning: Both printPDOException() and printGenericException() output
+impact: Low — information disclosure on unhandled exceptions; depends on
+verify_steps: Read wwwroot/inc/exceptions.php lines 266-272 and 291-297.
+TARGET_ORG not configured for ipb; skipping public-org deep scan.
