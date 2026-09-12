@@ -442,3 +442,5 @@ www.survey.ipb.de
 - CHANGED event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated
 
 ## 2026-09-12 20:17:58 UTC
+
+## 2026-09-12 22:21:45 UTC
