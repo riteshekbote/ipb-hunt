@@ -3123,3 +3123,51 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class.
 [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
 [RISK] ipb: 61 (+0) — 26th consecutive converged cycle at the credential-acquisition plateau: passive DNS re-confirmed zero drift (IPv4 map identical), reposcan/triage/probe empty, no new probe data produced; all three leads alive but gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Further unauthenticated probing = WAF/log noise with zero information gain; bounded upside rests solely on an admin-provisioned pluto token (BOLA 65 → avatar XSS 45), then NC (40).
+## 2026-09-12 04:57:36 UTC [target] (model bigpickle)
+[PRIO] pluto.portal.ipb.de,7.40,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=7,freshness=7
+[PRIO] nc.ipb.de,7.00,attack_surface=7,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=8,freshness=7
+[PRIO] gold.ipb.de,5.50,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=8,cloud_surface=4,freshness=4
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg 401 / tenant-reg 403 (no self-service credential path); passive DNS identical 27th cycle; no new unauth vector; probe-results/triage empty
+evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET read-only seq-ID sweep {1..N} on the 5 resource endpoints (<=1 rps); compare cross-tenant 200 vs 403/404
+impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] Profile-picture SVG stored-XSS via content-type confusion
+class: XSS
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/{upload,download}/
+confidence: 45
+reasoning: both endpoints 401 auth-gated; download serves user content on portal origin; Content-Type trust on upload + reflection on download is only open chain; unchanged 27+ cycles
+evidence_needed: valid tenant Token; upload SVG with image/svg+xml; observe served Content-Type/body on download
+verify_steps: with tenant Token POST upload (Content-Type: image/svg+xml, body <svg onload=alert(1)>); GET download; compare served Content-Type
+impact: stored XSS in user/profile context viewed by staff across tenants → session theft — HIGH
+testability: HUMAN_ONLY
+[HYP] NC AppAPI auth mis-scoping
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, requires OCS-APIRequest: true); unauth apps/list → 404 (route registered, no session) vs cloud/apps → 401 confirms session-gated routing; unchanged cycles
+evidence_needed: valid NC session; enumerate ExApps then re-probe each returned route unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or ExApp authz bypass — HIGH
+testability: HUMAN_ONLY
+[PARKED] kiosk_login token oracle @ pluto.portal.ipb.de — low-severity enum, WAF/log risk, no self-service path, unchanged.
+[PARKED] Chromium/base64 SVG inline render chains — speculative, avatar-content-type chain covers this class.
+[FINAL] 1. Cross-tenant BOLA @ pluto.portal.ipb.de (65) — top, 27th cycle, requires tenant token
+[FINAL] 2. Profile-picture SVG stored-XSS @ pluto.portal.ipb.de (45) — credential-gated, same token unlocks
+[FINAL] 3. NC AppAPI auth mis-scoping @ nc.ipb.de (40) — session-gated, unchanged
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned test account (kiosk_login oracle parked — WAF risk). With it: read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/, then the profile-picture upload→download Content-Type chain. A separate NC session unlocks ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list. No new PROBE — passive DNS re-confirmed identical (IPv4 map unchanged 27th cycle), probe-results/triage empty, all HTTP endpoints under "do not re-probe".
+[LEARN] ACCEPTED MISC @ *.ipb.de: 27th consecutive converged cycle — passive DNS (getent, no HTTP) re-confirmed identical stable map, zero surface drift; probe-results/triage empty; no new unauth vector; "do not re-probe" constraints honored.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 22+ consecutive stable cycles.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior entry overstated; unchanged.
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost.
+[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class.
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
+[RISK] ipb: 61 (+0) — 27th consecutive converged cycle at the credential-acquisition plateau: passive DNS re-confirmed zero drift (IPv4 map identical, IPv6 AAAA present on pluto/nc/event/www but no HTTP diff), triage/probe-results empty, no new probe data produced; all three leads alive but gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Further unauthenticated probing = WAF/log noise with zero information gain; bounded upside rests solely on an admin-provisioned pluto token (BOLA 65 → avatar XSS 45), then NC (40).
