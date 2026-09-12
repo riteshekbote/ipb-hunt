@@ -1,13 +1,7 @@
-## 2026-09-12 12:39:29 UTC [target] (model bigpickle)
+## 2026-09-12 15:48:50 UTC [target] (model bigpickle)
 [PRIO] pluto.portal.ipb.de,7.7,multi-tenancy/admin API (auth-gated IDOR/BOLA surface)
 [PRIO] event.ipb.de,4.5,pretix ticketing/control
 [PRIO] www.ipb.de,3.0,Plesk PHP static
-[PRIO] app.ipb.de,0,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
-[PRIO] auth.gold.ipb.de,0,attack_surface=0,business_value=9,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
-[PRIO] cloud.ipb.de,0,attack_surface=0,business_value=8,tech_exposure=0,gate_ease=0,cloud_surface=0,freshness=0
-[PRIO] pluto.portal.ipb.de,7.40,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=7,freshness=7
-[PRIO] nc.ipb.de,7.00,attack_surface=7,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=8,freshness=7
-[PRIO] gold.ipb.de,5.50,attack_surface=5,business_value=6,tech_exposure=5,gate_ease=8,cloud_surface=4,freshness=4
 [HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
 class: IDOR
 asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
