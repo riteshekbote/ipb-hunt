@@ -3369,3 +3369,43 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class.
 [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
 [RISK] ipb: 61 (+0) — 30th consecutive converged cycle at the credential-acquisition plateau: passive DNS (getent, no HTTP) re-confirmed zero drift (IPv4 map identical, 10/10 live hosts byte-stable), triage/probe-results empty, no new probe data produced; all three leads alive but gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Correctness of the top hypotheses remains untestable without admin-provisioned credentials, while the effective discovery rate has been zero for 30 cycles.
+## 2026-09-12 20:13:33 UTC [target] (model bigpickle)
+[PRIO] pluto.portal.ipb.de,6.1,multi-tenancy DRF API — seq-ID BOLA/XSS surface, auth-gated, unchanged
+[PRIO] nc.ipb.de,4.6,Nextcloud 34.0.3 OCS/AppAPI — session-gated ExApp enumeration
+[PRIO] gold.ipb.de,4.3,Jitsi config.js — public but no leak path (anonymous by-design)
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg 401 / tenant-reg 403 (no self-service credential path); passive DNS identical 31st cycle; no new unauth vector
+evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET read-only seq-ID sweep {1..N} on the 5 resource endpoints (<=1 rps); compare cross-tenant 200 vs 403/404
+impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI auth mis-scoping
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (route registered, no session) vs cloud/apps → 401 confirms session-gated routing; unchanged 31 cycles
+evidence_needed: valid NC session; enumerate ExApps then re-probe each returned route unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or ExApp authz bypass — HIGH
+testability: HUMAN_ONLY
+[PARKED] Profile-picture SVG stored-XSS via content-type confusion @ pluto.portal.ipb.de (45): credible but requires the same tenant token as BOLA; second-stage after token acquisition, not separately actionable now.
+[PARKED] kiosk_login token oracle @ pluto.portal.ipb.de: low-severity enum, WAF/log risk, no self-service path — unchanged.
+[PARKED] gold.ipb.de Jitsi room-URL leak: config.js public but unguessable random roomName, anonymous guest by-design; no path.
+[FINAL] 1. Cross-tenant BOLA @ pluto.portal.ipb.de (65) — top, 31st cycle, architecture facts stable, human-credential-gated
+[FINAL] 2. NC AppAPI auth mis-scoping @ nc.ipb.de (40) — session-gated, unchanged, survives threshold
+[NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned test account (kiosk_login oracle parked — WAF risk). With it: read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/, then the profile-picture upload→download Content-Type chain; second NC session unlocks ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list. No new PROBE — passive DNS re-confirmed identical (31st cycle), all HTTP endpoints under "do not re-probe"; CT enumeration channel (crt.sh) currently unavailable (502) — retry next cycle as passive subdomain-absence check.
+[LEARN] ACCEPTED MISC @ *.ipb.de: 31st consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; reposcan (TARGET_ORG unconfigured skip) / triage / probe-results empty; no new unauth vector; "do not re-probe" constraints honored.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 24+ consecutive stable cycles.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior entry overstated; unchanged.
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost.
+[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class.
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
+[LEARN] ACCEPTED MISC @ *.ipb.de: crt.sh CT aggregation unreachable (502) this cycle; websearch surfaced no new subdomain/cert signals — passive subdomain-discovery channel temporarily unavailable, no evidence of new names behind wildcard.
+[RISK] ipb: 62 (+1) — 31st consecutive converged cycle at the credential-acquisition plateau: passive DNS (getent, no HTTP) re-confirmed zero drift (IPv4 map identical, 10/10 live hosts byte-stable), triage/probe-results/reposcan empty, crt.sh CT channel down; no new probe data produced; both living hypotheses gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Correctness of the top hypotheses remains untestable without admin-provisioned credentials, and effective discovery rate has been zero for 31 cycles — engagement value depends on the credential unlock occurring.

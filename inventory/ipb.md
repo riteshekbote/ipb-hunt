@@ -440,3 +440,5 @@ www.survey.ipb.de
 - CHANGED nc.ipb.de OCS capabilities → HTTP 200 with OCS-APIRequest: true header; app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — unchanged
 - CHANGED gold.ipb.de/config.js → HTTP 200 via curl -k (SSL cert fails in automated probes) — unchanged
 - CHANGED event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated
+
+## 2026-09-12 20:17:58 UTC

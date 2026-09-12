@@ -1,51 +1,46 @@
-## 2026-09-12 18:02:05 UTC [target] (model nemotron3)
-[NEW] None — 29th consecutive converged cycle; passive DNS (getent, no HTTP) re-confirmed identical stable map (pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud=194.29.230.41, event/eticket=194.29.230.43, www=194.29.230.44, cic=194.29.226.24, piwik/webcam=194.29.230.41; my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN), zero surface drift; probe-results/triage/reposcan empty
-[CHANGED] pluto.portal.ipb.de/api/system/ → HTTP 401 stable across 22+ consecutive cycles (byte-stable 354606 SPA fallback on schema endpoints)
-[CHANGED] nc.ipb.de OCS capabilities → HTTP 200 with OCS-APIRequest: true header; app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — unchanged
-[CHANGED] gold.ipb.de/config.js → HTTP 200 via curl -k (SSL cert fails in automated probes) — unchanged
-[CHANGED] event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated
-[PRIO] pluto.portal.ipb.de,7.15,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=3,freshness=1
-[PRIO] nc.ipb.de,5.10,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=1
+## 2026-09-12 20:17:50 UTC [target] (model nemotron3)
+[PRIO] pluto.portal.ipb.de,7.15,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=3,freshness=1  
+[PRIO] nc.ipb.de,5.10,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=1  
 [PRIO] gold.ipb.de,3.80,attack_surface=4,business_value=4,tech_exposure=4,gate_ease=6,cloud_surface=2,freshness=1
-[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
-class: IDOR
-asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/{id}/, /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
-confidence: 65
-reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface; /api/system/ 401@58 byte-stable 22+ cycles
-evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation (200 vs 403/404 differentiation)
-verify_steps: 1) Obtain low-priv credentialed session (Token) via admin-provisioned test account; 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/, /membership/{id}/, /admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET)
-impact: Cross-tenant data access → PII, membership, check-in, association-request dump across all tenants; CRITICAL
-testability: AUTH_HELPED
-[HYP] EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion
-class: XSS
-asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/{upload,download}/
-confidence: 45
-reasoning: EdgePortal SPA bundle references profile-picture upload/download endpoints (both 401 auth-gated); DRF multi-tenancy accepts file uploads; SVG upload with image/svg+xml content-type confusion could lead to stored XSS when rendered in victim's browser context; endpoints confirmed auth-gated (401) in prior probes
-evidence_needed: authenticated session; upload SVG with script payload; verify execution context on download/render
-verify_steps: 1) Obtain low-priv credentialed session (Token); 2) POST /api/multi-tenancy/v1/user/profile-picture/upload/ with multipart SVG containing <svg onload=alert(origin)>; 3) GET /api/multi-tenancy/v1/user/profile-picture/download/ → check Content-Type and execution; 4) Test CSP bypass via data: or blob: if direct render blocked
-impact: Stored XSS in authenticated tenant context → session theft, tenant data access; HIGH
-testability: AUTH_HELPED
-[HYP] NC AppAPI ExApp registry auth mis-scoping enabling SSRF
-class: SSRF
-asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
-confidence: 40
-reasoning: Live OCS caps 200 confirmed (requires OCS-APIRequest: true header; app_api 34.0.0 + bruteforce.delay=0); unauth GET /ocs/v2.php/apps/app_api/apps/list → 404 (route exists, no session) vs /ocs/v2.php/cloud/apps → 401 confirms session-gating; app_api enables external app runtime historically exposing unauth endpoints/SSRF once registered; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
-evidence_needed: valid NC session; enumerate ExApps then probe each registered ExApp route unauth vs authed
-verify_steps: 1) Obtain valid NC session (HUMAN_ONLY); 2) GET /ocs/v2.php/apps/app_api/apps/list with OCS-APIRequest: true header and session; 3) For each returned ExApp route, GET unauth and authed → status diff; 4) If ExApp route reachable, test SSRF payloads (169.254.169.254) on ExApp endpoints
-impact: SSRF to cloud metadata (169.254.169.254) or internal services; ExApp auth bypass — HIGH if session obtained
-testability: HUMAN_ONLY
-[PARKED] NC AppAPI ExApp registry auth mis-scoping enabling SSRF: confidence 40 at threshold but HUMAN_ONLY blocker (no session path); provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — prior KC overstatement
-[FINAL] 1. Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — CRITICAL impact, clear verify path with credentials, AUTH_HELPED testability
-[FINAL] 2. EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion (confidence 45) — HIGH impact if upload accepts SVG, AUTH_HELPED testability, requires auth
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API  
+class: IDOR  
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/{id}/, /api/admin/multi-tenancy/v1/{user,tenant}/{id}/  
+confidence: 65  
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface; /api/system/ 401@58 byte-stable 23+ cycles  
+evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation (200 vs 403/404 differentiation)  
+verify_steps: 1) Obtain low-priv credentialed session (Token) via admin-provisioned test account; 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/, /membership/{id}/, /admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET)  
+impact: Cross-tenant data access → PII, membership, check-in, association-request dump across all tenants; CRITICAL  
+testability: AUTH_HELPED  
+[HYP] EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion  
+class: XSS  
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/user/profile-picture/{upload,download}/  
+confidence: 45  
+reasoning: EdgePortal SPA bundle references profile-picture upload/download endpoints (both 401 auth-gated); DRF multi-tenancy accepts file uploads; SVG upload with image/svg+xml content-type confusion could lead to stored XSS when rendered in victim's browser context; endpoints confirmed auth-gated (401) in prior probes  
+evidence_needed: authenticated session; upload SVG with script payload; verify execution context on download/render  
+verify_steps: 1) Obtain low-priv credentialed session (Token); 2) POST /api/multi-tenancy/v1/user/profile-picture/upload/ with multipart SVG containing <svg onload=alert(origin)>; 3) GET /api/multi-tenancy/v1/user/profile-picture/download/ → check Content-Type and execution; 4) Test CSP bypass via data: or blob: if direct render blocked  
+impact: Stored XSS in authenticated tenant context → session theft, tenant data access; HIGH  
+testability: AUTH_HELPED  
+[HYP] NC AppAPI ExApp registry auth mis-scoping enabling SSRF  
+class: SSRF  
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list  
+confidence: 40  
+reasoning: Live OCS caps 200 confirmed (requires OCS-APIRequest: true header; app_api 34.0.0 + bruteforce.delay=0); unauth GET /ocs/v2.php/apps/app_api/apps/list → 404 (route exists, no session) vs /ocs/v2.php/cloud/apps → 401 confirms session-gating; app_api enables external app runtime historically exposing unauth endpoints/SSRF once registered; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps  
+evidence_needed: valid NC session; enumerate ExApps then probe each registered ExApp route unauth vs authed  
+verify_steps: 1) Obtain valid NC session (HUMAN_ONLY); 2) GET /ocs/v2.php/apps/app_api/apps/list with OCS-APIRequest: true header and session; 3) For each returned ExApp route, GET unauth and authed → status diff; 4) If ExApp route reachable, test SSRF payloads (169.254.169.254) on ExApp endpoints  
+impact: SSRF to cloud metadata (169.254.169.254) or internal services; ExApp auth bypass — HIGH if session obtained  
+testability: HUMAN_ONLY  
+[PARKED] NC AppAPI ExApp registry auth mis-scoping enabling SSRF: confidence 40 at threshold but HUMAN_ONLY blocker (no session path); provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — prior KC overstatement  
+[FINAL] 1. Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — CRITICAL impact, clear verify path with credentials, AUTH_HELPED testability  
+[FINAL] 2. EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion (confidence 45) — HIGH impact if upload accepts SVG, AUTH_HELPED testability, requires auth  
 [NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned test account (kiosk_login oracle parked — WAF risk, low impact); with that single token run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/1..N AND /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET) + profile-picture SVG upload test
-[LEARN] ACCEPTED MISC @ *.ipb.de: 29th consecutive converged cycle — passive DNS (getent, no HTTP) re-confirmed identical stable map, zero surface drift; triage/probe-results empty; no new unauth vector; "do not re-probe" constraints honored
-[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
-[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 22+ consecutive stable cycles
-[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated
-[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged
-[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe
-[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe
-[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
-[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
+[LEARN] ACCEPTED MISC @ *.ipb.de: 30th consecutive converged cycle — passive DNS (getent, no HTTP) re-confirmed identical stable map, zero surface drift; reposcan (TARGET_ORG unconfigured skip) / triage / probe-results empty; no new unauth vector; "do not re-probe" constraints honored  
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY  
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 23+ consecutive stable cycles  
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated  
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged  
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe  
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe  
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost  
+[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class  
 [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift
 [RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0
