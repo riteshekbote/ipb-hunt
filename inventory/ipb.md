@@ -433,3 +433,10 @@ www.survey.ipb.de
 ## 2026-09-12 12:48:20 UTC
 
 ## 2026-09-12 15:52:16 UTC
+
+## 2026-09-12 18:02:15 UTC
+- NEW None — 29th consecutive converged cycle; passive DNS (getent, no HTTP) re-confirmed identical stable map (pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud=194.29.230.41, event/etick
+- CHANGED pluto.portal.ipb.de/api/system/ → HTTP 401 stable across 22+ consecutive cycles (byte-stable 354606 SPA fallback on schema endpoints)
+- CHANGED nc.ipb.de OCS capabilities → HTTP 200 with OCS-APIRequest: true header; app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — unchanged
+- CHANGED gold.ipb.de/config.js → HTTP 200 via curl -k (SSL cert fails in automated probes) — unchanged
+- CHANGED event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated

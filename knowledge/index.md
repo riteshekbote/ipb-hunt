@@ -296,3 +296,5 @@
 - 2026-09-12 ACCEPTED MISC @ *.ipb.de: 28th consecutive converged cycle — passive DNS (getent, no HTTP) re-confirmed identical stable map, zero surface drift; no new unauth vector; "do not re-probe" constraints honored.
 - 2026-09-12 ACCEPTED MISC @ *.ipb.de: 29th consecutive converged cycle — passive DNS (getent, no HTTP) re-confirmed identical stable map, zero surface drift; triage/probe-results empty; no new unauth vector; "do not re-probe" constraints honored.
 - 2026-09-12 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated; unchanged.
+- 2026-09-12 ACCEPTED MISC @ *.ipb.de: 30th consecutive converged cycle — passive DNS (getent, no HTTP) re-confirmed identical stable map, zero surface drift; reposcan (TARGET_ORG unconfigured skip) / triage / probe-results empty; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-12 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 23+ consecutive stable cycles.
