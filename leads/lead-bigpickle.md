@@ -3555,3 +3555,24 @@ testability: HUMAN_ONLY
 [FINAL] BOLA conf 65 (HUMAN_ONLY) > NC AppAPI conf 40 (HUMAN_ONLY). No new unauth hypothesis survived; passive surface is exhausted.
 [NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned test account (kiosk_login oracle parked — WAF risk). With it: read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/, then the profile-picture upload→download Content-Type chain; a second NC session unlocks ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list. Passive-only otherwise — DNS identical (35th), all HTTP endpoints under "do not re-probe"; crt.sh CT channel down 5th cycle (now 404/000) — drop routine retries, re-check only every 3rd cycle.
 [RISK] ipb: 70 (+2) — 35th consecutive converged cycle at the credential-acquisition plateau: passive DNS (getent, no HTTP) re-confirmed zero drift (IPv4 identical), probe-results/triage/reposcan empty, crt.sh CT channel down five cycles running, websearch retry produced no new names; no new probe data produced; both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI conf 40) gated behind a tenant token / NC session with no self-service acquisition path; 0 validated bugs. Correctness of the top hypotheses remains untestable without admin-provisioned credentials, and effective discovery rate has been zero for 35 cycles — engagement value depends entirely on the credential unlock occurring; recommend escalating the credential request to the program point of contact.
+## 2026-09-13 19:31:00 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg 401 / tenant-reg 403 (no self-service path); IPv4 map + live surfaces byte-stable 36th cycle; CT channel recovery surfaced no new names
+evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET read-only seq-ID sweep {1..N} on the 5 resource endpoints (<=1 rps); compare cross-tenant 200 vs 403/404
+impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI auth mis-scoping
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (route registered, no session) vs cloud/apps → 401 confirms session-gated routing; unchanged 36 cycles
+evidence_needed: valid NC session; enumerate ExApps then re-probe each returned route unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or ExApp authz bypass — HIGH
+testability: HUMAN_ONLY
+[NEXT] HUMAN: request one attacker-owned low-priv EdgePortal tenant token + a separate NC test user from the program PoC (escalate via bugs.olivermaicher.eu). With them: read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/, then profile-picture upload→download Content-Type chain, then NC ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true). Passive-only otherwise.
+[RISK] ipb: 70 — 36th consecutive converged cycle at the credential-acquisition plateau: getent re-confirmed zero DNS drift (IPv4 identical), CT channel restored but surfaced no new names (closing the last unverified passive channel), probe-results/triage/reposcan empty, no new probe data produced; both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI conf 40) gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Top hypotheses remain untestable without admin-provisioned credentials; discovery rate zero for 36 cycles — engagement value is now fully contingent on the credential unlock, escalate the request to the program PoC.
