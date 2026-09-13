@@ -304,3 +304,14 @@
 - 2026-09-12 ACCEPTED MISC @ *.ipb.de: 32nd consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/triage empty, reposcan skipped (TARGET_ORG unconfigured); no new unauth vector; "do not re-probe" constraints honored.
 - 2026-09-12 ACCEPTED MISC @ *.ipb.de: crt.sh CT aggregation still unavailable (timeout after prior 502); websearch/channel retry surfaced no new subdomain/cert signals — passive subdomain-discovery channel down, no evidence of new names behind wildcard.
 - 2026-09-12 ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → Plesk login vhost (same as piwik/webcam); login-only out-of-scope class.
+- 2026-09-13 ACCEPTED MISC @ *.ipb.de: 32nd consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/triage empty, reposcan skipped (TARGET_ORG unconfigured); no new unauth vector; "do not re-probe" constraints honored
+- 2026-09-13 ACCEPTED MISC @ *.ipb.de: crt.sh CT aggregation still unavailable (timeout after prior 502); websearch/channel retry surfaced no new subdomain/cert signals — passive subdomain-discovery channel down, no evidence of new names behind wildcard
+- 2026-09-13 ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
+- 2026-09-13 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 24+ consecutive stable cycles
+- 2026-09-13 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated
+- 2026-09-13 ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged
+- 2026-09-13 REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe
+- 2026-09-13 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe
+- 2026-09-13 ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (000); Jitsi anonymousdomain config-only, not a live vhost
+- 2026-09-13 ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
+- 2026-09-13 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift

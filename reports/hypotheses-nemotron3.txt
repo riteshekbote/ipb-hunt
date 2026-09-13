@@ -1,4 +1,4 @@
-## 2026-09-12 22:21:36 UTC [target] (model nemotron3)
+## 2026-09-13 00:04:02 UTC [target] (model nemotron3)
 [PRIO] pluto.portal.ipb.de,7.15,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=3,freshness=1
 [PRIO] nc.ipb.de,5.10,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=1
 [PRIO] gold.ipb.de,3.80,attack_surface=4,business_value=4,tech_exposure=4,gate_ease=6,cloud_surface=2,freshness=1
@@ -8,7 +8,7 @@ asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-reques
 confidence: 65
 reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface; /api/system/ 401@58 byte-stable 24+ cycles
 evidence_needed: authenticated low-priv account reading another tenant's objects via ID manipulation (200 vs 403/404 differentiation)
-verify_steps: 1) Obtain low-priv credentialed session (Token) via admin-provisioned test account; 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/, /membership/{id}/, /admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET)
+verify_steps: 1) Obtain low-priv credentialed session (Token) via admin-provisioned test account; 2) GET /api/multi-tenancy/v1/tenant/{other_id}/ with Authorization: Token header; 3) Observe 200 vs 403/404; repeat for /user/{id}/, /association-request/{id}/, /check-in/{id}/, /membership/{id}/, /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET)
 impact: Cross-tenant data access → PII, membership, check-in, association-request dump across all tenants; CRITICAL
 testability: AUTH_HELPED
 [HYP] EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion
@@ -33,7 +33,8 @@ testability: HUMAN_ONLY
 [FINAL] 1. Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — CRITICAL impact, clear verify path with credentials, AUTH_HELPED testability
 [FINAL] 2. EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion (confidence 45) — HIGH impact if upload accepts SVG, AUTH_HELPED testability, requires auth
 [NEXT] HUMAN: obtain one attacker-owned low-priv EdgePortal tenant token (pluto.portal.ipb.de) via admin-provisioned test account (kiosk_login oracle parked — WAF risk, low impact); with that single token run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/1..N AND /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET) + profile-picture SVG upload test
-[LEARN] ACCEPTED MISC @ *.ipb.de: 31st consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; reposcan (TARGET_ORG unconfigured skip) / triage / probe-results empty; no new unauth vector; "do not re-probe" constraints honored
+[LEARN] ACCEPTED MISC @ *.ipb.de: 32nd consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/triage empty, reposcan skipped (TARGET_ORG unconfigured); no new unauth vector; "do not re-probe" constraints honored
+[LEARN] ACCEPTED MISC @ *.ipb.de: crt.sh CT aggregation still unavailable (timeout after prior 502); websearch/channel retry surfaced no new subdomain/cert signals — passive subdomain-discovery channel down, no evidence of new names behind wildcard
 [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
 [LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 24+ consecutive stable cycles
 [LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated
