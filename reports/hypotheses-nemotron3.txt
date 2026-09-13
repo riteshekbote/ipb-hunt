@@ -1,4 +1,4 @@
-## 2026-09-13 21:39:06 UTC [target] (model nemotron3)
+## 2026-09-13 23:30:56 UTC [target] (model nemotron3)
 [CHANGED] pluto.portal.ipb.de/api/system/ → HTTP 401 stable across 24+ consecutive cycles (byte-stable 354606 SPA fallback on schema endpoints) — unchanged
 [CHANGED] nc.ipb.de OCS capabilities → HTTP 200 with OCS-APIRequest: true header; app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — unchanged
 [CHANGED] gold.ipb.de/config.js → HTTP 200 via curl -k (SSL cert fails in automated probes) — unchanged

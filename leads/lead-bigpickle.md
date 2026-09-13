@@ -3617,3 +3617,35 @@ impact: SSRF to 169.254.169.254 / internal services or ExApp authz bypass — HI
 testability: HUMAN_ONLY
 [NEXT] HUMAN: escalate credential ask to program PoC via bugs.olivermaicher.eu — request TWO attacker-owned low-priv EdgePortal tenant accounts (not one) plus a separate NC test user, so the cross-tenant BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ is fully self-contained, then profile-picture upload→download Content-Type chain, then NC ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true). Passive-only otherwise; all HTTP endpoints remain under "do not re-probe".
 [RISK] ipb: **70** — 37th consecutive converged cycle at the credential-acquisition plateau: getent re-confirmed zero DNS drift (IPv4 identical, live hosts byte-stable), probe-results/triage/reposcan empty, no new probe data produced this cycle; both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI conf 40) gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Discovery rate zero for 37 cycles — engagement value remains fully contingent on the credential unlock; the escalation ask (two tenant tokens + NC test user) is the only productive next step and should be pursued with the program PoC.
+## 2026-09-13 23:28:37 UTC [target] (model bigpickle)
+[PRIO] pluto.portal.ipb.de,6.9,attack_surface+business_value — DRF multi-tenancy seq-ID API, per-tenant Token sole authz control, CRITICAL cross-tenant PII payout
+[PRIO] nc.ipb.de,5.6,tech_exposure+cloud_surface — NC 34.0.3 app_api 34.0.0 (ExApp SSRF/metadata path) behind wildcard proxy
+[PRIO] gold.ipb.de,3.1,tech_exposure — Jitsi config.js public but anonymous-guest by-design, no room-URL leak path (unchanged)
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg 401 / tenant-reg 403 (no self-service path); DNS + live surfaces byte-stable 38th cycle
+evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET read-only seq-ID sweep {1..N} on the 5 resource endpoints (<=1 rps); compare cross-tenant 200 vs 403/404
+impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI auth mis-scoping
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (route registered, no session) vs cloud/apps → 401 confirms session-gated routing; unchanged 38 cycles
+evidence_needed: valid NC session; enumerate ExApps then re-probe each returned route unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or ExApp authz bypass — HIGH
+testability: HUMAN_ONLY
+[PARKED] EdgePortal profile-picture SVG stored-XSS (conf 45): requires authenticated upload+download session; strictly worse payout than BOLA on same gate; revisit only after tenant token obtained.
+[PARKED] kiosk_login token oracle: WAF risk, low impact, superseded by credential-ask path.
+[FINAL] #1 pluto BOLA 65 (HUMAN_ONLY); #2 nc AppAPI 40 (HUMAN_ONLY). Both provisional on admin-provisioned credentials.
+[NEXT] HUMAN: escalate credential ask to program PoC via bugs.olivermaicher.eu — request TWO attacker-owned low-priv EdgePortal tenant accounts + one NC test user. With them: read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (<=1 rps), then profile-picture upload→download Content-Type chain, then NC ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true). Passive-only otherwise; all HTTP endpoints remain under "do not re-probe".
+[LEARN] ACCEPTED MISC @ *.ipb.de: 38th consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map (pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud=194.29.230.41, event/eticket=194.29.230.43, www=194.29.230.44, cic=194.29.226.24, piwik/webcam=194.29.230.41; my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN), zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 24+ consecutive stable cycles.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior entry overstated; unchanged.
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+[RISK] ipb: **70** — 38th consecutive converged cycle at the credential-acquisition plateau: getent re-confirmed zero DNS drift (IPv4 identical, live hosts byte-stable), CT channel no new names, probe-results/triage/reposcan empty, no new probe data produced this cycle; both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI conf 40) gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Discovery rate zero for 38 cycles — engagement value remains fully contingent on the credential unlock; the escalation ask (two tenant accounts + NC test user) is the only productive next step and should be pursued with the program PoC.
