@@ -4,3 +4,8 @@
   - | Q4 Provable | NO | All endpoints require valid Token auth; no self-service registration confirmed (/_exceptions routes are SPA fallback, user-registration 401, tenant-registration 403); cannot exerc
   - **Verdict: HOLD** — Highest-value hypothesis but gated on human credential provision. Needs valid low-priv account to verify.
   - | Q4 Provable | NO | Requires valid 32-hex token format knowledge; enumeration at scale may trigger WAF; response differentiation unconfirmed |
+
+- 3 lead(s) marked VALID at 2026-09-13 20:59:03 UTC
+  - | **Q4 Provable** | **NO** — requires two tenant accounts with valid Tokens; not provable without credentials |
+  - | **Q4 Provable** | **NO** — requires valid NC session to enumerate ExApps |
+  - **VALID leads: 0**
