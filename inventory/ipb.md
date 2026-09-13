@@ -458,3 +458,5 @@ www.survey.ipb.de
 - CHANGED event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated
 - CHANGED *.ipb.de wildcard DNS masking → 33rd consecutive converged cycle; passive getent re-confirmed identical IPv4 map (pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud=194.29.230.41, eve
 - CHANGED crt.sh CT aggregation unavailable (timeout after prior 502); websearch surfaced no new subdomain/cert signals — passive subdomain-discovery channel down
+
+## 2026-09-13 17:20:40 UTC
