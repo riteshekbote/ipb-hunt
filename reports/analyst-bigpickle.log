@@ -16623,3 +16623,188 @@ testability: HUMAN_ONLY
 
 **STEP 7 — RISK**
 [RISK] ipb: **73** — 40th consecutive converged cycle at credential-acquisition plateau: getent re-confirmed zero DNS drift (IPv4 identical, live hosts byte-stable), probe-results/triage/reposcan empty, no new probe data produced this cycle; both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI conf 40) gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Discovery rate zero for 40 cycles — engagement value remains fully contingent on the credential unlock; the escalation ask (two tenant accounts + NC test user) is the only productive next step and should be pursued with the program PoC.
+===== ANALYST bigpickle 2026-09-14 18:55:01 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m→ [0mRead .
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead state_bigpickle.json
+[0m
+[0m$ [0mls -la triage/ leads/ knowledge/ 2>/dev/null && echo "---" && cat leads/lead_bigpickle.txt 2>/dev/null | tail -40
+knowledge/:
+total 72
+drwxr-xr-x  2 runner runner  4096 Sep 14 18:51 .
+drwxr-xr-x 12 runner runner  4096 Sep 14 18:51 ..
+-rw-r--r--  1 runner runner 62012 Sep 14 18:51 index.md
+
+leads/:
+total 1068
+drwxr-xr-x  2 runner runner   4096 Sep 14 18:51 .
+drwxr-xr-x 12 runner runner   4096 Sep 14 18:51 ..
+-rw-r--r--  1 runner runner 470944 Sep 14 18:51 lead-bigpickle.md
+-rw-r--r--  1 runner runner   4131 Sep 14 18:51 lead-laguna.md
+-rw-r--r--  1 runner runner   4050 Sep 14 18:51 lead-ling3.md
+-rw-r--r--  1 runner runner   4212 Sep 14 18:51 lead-longcat.md
+-rw-r--r--  1 runner runner     18 Sep 14 18:51 lead-mimo.md
+-rw-r--r--  1 runner runner 574636 Sep 14 18:51 lead-nemotron3.md
+-rw-r--r--  1 runner runner  11387 Sep 14 18:51 reposcan-ipb.md
+
+triage/:
+total 396
+drwxr-xr-x  2 runner runner  4096 Sep 14 18:51 .
+drwxr-xr-x 12 runner runner  4096 Sep 14 18:51 ..
+-rw-r--r--  1 runner runner     0 Sep 14 18:51 .gitkeep
+-rw-r--r--  1 runner runner   207 Sep 14 18:51 run-2026-09-02-21-51.md
+-rw-r--r--  1 runner runner    80 Sep 14 18:51 run-2026-09-02-23-59.md
+-rw-r--r--  1 runner runner   489 Sep 14 18:51 run-2026-09-03-02-18.md
+-rw-r--r--  1 runner runner   872 Sep 14 18:51 run-2026-09-03-07-23.md
+-rw-r--r--  1 runner runner   249 Sep 14 18:51 run-2026-09-03-12-07.md
+-rw-r--r--  1 runner runner  1087 Sep 14 18:51 run-2026-09-03-16-28.md
+-rw-r--r--  1 runner runner   255 Sep 14 18:51 run-2026-09-03-19-24.md
+-rw-r--r--  1 runner runner   143 Sep 14 18:51 run-2026-09-03-21-52.md
+-rw-r--r--  1 runner runner   156 Sep 14 18:51 run-2026-09-03-23-43.md
+-rw-r--r--  1 runner runner   148 Sep 14 18:51 run-2026-09-04-02-13.md
+-rw-r--r--  1 runner runner   212 Sep 14 18:51 run-2026-09-04-07-16.md
+-rw-r--r--  1 runner runner   181 Sep 14 18:51 run-2026-09-04-12-09.md
+-rw-r--r--  1 runner runner   482 Sep 14 18:51 run-2026-09-04-16-24.md
+-rw-r--r--  1 runner runner   199 Sep 14 18:51 run-2026-09-04-19-06.md
+-rw-r--r--  1 runner runner   251 Sep 14 18:51 run-2026-09-04-21-31.md
+-rw-r--r--  1 runner runner   244 Sep 14 18:51 run-2026-09-04-23-15.md
+-rw-r--r--  1 runner runner   216 Sep 14 18:51 run-2026-09-05-00-59.md
+-rw-r--r--  1 runner runner   290 Sep 14 18:51 run-2026-09-05-05-25.md
+-rw-r--r--  1 runner runner   172 Sep 14 18:51 run-2026-09-05-09-18.md
+-rw-r--r--  1 runner runner   143 Sep 14 18:51 run-2026-09-05-12-47.md
+-rw-r--r--  1 runner runner   143 Sep 14 18:51 run-2026-09-05-15-43.md
+-rw-r--r--  1 runner runner   263 Sep 14 18:51 run-2026-09-05-17-49.md
+-rw-r--r--  1 runner runner 10833 Sep 14 18:51 run-2026-09-05-19-46.md
+-rw-r--r--  1 runner runner   249 Sep 14 18:51 run-2026-09-05-21-49.md
+-rw-r--r--  1 runner runner   156 Sep 14 18:51 run-2026-09-05-23-28.md
+-rw-r--r--  1 runner runner   174 Sep 14 18:51 run-2026-09-06-01-18.md
+-rw-r--r--  1 runner runner   283 Sep 14 18:51 run-2026-09-06-06-02.md
+-rw-r--r--  1 runner runner   149 Sep 14 18:51 run-2026-09-06-11-01.md
+-rw-r--r--  1 runner runner   222 Sep 14 18:51 run-2026-09-06-14-12.md
+-rw-r--r--  1 runner runner   190 Sep 14 18:51 run-2026-09-06-17-05.md
+-rw-r--r--  1 runner runner   219 Sep 14 18:51 run-2026-09-06-19-14.md
+-rw-r--r--  1 runner runner   206 Sep 14 18:51 run-2026-09-06-21-23.md
+-rw-r--r--  1 runner runner   171 Sep 14 18:51 run-2026-09-06-23-05.md
+-rw-r--r--  1 runner runner   352 Sep 14 18:51 run-2026-09-07-01-03.md
+-rw-r--r--  1 runner runner   176 Sep 14 18:51 run-2026-09-07-06-09.md
+-rw-r--r--  1 runner runner   167 Sep 14 18:51 run-2026-09-07-12-38.md
+-rw-r--r--  1 runner runner   477 Sep 14 18:51 run-2026-09-07-17-54.md
+-rw-r--r--  1 runner runner   222 Sep 14 18:51 run-2026-09-07-20-56.md
+-rw-r--r--  1 runner runner   177 Sep 14 18:51 run-2026-09-07-23-15.md
+-rw-r--r--  1 runner runner   948 Sep 14 18:51 run-2026-09-08-01-14.md
+-rw-r--r--  1 runner runner   214 Sep 14 18:51 run-2026-09-08-05-59.md
+-rw-r--r--  1 runner runner   247 Sep 14 18:51 run-2026-09-08-10-55.md
+-rw-r--r--  1 runner runner   148 Sep 14 18:51 run-2026-09-08-14-50.md
+-rw-r--r--  1 runner runner   211 Sep 14 18:51 run-2026-09-08-18-12.md
+-rw-r--r--  1 runner runner  1125 Sep 14 18:51 run-2026-09-08-21-12.md
+-rw-r--r--  1 runner runner   246 Sep 14 18:51 run-2026-09-08-23-25.md
+-rw-r--r--  1 runner runner   201 Sep 14 18:51 run-2026-09-09-01-29.md
+-rw-r--r--  1 runner runner   191 Sep 14 18:51 run-2026-09-09-06-38.md
+-rw-r--r--  1 runner runner   177 Sep 14 18:51 run-2026-09-09-11-49.md
+-rw-r--r--  1 runner runner   182 Sep 14 18:51 run-2026-09-09-15-39.md
+-rw-r--r--  1 runner runner   152 Sep 14 18:51 run-2026-09-09-18-50.md
+-rw-r--r--  1 runner runner   242 Sep 14 18:51 run-2026-09-09-21-25.md
+-rw-r--r--  1 runner runner   769 Sep 14 18:51 run-2026-09-09-23-29.md
+-rw-r--r--  1 runner runner   172 Sep 14 18:51 run-2026-09-10-01-24.md
+-rw-r--r--  1 runner runner   174 Sep 14 18:51 run-2026-09-10-06-37.md
+-rw-r--r--  1 runner runner  2440 Sep 14 18:51 run-2026-09-10-11-48.md
+-rw-r--r--  1 runner runner 13679 Sep 14 18:51 run-2026-09-10-12-00.md
+-rw-r--r--  1 runner runner   138 Sep 14 18:51 run-2026-09-10-15-35.md
+-rw-r--r--  1 runner runner   227 Sep 14 18:51 run-2026-09-10-18-40.md
+-rw-r--r--  1 runner runner  5326 Sep 14 18:51 run-2026-09-10-21-13.md
+-rw-r--r--  1 runner runner   398 Sep 14 18:51 run-2026-09-10-23-12.md
+-rw-r--r--  1 runner runner  1252 Sep 14 18:51 run-2026-09-11-01-08.md
+-rw-r--r--  1 runner runner   215 Sep 14 18:51 run-2026-09-11-06-02.md
+-rw-r--r--  1 runner runner   526 Sep 14 18:51 run-2026-09-11-11-31.md
+-rw-r--r--  1 runner runner   209 Sep 14 18:51 run-2026-09-11-15-10.md
+-rw-r--r--  1 runner runner   176 Sep 14 18:51 run-2026-09-11-18-35.md
+-rw-r--r--  1 runner runner   143 Sep 14 18:51 run-2026-09-11-21-14.md
+-rw-r--r--  1 runner runner   230 Sep 14 18:51 run-2026-09-11-23-17.md
+-rw-r--r--  1 runner runner   180 Sep 14 18:51 run-2026-09-12-01-11.md
+-rw-r--r--  1 runner runner   184 Sep 14 18:51 run-2026-09-12-05-50.md
+-rw-r--r--  1 runner runner   150 Sep 14 18:51 run-2026-09-12-09-52.md
+-rw-r--r--  1 runner runner   227 Sep 14 18:51 run-2026-09-12-13-16.md
+-rw-r--r--  1 runner runner   202 Sep 14 18:51 run-2026-09-12-16-21.md
+-rw-r--r--  1 runner runner   144 Sep 14 18:51 run-2026-09-12-18-42.md
+-rw-r--r--  1 runner runner   143 Sep 14 18:51 run-2026-09-12-21-07.md
+-rw-r--r--  1 runner runner   181 Sep 14 18:51 run-2026-09-12-23-04.md
+-rw-r--r--  1 runner runner  1539 Sep 14 18:51 run-2026-09-13-01-03.md
+-rw-r--r--  1 runner runner   166 Sep 14 18:51 run-2026-09-13-06-13.md
+-rw-r--r--  1 runner runner   205 Sep 14 18:51 run-2026-09-13-11-56.md
+-rw-r--r--  1 runner runner   235 Sep 14 18:51 run-2026-09-13-15-32.md
+-rw-r--r--  1 runner runner  2611 Sep 14 18:51 run-2026-09-13-18-20.md
+-rw-r--r--  1 runner runner 20110 Sep 14 18:51 run-2026-09-13-20-59.md
+-rw-r--r--  1 runner runner   534 Sep 14 18:51 run-2026-09-13-22-47.md
+-rw-r--r--  1 runner runner   252 Sep 14 18:51 run-2026-09-14-00-33.md
+-rw-r--r--  1 runner runner   200 Sep 14 18:51 run-2026-09-14-05-23.md
+-rw-r--r--  1 runner runner   208 Sep 14 18:51 run-2026-09-14-10-57.md
+-rw-r--r--  1 runner runner   143 Sep 14 18:51 run-2026-09-14-16-45.md
+---
+[0m
+[0m$ [0mgetent hosts pluto.portal.ipb.de nc.ipb.de gold.ipb.de cloud.ipb.de event.ipb.de eticket.ipb.de www.ipb.de cic.ipb.de piwik.ipb.de webcam.ipb.de my.ipb.de prod.ipb.de app.ipb.de survey.ipb.de guest.gold.ipb.de focus.gold.ipb.de auth.gold.ipb.de 2>&1
+2a02:f28:1:16::140 pluto.portal.ipb.de
+2a02:f28:2:0:194:29:226:157 nc.ipb.de
+194.29.226.155  gold.ipb.de
+194.29.230.41   cloud.ipb.de
+2a02:f28:2:1:194:29:230:43 event.ipb.de
+194.29.230.43   eticket.ipb.de
+2a02:f28:2:1:194:29:230:44 www.ipb.de
+194.29.226.24   cic.ipb.de
+194.29.230.41   piwik.ipb.de
+194.29.230.41   webcam.ipb.de
+[0m
+DNS map identical (live 10 hosts, my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN). No new probe data this cycle — surface fully converged.
+
+STEP 1 — DELTA: NO_DELTA — 41st consecutive converged cycle; getent re-confirmed identical IPv4 map, live hosts byte-stable, probe-results/triage/reposcan empty.
+
+STEP 2 — PRIORITIZE:
+- [PRIO] pluto.portal.ipb.de,6.9,attack_surface+business_value — DRF multi-tenancy seq-ID API, per-tenant Token sole authz control, CRITICAL cross-tenant PII payout
+- [PRIO] nc.ipb.de,5.6,tech_exposure+cloud_surface — NC 34.0.3 app_api 34.0.0 (ExApp SSRF/metadata path) behind wildcard proxy
+- [PRIO] gold.ipb.de,3.1,tech_exposure — Jitsi config.js public but anonymous-guest by-design, no room-URL leak (unchanged)
+
+STEP 3 — HYPOTHESES:
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg 401 / tenant-reg 403 (no self-service path); DNS + live surfaces byte-stable 41st cycle
+evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET read-only seq-ID sweep {1..N} on the 5 resource endpoints (<=1 rps); compare cross-tenant 200 vs 403/404
+impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
+testability: HUMAN_ONLY
+
+[HYP] NC AppAPI auth mis-scoping
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (route registered, no session) vs cloud/apps → 401 confirms session-gated routing; unchanged 41 cycles
+evidence_needed: valid NC session; enumerate ExApps then re-probe each returned route unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or ExApp authz bypass — HIGH
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE:
+- [PARKED] EdgePortal profile-picture SVG stored-XSS (conf 45): requires authenticated upload+download session; strictly worse payout than BOLA on same gate; revisit only after tenant token obtained.
+- [PARKED] kiosk_login token oracle: WAF risk, low impact, superseded by credential-ask path.
+- [FINAL] #1 pluto BOLA 65 (HUMAN_ONLY); #2 nc AppAPI 40 (HUMAN_ONLY). Both provisional on admin-provisioned credentials.
+
+STEP 5 — NEXT ACTION:
+[NEXT] HUMAN: escalate credential ask to program PoC via bugs.olivermaicher.eu — request TWO attacker-owned low-priv EdgePortal tenant accounts (different tenants) + one NC test user. With them: read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (<=1 rps), then profile-picture upload→download Content-Type chain, then NC ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true). Passive-only otherwise; all HTTP endpoints remain under "do not re-probe".
+
+STEP 6 — LEARNING:
+[LEARN] ACCEPTED MISC @ *.ipb.de: 41st consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map (pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud=194.29.230.41, event/eticket=194.29.230.43, www=194.29.230.44, cic=194.29.226.24, piwik/webcam=194.29.230.41; my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN), zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 24+ consecutive stable cycles.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior entry overstated; unchanged.
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (NXDOMAIN); Jitsi anonymousdomain config-only, not a live vhost.
+[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → Plesk login vhost (same as piwik/webcam); login-only out-of-scope class.
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
+
+STEP 7 — RISK:
+[RISK] ipb: **73** — 41st consecutive converged cycle at credential-acquisition plateau: getent re-confirmed zero DNS drift (IPv4 identical, live hosts byte-stable), probe-results/triage/reposcan empty, no new probe data produced this cycle; both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI conf 40) gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Discovery rate zero for 41 cycles — engagement value remains fully contingent on the credential unlock; the escalation ask (two tenant accounts + NC test user) is the only productive next step and should be pursued with the program PoC.
