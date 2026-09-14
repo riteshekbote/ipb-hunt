@@ -9,3 +9,7 @@
   - | **Q4 Provable** | **NO** — requires two tenant accounts with valid Tokens; not provable without credentials |
   - | **Q4 Provable** | **NO** — requires valid NC session to enumerate ExApps |
   - **VALID leads: 0**
+
+- 2 lead(s) marked VALID at 2026-09-14 23:40:32 UTC
+  - | Q3 Impact | **LOW** — enumeration of valid kiosk tokens alone; weakens kiosk gate but no direct data exposure |
+  - **Verdict: HOLD** — Needs confirmation: (1) is RackTables actually deployed/accessible? (2) is `remote.php` actively used for device management? Cannot determine from code review alone. If deployed + 
