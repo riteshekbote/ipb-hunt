@@ -16808,3 +16808,60 @@ STEP 6 — LEARNING:
 
 STEP 7 — RISK:
 [RISK] ipb: **73** — 41st consecutive converged cycle at credential-acquisition plateau: getent re-confirmed zero DNS drift (IPv4 identical, live hosts byte-stable), probe-results/triage/reposcan empty, no new probe data produced this cycle; both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI conf 40) gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Discovery rate zero for 41 cycles — engagement value remains fully contingent on the credential unlock; the escalation ask (two tenant accounts + NC test user) is the only productive next step and should be pursued with the program PoC.
+===== ANALYST bigpickle 2026-09-14 22:13:17 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m◈ [0mParallel Web Search ""EdgePortal" Django multi-tenant software portal"
+[0m◈ [0mParallel Web Search ""EdgePortal" "ipb.de" OR "pluto.portal" portal login"
+STEP 1 — DELTA:
+- [NEW] Passive websearch for "EdgePortal" software identity (Django/DRF multi-tenant portal) → NO public off-the-shelf match. Name is generic, reused by unrelated Ortho2/EdgeScore/Edge Solutions products; no public GitHub/SaaS repo with the IPB API surface (/api/multi-tenancy/v1, kiosk_totp, EdgePortal title). No passive framework-CVE uplift path — software appears proprietary/in-house.
+- NO_DELTA otherwise: DNS map + live surfaces byte-stable (41st converged cycle), probe-results/triage/reposcan empty, crt.sh still unavailable, no new subdomain/cert signals.
+
+STEP 2 — PRIORITIZE:
+- [PRIO] pluto.portal.ipb.de, 5.5, attack_surface=7 business_value=9 tech_exposure=6 gate_ease=1 cloud_surface=0 freshness=2
+- [PRIO] nc.ipb.de, 3.8, attack_surface=5 business_value=5 tech_exposure=4 gate_ease=1 cloud_surface=4 freshness=1
+- [PRIO] gold.ipb.de, 1.6, attack_surface=3 business_value=3 tech_exposure=3 gate_ease=0 cloud_surface=0 freshness=0
+
+STEP 3 — HYPOTHESES:
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg 401 / tenant-reg 403 (no self-service path); "EdgePortal" is proprietary (websearch confirms no public build to diff defaults against); DNS + live surfaces byte-stable 41st cycle
+evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET read-only seq-ID sweep {1..N} on the 5 resource endpoints (<=1 rps); compare cross-tenant 200 vs 403/404
+impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI auth mis-scoping
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (route registered, no session) vs cloud/apps → 401 confirms session-gated routing; unchanged 41 cycles
+evidence_needed: valid NC session; enumerate ExApps then re-probe each returned route unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or ExApp authz bypass — HIGH
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE:
+- [PARKED] EdgePortal profile-picture SVG stored-XSS (conf 45): same auth gate as BOLA, strictly worse payout; revisit only after tenant token obtained.
+- [PARKED] kiosk_login token oracle (conf 30): WAF risk, low impact, superseded by credential-ask path.
+- [FINAL] #1 pluto.portal.ipb.de BOLA 65 (HUMAN_ONLY); #2 nc.ipb.de AppAPI 40 (HUMAN_ONLY). Both provisional on admin-provisioned credentials; no confidence drift this cycle.
+
+STEP 5 — NEXT ACTION:
+- [NEXT] HUMAN: escalate credential ask to program PoC via bugs.olivermaicher.eu — request TWO attacker-owned low-priv EdgePortal tenant accounts (different tenants) + one NC test user. With them: read-only cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (<=1 rps), then profile-picture upload→download Content-Type chain, then NC ExApp enumeration at /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true). Passive-only otherwise; all HTTP endpoints remain under "do not re-probe".
+
+STEP 6 — LEARNING:
+- [LEARN] ACCEPTED MISC @ *.ipb.de: 42nd consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map (pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud=194.29.230.41, event/eticket=194.29.230.43, www=194.29.230.44, cic=194.29.226.24, piwik/webcam=194.29.230.41; my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN), zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+- [LEARN] ACCEPTED MISC @ pluto.portal.ipb.de: "EdgePortal" is proprietary in-house software — passive websearch found no public repo/product to diff default config/admin routes against; no framework-CVE uplift for the BOLA hypothesis.
+- [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+- [LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior entry overstated; unchanged.
+- [LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+- [LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+- [LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+- [LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (NXDOMAIN); Jitsi anonymousdomain config-only, not a live vhost.
+- [LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → Plesk login vhost (same as piwik/webcam); login-only out-of-scope class.
+- [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
+
+STEP 7 — RISK:
+- [RISK] ipb: **74** — 42nd consecutive converged cycle at credential-acquisition plateau, +1 this cycle: websearch now also eliminates the passive "proprietary framework diff" lever (EdgePortal not public, no CVE lead), narrowing remaining paths to the credential ask alone; both living hypotheses (EdgePortal BOLA 65, NC AppAPI 40) still gated behind tenant token / NC session with no self-service path; 0 validated bugs; discovery rate zero for 42 cycles. Escalation ask via bugs.olivermaicher.eu is the only productive next step and should be pursued with the program PoC.

@@ -3748,3 +3748,22 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → Plesk login vhost (same as piwik/webcam); login-only out-of-scope class.
 [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
 [RISK] ipb: **73** — 41st consecutive converged cycle at credential-acquisition plateau: getent re-confirmed zero DNS drift (IPv4 identical, live hosts byte-stable), probe-results/triage/reposcan empty, no new probe data produced this cycle; both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI conf 40) gated behind a tenant token / NC session with no self-service path; 0 validated bugs. Discovery rate zero for 41 cycles — engagement value remains fully contingent on the credential unlock; the escalation ask (two tenant accounts + NC test user) is the only productive next step and should be pursued with the program PoC.
+## 2026-09-14 22:12:24 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg 401 / tenant-reg 403 (no self-service path); "EdgePortal" is proprietary (websearch confirms no public build to diff defaults against); DNS + live surfaces byte-stable 41st cycle
+evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET read-only seq-ID sweep {1..N} on the 5 resource endpoints (<=1 rps); compare cross-tenant 200 vs 403/404
+impact: cross-tenant PII dump (user, membership, association-request, tenant relationship) — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI auth mis-scoping
+class: AUTH
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (route registered, no session) vs cloud/apps → 401 confirms session-gated routing; unchanged 41 cycles
+evidence_needed: valid NC session; enumerate ExApps then re-probe each returned route unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or ExApp authz bypass — HIGH
+testability: HUMAN_ONLY
