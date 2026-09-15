@@ -1,4 +1,4 @@
-## 2026-09-15 15:16:32 UTC [target] (model nemotron3)
+## 2026-09-15 19:08:57 UTC [target] (model nemotron3)
 [PRIO] pluto.portal.ipb.de,7.45,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=3,freshness=1
 [PRIO] nc.ipb.de,5.20,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=1
 [PRIO] gold.ipb.de,3.80,attack_surface=4,business_value=4,tech_exposure=4,gate_ease=6,cloud_surface=2,freshness=1
