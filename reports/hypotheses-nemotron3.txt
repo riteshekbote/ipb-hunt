@@ -1,4 +1,10 @@
-## 2026-09-15 19:08:57 UTC [target] (model nemotron3)
+## 2026-09-15 22:31:58 UTC [target] (model nemotron3)
+[NEW] None — 44th consecutive converged cycle; passive getent re-confirmed identical IPv4 map (pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud=194.29.230.41, event/eticket=194.29.230.43, www=194.29.230.44, cic=194.29.226.24, piwik/webcam=194.29.230.41; my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN), zero surface drift; probe-results/triage/reposcan empty
+[CHANGED] pluto.portal.ipb.de/api/system/ → HTTP 401 stable across 26+ consecutive cycles (byte-stable 354606 SPA fallback on schema endpoints) — unchanged
+[CHANGED] nc.ipb.de OCS capabilities → HTTP 200 with OCS-APIRequest: true header; app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — unchanged
+[CHANGED] gold.ipb.de/config.js → HTTP 200 via curl -k (SSL cert fails in automated probes) — unchanged
+[CHANGED] event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated
+[CHANGED] *.ipb.de wildcard DNS masking → 44th consecutive converged cycle; passive getent stable, zero surface drift; crt.sh CT aggregation unavailable (timeout), websearch no new signals
 [PRIO] pluto.portal.ipb.de,7.45,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=3,freshness=1
 [PRIO] nc.ipb.de,5.20,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=1
 [PRIO] gold.ipb.de,3.80,attack_surface=4,business_value=4,tech_exposure=4,gate_ease=6,cloud_surface=2,freshness=1
@@ -6,7 +12,7 @@
 class: IDOR
 asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/{id}/, /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
 confidence: 65
-reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface; /api/system/ 401@58 byte-stable 25+ cycles
+reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface; /api/system/ 401@58 byte-stable 26+ cycles
 evidence_needed: authenticated low-priv token from two different EdgePortal tenants; cross-tenant GET on sequential IDs returns 200 with foreign tenant data
 verify_steps: 1) Obtain two low-priv EdgePortal tokens (different tenants) via program credential request; 2) GET /api/multi-tenancy/v1/user/1/ with Token A → note tenant_id; 3) GET /api/multi-tenancy/v1/user/2..N/ with Token A → check for 200 + foreign tenant_id; 4) Repeat for /tenant/, /association-request/, /membership/, /check-in/, /admin/multi-tenancy/v1/{user,tenant}/{id}/
 impact: Cross-tenant data access → PII, membership, check-in, association-request dump across all tenants; CRITICAL
@@ -33,9 +39,9 @@ testability: HUMAN_ONLY
 [FINAL] 1. Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — CRITICAL impact, clear verify path with credentials, AUTH_HELPED testability
 [FINAL] 2. EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion (confidence 45) — HIGH impact if upload accepts SVG, AUTH_HELPED testability, requires auth
 [NEXT] HUMAN: re-raise credential ask with program PoC via bugs.olivermaicher.eu — TWO attacker-owned low-priv EdgePortal tenant accounts (different tenants) + one NC test user. With EdgePortal tokens, run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/1..N AND /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET) + profile-picture SVG upload test. With NC session, enumerate ExApps via /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true) and probe each route for SSRF.
-[LEARN] ACCEPTED MISC @ *.ipb.de: 43rd consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored
+[LEARN] ACCEPTED MISC @ *.ipb.de: 44th consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored
 [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
-[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 25+ consecutive stable cycles
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 26+ consecutive stable cycles
 [LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated
 [LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged
 [LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe
