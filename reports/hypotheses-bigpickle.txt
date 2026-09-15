@@ -1,4 +1,4 @@
-## 2026-09-15 05:19:25 UTC [target] (model bigpickle)
+## 2026-09-15 10:09:14 UTC [target] (model bigpickle)
 [PRIO] pluto.portal.ipb.de,6.0,bfgtac: DRF multi-tenancy, seq-ID objects, top cross-tenant chokepoint (gate_ease 2 — all auth)
 [PRIO] nc.ipb.de,5.6,bfgtac: NC 34.0.3 AppAPI/ExApp, cloud_surface 9 (gate_ease 2)
 [PRIO] gold.ipb.de,4.5,bfgtac: Jitsi anonymous guest reachable unauth (gate_ease 8) but closed lead set, low business value
@@ -6,7 +6,7 @@
 class: IDOR
 asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
 confidence: 65
-reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg 401 / tenant-reg 403 (no self-service path); surface byte-stable 42nd cycle
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg 401 / tenant-reg 403 (no self-service path); surface byte-stable 43rd cycle
 evidence_needed: two tenant accounts; tenant-A Token reading tenant-B objects by sequential ID → 200 vs 403/404
 verify_steps: with tenant-A Token GET read-only seq-ID sweep {1..N} on the 5 resource endpoints (<=1 rps); compare cross-tenant 200 vs 403/404
 impact: cross-tenant PII dump — CRITICAL
@@ -15,7 +15,7 @@ testability: HUMAN_ONLY
 class: SSRF
 asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
 confidence: 40
-reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (route registered) vs cloud/apps → 401 confirms session-gated routing; unchanged 42 cycles
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (route registered) vs cloud/apps → 401 confirms session-gated routing; unchanged 43 cycles
 evidence_needed: valid NC session; enumerate ExApps then re-probe returned routes unauth vs authed
 verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
 impact: SSRF to 169.254.169.254 / internal services or authz bypass — HIGH
