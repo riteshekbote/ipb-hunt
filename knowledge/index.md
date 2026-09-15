@@ -357,3 +357,5 @@
 - 2026-09-15 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift
 - 2026-09-15 ACCEPTED MISC @ *.ipb.de: 43rd consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
 - 2026-09-15 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 25+ consecutive stable cycles.
+- 2026-09-15 ACCEPTED MISC @ *.ipb.de: 43rd consecutive converged cycle — passive getent re-confirmed identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-15 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated; unchanged.

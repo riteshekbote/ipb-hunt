@@ -1,4 +1,4 @@
-## 2026-09-15 10:13:20 UTC [target] (model nemotron3)
+## 2026-09-15 15:16:32 UTC [target] (model nemotron3)
 [PRIO] pluto.portal.ipb.de,7.45,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=3,freshness=1
 [PRIO] nc.ipb.de,5.20,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=1
 [PRIO] gold.ipb.de,3.80,attack_surface=4,business_value=4,tech_exposure=4,gate_ease=6,cloud_surface=2,freshness=1
@@ -7,7 +7,8 @@ class: IDOR
 asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/{id}/, /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
 confidence: 65
 reasoning: DRF multi-tenancy API exposes tenant/user/membership/association-request/check-in objects with sequential integer IDs; all endpoints auth-gated (401 WWW-Authenticate: Token) but per-tenant authorization is sole BOLA control; EdgePortal bundle confirms extensive API surface; /api/system/ 401@58 byte-stable 25+ cycles
-evidence_needed: authenticated low-pr[0m
+evidence_needed: authenticated low-priv token from two different EdgePortal tenants; cross-tenant GET on sequential IDs returns 200 with foreign tenant data
+verify_steps: 1) Obtain two low-priv EdgePortal tokens (different tenants) via program credential request; 2) GET /api/multi-tenancy/v1/user/1/ with Token A → note tenant_id; 3) GET /api/multi-tenancy/v1/user/2..N/ with Token A → check for 200 + foreign tenant_id; 4) Repeat for /tenant/, /association-request/, /membership/, /check-in/, /admin/multi-tenancy/v1/{user,tenant}/{id}/
 impact: Cross-tenant data access → PII, membership, check-in, association-request dump across all tenants; CRITICAL
 testability: AUTH_HELPED
 [HYP] EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion
