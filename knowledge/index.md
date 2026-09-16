@@ -370,3 +370,24 @@
 - 2026-09-15 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
 - 2026-09-15 ACCEPTED MISC @ *.ipb.de: 45th consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
 - 2026-09-15 ACCEPTED MISC @ *.ipb.de: crt.sh CT aggregation recovered from multi-cycle outage — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy / Plesk); passive subdomain-discovery channel confirmed dry, no new names behind wildcard.
+- 2026-09-16 ACCEPTED MISC @ *.ipb.de: 46th consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map (nav2 still absent, CN/local/tz config-only), zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-16 ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+- 2026-09-16 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 27+ consecutive stable cycles.
+- 2026-09-16 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged.
+- 2026-09-16 ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+- 2026-09-16 REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+- 2026-09-16 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+- 2026-09-16 ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (NXDOMAIN); Jitsi anonymousdomain config-only, not a live vhost.
+- 2026-09-16 ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → Plesk login vhost (same as piwik/webcam); login-only out-of-scope class.
+- 2026-09-16 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
+- 2026-09-16 ACCEPTED MISC @ *.ipb.de: 45th consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored
+- 2026-09-16 ACCEPTED MISC @ *.ipb.de: crt.sh CT aggregation recovered from multi-cycle outage — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy/Plesk); passive subdomain-discovery channel confirmed dry, no new names behind wildcard
+- 2026-09-16 ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
+- 2026-09-16 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 26+ consecutive stable cycles
+- 2026-09-16 ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — prior KC entry overstated
+- 2026-09-16 ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged
+- 2026-09-16 REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe
+- 2026-09-16 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe
+- 2026-09-16 ACCEPTED MISCONFIG @ guest.gold.ipb.de: does not resolve (NXDOMAIN); Jitsi anonymousdomain config-only, not a live vhost
+- 2026-09-16 ACCEPTED MISCONFIG @ cloud.ipb.de: resolves 194.29.230.41 → Plesk login vhost (same as piwik/webcam); login-only out-of-scope class
+- 2026-09-16 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift

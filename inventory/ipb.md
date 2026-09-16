@@ -510,3 +510,5 @@ www.survey.ipb.de
 - CHANGED gold.ipb.de/config.js → HTTP 200 via curl -k (SSL cert fails in automated probes) — unchanged
 - CHANGED event.ipb.de pretix REST /api/v1/ → 401 Token-gated; mature hardening saturated
 - CHANGED *.ipb.de wildcard DNS masking → 44th consecutive converged cycle; passive getent stable, zero surface drift; crt.sh CT aggregation unavailable (timeout), websearch no new signals
+
+## 2026-09-16 00:25:12 UTC
