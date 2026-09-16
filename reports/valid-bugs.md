@@ -13,3 +13,11 @@
 - 2 lead(s) marked VALID at 2026-09-14 23:40:32 UTC
   - | Q3 Impact | **LOW** — enumeration of valid kiosk tokens alone; weakens kiosk gate but no direct data exposure |
   - **Verdict: HOLD** — Needs confirmation: (1) is RackTables actually deployed/accessible? (2) is `remote.php` actively used for device management? Cannot determine from code review alone. If deployed + 
+
+- 6 lead(s) marked VALID at 2026-09-16 17:09:29 UTC
+  - **Verdict: VALID**
+  - **Verdict: VALID**
+  - | Q2 Reachable? | YES — but requires valid NC session |
+  - | Q4 Provable? | NO — unauth returns 404; needs valid NC session |
+  - | 1 | Cross-tenant BOLA (EdgePortal) | **VALID** | 8.8 | Report via bugs.olivermaicher.eu |
+  - | 2 | Avatar upload stored-XSS (EdgePortal) | **VALID** | 8.1 | Report via bugs.olivermaicher.eu |
