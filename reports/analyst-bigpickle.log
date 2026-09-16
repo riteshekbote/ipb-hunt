@@ -18677,3 +18677,254 @@ testability: HUMAN_ONLY
 
 [RISK] ipb: **78** — 49th consecutive converged cycle at credential-acquisition plateau: passive DNS identical and channel-dry, triage/probe-results/reposcan empty; both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI conf 40) gated behind tenant token / NC session with no self-service path; 0 validated bugs. Discovery rate zero for 48+ cycles — engagement value fully contingent on the credential unlock; escalation ask at bugs.olivermaicher.eu remains the only productive next step.
 ```
+===== ANALYST bigpickle 2026-09-16 18:44:17 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mls /home/runner/work/ipb-hunt/ipb-hunt 2>/dev/null; ls /home/runner/work/ipb-hunt/ipb-hunt/probe-results* /home/runner/work/ipb-hunt/ipb-hunt/triage* 2>/dev/null
+README.md
+analyst-out.txt
+analyst-prompt.txt
+ctx.txt
+inventory
+knowledge
+leads
+probe-results.md
+recon-notes
+reports
+reposcan-raw
+scope.yml
+scripts
+state_bigpickle.json
+state_laguna.json
+state_ling3.json
+state_longcat.json
+state_mimo.json
+state_nemotron3.json
+triage
+/home/runner/work/ipb-hunt/ipb-hunt/probe-results.md
+
+/home/runner/work/ipb-hunt/ipb-hunt/triage:
+run-2026-09-02-21-51.md
+run-2026-09-02-23-59.md
+run-2026-09-03-02-18.md
+run-2026-09-03-07-23.md
+run-2026-09-03-12-07.md
+run-2026-09-03-16-28.md
+run-2026-09-03-19-24.md
+run-2026-09-03-21-52.md
+run-2026-09-03-23-43.md
+run-2026-09-04-02-13.md
+run-2026-09-04-07-16.md
+run-2026-09-04-12-09.md
+run-2026-09-04-16-24.md
+run-2026-09-04-19-06.md
+run-2026-09-04-21-31.md
+run-2026-09-04-23-15.md
+run-2026-09-05-00-59.md
+run-2026-09-05-05-25.md
+run-2026-09-05-09-18.md
+run-2026-09-05-12-47.md
+run-2026-09-05-15-43.md
+run-2026-09-05-17-49.md
+run-2026-09-05-19-46.md
+run-2026-09-05-21-49.md
+run-2026-09-05-23-28.md
+run-2026-09-06-01-18.md
+run-2026-09-06-06-02.md
+run-2026-09-06-11-01.md
+run-2026-09-06-14-12.md
+run-2026-09-06-17-05.md
+run-2026-09-06-19-14.md
+run-2026-09-06-21-23.md
+run-2026-09-06-23-05.md
+run-2026-09-07-01-03.md
+run-2026-09-07-06-09.md
+run-2026-09-07-12-38.md
+run-2026-09-07-17-54.md
+run-2026-09-07-20-56.md
+run-2026-09-07-23-15.md
+run-2026-09-08-01-14.md
+run-2026-09-08-05-59.md
+run-2026-09-08-10-55.md
+run-2026-09-08-14-50.md
+run-2026-09-08-18-12.md
+run-2026-09-08-21-12.md
+run-2026-09-08-23-25.md
+run-2026-09-09-01-29.md
+run-2026-09-09-06-38.md
+run-2026-09-09-11-49.md
+run-2026-09-09-15-39.md
+run-2026-09-09-18-50.md
+run-2026-09-09-21-25.md
+run-2026-09-09-23-29.md
+run-2026-09-10-01-24.md
+run-2026-09-10-06-37.md
+run-2026-09-10-11-48.md
+run-2026-09-10-12-00.md
+run-2026-09-10-15-35.md
+run-2026-09-10-18-40.md
+run-2026-09-10-21-13.md
+run-2026-09-10-23-12.md
+run-2026-09-11-01-08.md
+run-2026-09-11-06-02.md
+run-2026-09-11-11-31.md
+run-2026-09-11-15-10.md
+run-2026-09-11-18-35.md
+run-2026-09-11-21-14.md
+run-2026-09-11-23-17.md
+run-2026-09-12-01-11.md
+run-2026-09-12-05-50.md
+run-2026-09-12-09-52.md
+run-2026-09-12-13-16.md
+run-2026-09-12-16-21.md
+run-2026-09-12-18-42.md
+run-2026-09-12-21-07.md
+run-2026-09-12-23-04.md
+run-2026-09-13-01-03.md
+run-2026-09-13-06-13.md
+run-2026-09-13-11-56.md
+run-2026-09-13-15-32.md
+run-2026-09-13-18-20.md
+run-2026-09-13-20-59.md
+run-2026-09-13-22-47.md
+run-2026-09-14-00-33.md
+run-2026-09-14-05-23.md
+run-2026-09-14-10-57.md
+run-2026-09-14-16-45.md
+run-2026-09-14-20-42.md
+run-2026-09-14-23-40.md
+run-2026-09-15-01-53.md
+run-2026-09-15-07-00.md
+run-2026-09-15-12-42.md
+run-2026-09-15-17-25.md
+run-2026-09-15-20-25.md
+run-2026-09-15-23-09.md
+run-2026-09-16-01-27.md
+run-2026-09-16-06-40.md
+run-2026-09-16-12-20.md
+run-2026-09-16-17-09.md
+[0m
+[0m$ [0mfor h in pluto.portal ipb.de nc gold cloud event eticket www cic piwik webcam my prod app survey guest.gold focus.gold auth.gold; do r=$(getent ahosts $h.ipb.de 2>/dev/null | awk 'NR==1{print $1}'); echo "$h.ipb.de -> ${r:-NXDOMAIN/dead}"; done
+pluto.portal.ipb.de -> 194.29.225.140
+ipb.de.ipb.de -> NXDOMAIN/dead
+nc.ipb.de -> 194.29.226.157
+gold.ipb.de -> 194.29.226.155
+cloud.ipb.de -> 194.29.230.41
+event.ipb.de -> 194.29.230.43
+eticket.ipb.de -> 194.29.230.43
+www.ipb.de -> 194.29.230.44
+cic.ipb.de -> 194.29.226.24
+piwik.ipb.de -> 194.29.230.41
+webcam.ipb.de -> 194.29.230.41
+my.ipb.de -> NXDOMAIN/dead
+prod.ipb.de -> NXDOMAIN/dead
+app.ipb.de -> NXDOMAIN/dead
+survey.ipb.de -> NXDOMAIN/dead
+guest.gold.ipb.de -> NXDOMAIN/dead
+focus.gold.ipb.de -> NXDOMAIN/dead
+auth.gold.ipb.de -> NXDOMAIN/dead
+[0m
+[0m$ [0mtail -30 /home/runner/work/ipb-hunt/ipb-hunt/probe-results.md 2>/dev/null; echo "---TRIAGE---"; tail -20 /home/runner/work/ipb-hunt/ipb-hunt/triage/run-2026-09-16-17-09.md 2>/dev/null
+## 2026-09-15 00:41:42 UTC
+
+
+## 2026-09-15 05:21:52 UTC
+
+
+## 2026-09-15 10:13:30 UTC
+
+
+## 2026-09-15 15:16:42 UTC
+
+
+## 2026-09-15 19:09:07 UTC
+
+
+## 2026-09-15 22:32:09 UTC
+
+
+## 2026-09-16 00:25:12 UTC
+
+
+## 2026-09-16 05:11:09 UTC
+
+
+## 2026-09-16 09:59:57 UTC
+
+
+## 2026-09-16 14:39:44 UTC
+
+---TRIAGE---
+---
+
+## Summary
+
+| # | Lead | Verdict | CVSS | Action |
+|---|------|---------|------|--------|
+| 1 | Cross-tenant BOLA (EdgePortal) | **VALID** | 8.8 | Report via bugs.olivermaicher.eu |
+| 2 | Avatar upload stored-XSS (EdgePortal) | **VALID** | 8.1 | Report via bugs.olivermaicher.eu |
+| 3 | Admin dynamic-config mass-assignment | **HOLD** | — | Needs admin creds |
+| 4 | Kiosk token enumeration | **HOLD** | — | Low impact, WAF risk |
+| 5 | NC provisioning/impersonate | **HOLD** | — | Needs NC session, caps unconfirmed |
+| 6 | NC AppAPI ExApp mis-scoping | **HOLD** | — | Confidence at threshold |
+| 7 | Wildcard DNS masking | **INVALID** | — | Fully classified |
+| 8 | Plesk CSRF token | **INVALID** | — | Public login panel OOS |
+| 9 | CIC SQLi | **INVALID** | — | No evidence, OOS |
+| 10 | Jitsi guest access | **INVALID** | — | By-design |
+| 11 | Kiosk TOTP logic flaw | **HOLD** | — | Threshold confidence |
+| 12 | Reposcan RackTables | **INVALID** | — | Source code, not infra |
+
+**Two leads ready to report.** Both require human-account provisioning to produce a valid PoC before submission.
+[0m
+STEP 1 — DELTA
+NO_DELTA — passive `getent ahosts` re-confirmed identical IPv4 map (pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud=194.29.230.41, event/eticket=194.29.230.43, www=194.29.230.44, cic=194.29.226.24, piwik/webcam=194.29.230.41; my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN); probe-results/triage empty through run-2026-09-16-17-09; all HTTP endpoints remain under "do not re-probe".
+
+STEP 2 — PRIORITIZE
+[PRIO] pluto.portal.ipb.de,7.0,unchanged-auth-gated-seed
+[PRIO] nc.ipb.de,5.0,unchanged-app_api-only
+[PRIO] event/www.ipb.de,3.0,saturated-do-not-probe
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg API 401 / tenant-reg 403 (no self-service path); surface byte-stable 49+ cycles; CT sweep dry (15 names, all known); triage run-2026-09-16-17-09 lists VALID @8.8 pending PoC
+evidence_needed: two attacker-owned tenant accounts (different tenants); tenant-A Token reading tenant-B object via seq-ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET /api/multi-tenancy/v1/user/1..N/ (read-only, <=1 rps) → diff cross-tenant 200 vs 403/404; repeat for tenant/association-request/membership; then /api/admin/ equivalents
+impact: cross-tenant PII dump — CRITICAL
+testability: HUMAN_ONLY
+
+[HYP] NC AppAPI auth mis-scoping / ExApp SSRF
+class: SSRF
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (route registered) vs cloud/apps → 401 confirms session-gated routing; unchanged 49 cycles
+evidence_needed: valid NC session; enumerate ExApps then re-probe returned routes unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or authz bypass — HIGH
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+[PARKED] gold.ipb.de Jitsi: config.js public confirmed; anonymous guest by-design; unguessable random roomName; no room-URL leak path — no credential- or architecture-gated vector left to pursue without new asset data; drop until surface changes.
+[PARKED] EdgePortal avatar stored-XSS (conf 45) + admin mass-assignment: triage HOLD/auth-gated, same credential unlock as BOLA, subsumed under the credential ask.
+[FINAL] 1. EdgePortal BOLA (conf 65, CRITICAL, HUMAN_ONLY) 2. NC AppAPI ExApp SSRF (conf 40, HIGH, HUMAN_ONLY)
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: escalate credential ask to program via bugs.olivermaicher.eu with concrete PoC plan — request TWO attacker-owned low-priv EdgePortal tenant accounts (different tenants) + one NC test user; on grant, execute read-only BOLA sweep (GET /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N, <=1 rps, tenant-A Token vs tenant-B IDs) then NC ExApp enumeration (GET /ocs/v2.php/apps/app_api/apps/list, OCS-APIRequest: true) and unauth re-probe of returned ExApp routes. All passive channels (DNS, CT, reposcan, triage) dry; all HTTP endpoints remain under "do not re-probe".
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED MISC @ *.ipb.de: 50th-cycle check (passive getent/ahosts, no HTTP) — identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY; triage holds VALID @8.8 pending PoC.
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 30+ consecutive stable cycles.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.3 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged.
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost.
+[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class.
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
+
+STEP 7 — RISK
+[RISK] ipb: **79** — 50th consecutive converged cycle at credential-acquisition plateau: passive DNS identical and channel-dry, triage/probe-results/reposcan empty; both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI conf 40) gated behind tenant token / NC session with no self-service path; 0 validated bugs (2 VALID findings held pending human PoC). Discovery rate zero for 49+ cycles — engagement value fully contingent on the credential unlock; escalation ask at bugs.olivermaicher.eu remains the only productive next step.
