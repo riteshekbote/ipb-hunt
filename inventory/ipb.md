@@ -526,3 +526,5 @@ www.survey.ipb.de
 - CHANGED crt.sh CT aggregation recovered — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy/Plesk); passive subdomain-discovery 
 
 ## 2026-09-16 18:44:17 UTC
+
+## 2026-09-16 21:40:58 UTC
