@@ -4488,3 +4488,4 @@ testability: HUMAN_ONLY
 [RISK] ipb: 65 — pluto.portal.ipb.de Cross-tenant BOLA (confidence 65) remains sole validated high-impact hypothesis; nc.ipb.de Nextcloud app_api 34.0.0 confirmed live but ExApp surface session-gated (HUMAN_ONLY); wildcard DNS masking hypothesis killed; no credentialed access path for pluto BOLA verification; 5 live services behind wildcard proxy (Nextcloud, Jitsi, 2x Plesk, CIC) but all login-only or config-hardened; validated bugs: 0
 ## 2026-09-16 18:44:07 UTC [target] (model nemotron3)
 ## 2026-09-16 21:40:47 UTC [target] (model nemotron3)
+## 2026-09-16 23:50:50 UTC [target] (model nemotron3)
