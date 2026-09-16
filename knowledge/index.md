@@ -396,3 +396,6 @@
 - 2026-09-16 ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class.
 - 2026-09-16 ACCEPTED MISC @ *.ipb.de: 48th-cycle check (passive getent, no HTTP) — identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
 - 2026-09-16 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 28+ consecutive stable cycles.
+- 2026-09-16 ACCEPTED MISC @ *.ipb.de: 49th-cycle check (passive getent/ahosts, no HTTP) — identical IPv4+IPv6 map re-confirmed via ahosts; zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-16 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 29+ consecutive stable cycles.
+- 2026-09-16 ACCEPTED MISC @ *.ipb.de: 48th consecutive converged cycle — passive getent (no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored
