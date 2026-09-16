@@ -394,3 +394,5 @@
 - 2026-09-16 ACCEPTED MISC @ *.ipb.de: 47th-cycle check (passive getent, no HTTP) — identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
 - 2026-09-16 ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost.
 - 2026-09-16 ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class.
+- 2026-09-16 ACCEPTED MISC @ *.ipb.de: 48th-cycle check (passive getent, no HTTP) — identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-16 ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 28+ consecutive stable cycles.
