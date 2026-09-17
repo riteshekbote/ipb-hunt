@@ -19529,3 +19529,150 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
 
 [RISK] ipb: **83** — 53rd consecutive converged cycle at credential-acquisition plateau: passive DNS identical and channel-dry (triage re-HOLD, probe-results/reposcan empty); both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI SSRF conf 40) gated behind tenant token / NC session with no self-service path; 0 validated bugs (2 VALID findings held pending human PoC). Discovery rate zero for 52+ cycles — engagement value fully contingent on the credential unlock; escalation ask at bugs.olivermaicher.eu remains the only productive next step.
+===== ANALYST bigpickle 2026-09-17 13:03:17 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m✱ [0mGlob "**/*"[90m 100 matches[0m
+I'll execute the 8-step security assessment for the IPB program based on the provided context.
+[0m
+[0m$ [0mls -la /home/runner/work/ipb-hunt/ipb-hunt
+total 368
+drwxr-xr-x 12 runner runner   4096 Sep 17 13:00 .
+drwxr-xr-x  3 runner runner   4096 Sep 17 13:00 ..
+drwxr-xr-x  7 runner runner   4096 Sep 17 13:00 .git
+drwxr-xr-x  3 runner runner   4096 Sep 17 13:00 .github
+-rw-r--r--  1 runner runner   1817 Sep 17 13:00 README.md
+-rw-r--r--  1 runner runner    172 Sep 17 13:01 analyst-out.txt
+-rw-r--r--  1 runner runner 139126 Sep 17 13:00 analyst-prompt.txt
+-rw-r--r--  1 runner runner 135240 Sep 17 13:00 ctx.txt
+drwxr-xr-x  2 runner runner   4096 Sep 17 13:00 inventory
+drwxr-xr-x  2 runner runner   4096 Sep 17 13:00 knowledge
+drwxr-xr-x  2 runner runner   4096 Sep 17 13:00 leads
+-rw-r--r--  1 runner runner  11939 Sep 17 13:00 probe-results.md
+drwxr-xr-x  2 runner runner   4096 Sep 17 13:00 recon-notes
+drwxr-xr-x  2 runner runner   4096 Sep 17 13:00 reports
+drwxr-xr-x  2 runner runner   4096 Sep 17 13:00 reposcan-raw
+-rw-r--r--  1 runner runner   3299 Sep 17 13:00 scope.yml
+drwxr-xr-x  2 runner runner   4096 Sep 17 13:00 scripts
+-rw-r--r--  1 runner runner     33 Sep 17 13:00 state_bigpickle.json
+-rw-r--r--  1 runner runner     33 Sep 17 13:00 state_laguna.json
+-rw-r--r--  1 runner runner     33 Sep 17 13:00 state_ling3.json
+-rw-r--r--  1 runner runner     33 Sep 17 13:00 state_longcat.json
+-rw-r--r--  1 runner runner     33 Sep 17 13:00 state_mimo.json
+-rw-r--r--  1 runner runner     33 Sep 17 13:00 state_nemotron3.json
+drwxr-xr-x  2 runner runner   4096 Sep 17 13:00 triage
+[0m
+[0m→ [0mRead state_bigpickle.json
+[0m→ [0mRead triage/run-2026-09-17-11-45.md
+[0m→ [0mRead probe-results.md
+[0m→ [0mRead scope.yml
+[0m→ [0mRead leads/lead-bigpickle.md
+[0m→ [0mRead reports/hypotheses-bigpickle.txt
+[0m→ [0mRead knowledge/index.md[90m [limit=50][0m
+[0m→ [0mRead reports/valid-bugs.md
+[0m→ [0mRead reports/hypotheses.md
+[0m
+[0m$ [0mls -la /home/runner/work/ipb-hunt/ipb-hunt/triage/ | tail -20
+-rw-r--r--  1 runner runner   200 Sep 17 13:00 run-2026-09-14-05-23.md
+-rw-r--r--  1 runner runner   208 Sep 17 13:00 run-2026-09-14-10-57.md
+-rw-r--r--  1 runner runner   143 Sep 17 13:00 run-2026-09-14-16-45.md
+-rw-r--r--  1 runner runner   161 Sep 17 13:00 run-2026-09-14-20-42.md
+-rw-r--r--  1 runner runner 14999 Sep 17 13:00 run-2026-09-14-23-40.md
+-rw-r--r--  1 runner runner   143 Sep 17 13:00 run-2026-09-15-01-53.md
+-rw-r--r--  1 runner runner   228 Sep 17 13:00 run-2026-09-15-07-00.md
+-rw-r--r--  1 runner runner   171 Sep 17 13:00 run-2026-09-15-12-42.md
+-rw-r--r--  1 runner runner   154 Sep 17 13:00 run-2026-09-15-17-25.md
+-rw-r--r--  1 runner runner   204 Sep 17 13:00 run-2026-09-15-20-25.md
+-rw-r--r--  1 runner runner   146 Sep 17 13:00 run-2026-09-15-23-09.md
+-rw-r--r--  1 runner runner   267 Sep 17 13:00 run-2026-09-16-01-27.md
+-rw-r--r--  1 runner runner   208 Sep 17 13:00 run-2026-09-16-06-40.md
+-rw-r--r--  1 runner runner   156 Sep 17 13:00 run-2026-09-16-12-20.md
+-rw-r--r--  1 runner runner 11396 Sep 17 13:00 run-2026-09-16-17-09.md
+-rw-r--r--  1 runner runner   262 Sep 17 13:00 run-2026-09-16-20-09.md
+-rw-r--r--  1 runner runner   157 Sep 17 13:00 run-2026-09-16-22-58.md
+-rw-r--r--  1 runner runner 20531 Sep 17 13:00 run-2026-09-17-01-07.md
+-rw-r--r--  1 runner runner   295 Sep 17 13:00 run-2026-09-17-06-10.md
+-rw-r--r--  1 runner runner   177 Sep 17 13:00 run-2026-09-17-11-45.md
+[0m
+[0m→ [0mRead triage/run-2026-09-17-01-07.md
+[0m→ [0mRead analyst-out.txt
+[0m→ [0mRead leads/reposcan-ipb.md
+[0m→ [0mRead reposcan-raw/summary.txt
+[0m→ [0mRead triage/run-2026-09-17-06-10.md
+The most recent triage (2026-09-17-01-07) re-verified all hypotheses. Let me check the reposcan outputs referenced in triage (RackTables findings) and the latest inventory to confirm no delta, since the NC version bump to 34.0.4 is the only surface change this cycle.
+All context gathered. Let me run a quick passive DNS re-confirmation (getent, no HTTP) to independently verify the surface map for this cycle before finalizing the assessment.
+[0m
+[0m$ [0mfor h in pluto.portal.ipb.de nc.ipb.de gold.ipb.de cloud.ipb.de event.ipb.de eticket.ipb.de www.ipb.de cic.ipb.de piwik.ipb.de webcam.ipb.de my.ipb.de prod.ipb.de app.ipb.de survey.ipb.de guest.gold.ipb.de focus.gold.ipb.de auth.gold.ipb.de; do getent ahostsv4 "$h" >/dev/null 2>&1 && echo "$h: RESOLVES $(getent ahostsv4 "$h" | awk 'NR==1{print $1}')" || echo "$h: NXDOMAIN"; done
+pluto.portal.ipb.de: RESOLVES 194.29.225.140
+nc.ipb.de: RESOLVES 194.29.226.157
+gold.ipb.de: RESOLVES 194.29.226.155
+cloud.ipb.de: RESOLVES 194.29.230.41
+event.ipb.de: RESOLVES 194.29.230.43
+eticket.ipb.de: RESOLVES 194.29.230.43
+www.ipb.de: RESOLVES 194.29.230.44
+cic.ipb.de: RESOLVES 194.29.226.24
+piwik.ipb.de: RESOLVES 194.29.230.41
+webcam.ipb.de: RESOLVES 194.29.230.41
+my.ipb.de: NXDOMAIN
+prod.ipb.de: NXDOMAIN
+app.ipb.de: NXDOMAIN
+survey.ipb.de: NXDOMAIN
+guest.gold.ipb.de: NXDOMAIN
+focus.gold.ipb.de: NXDOMAIN
+auth.gold.ipb.de: NXDOMAIN
+[0m
+Passive getent (my own read-only check) re-confirms the identical IPv4 map — zero surface drift. Only delta this cycle: `nc.ipb.de` patched 34.0.3 → 34.0.4 (captured in the 08:00 OCS re-probe; app_api still 34.0.0). No probe-results or reposcan output exists this cycle. Final analysis:
+
+STEP 1 — DELTA
+- [CHANGED] nc.ipb.de: Nextcloud core 34.0.3 → 34.0.4 (patch bump confirmed in OCS caps re-probe); app_api still 34.0.0 ONLY — version-skew noted, no new unauth surface.
+- [CHANGED] NC patch activity = first live-infra change in 53 cycles; adjacent infra (gold/cloud/pluto) still byte-stable — no cross-host drift.
+- NO_DELTA else: own getent re-confirms identical IPv4 map (pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud/piwik/webcam=194.29.230.41, event/eticket=194.29.230.43, www=194.29.230.44, cic=194.29.226.24; my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN); probe-results/reposcan/triage empty; 33/33 inventory classified.
+
+STEP 2 — PRIORITIZE
+- [PRIO] pluto.portal.ipb.de,7.1,unchanged-credential-gated-BOLA (a=9,b=10,t=8,g=3,c=6,f=3 → 0.25·9+0.25·10+0.15·8+0.15·3+0.10·6+0.10·3=7.45)
+- [PRIO] nc.ipb.de,5.5,first-patch-in-53-cycles-AppAPI-session-gated (a=7,b=9,t=8,g=4,c=5,f=6 → 0.25·7+0.25·9+0.15·8+0.15·4+0.10·5+0.10·6=6.90)
+- [PRIO] gold/event/www.ipb.de,2.5,saturated-do-not-probe
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg API 401 / tenant-reg 403 (no self-service path); surface byte-stable 53+ cycles; triage (2026-09-17-01-07, 07-01-07) re-verdict HOLD CVSS ~8.6 pending human PoC
+evidence_needed: two attacker-owned tenant accounts (different tenants); tenant-A Token reading tenant-B object via seq-ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET /api/multi-tenancy/v1/user/1..N/ (read-only, <=1 rps) → diff cross-tenant 200 vs 403/404; repeat tenant/association-request/membership; then /api/admin/ equivalents
+impact: cross-tenant PII dump — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp SSRF / auth mis-scoping
+class: SSRF
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); core patched to 34.0.4 this cycle while app_api stayed 34.0.0 (version-skew, active ops = fresh attack-layout opportunity); unauth apps/list → 404 (route registered) vs cloud/apps → 401 confirms session-gated routing; triage re-HOLD confirms session block
+evidence_needed: valid NC session; enumerate ExApps then re-probe returned routes unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or authz bypass — HIGH
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE
+- [PARKED] EdgePortal avatar stored-XSS (conf 45): triage HOLD at 08.1, auth-gated, same credential unlock as BOLA; subsumed under credential ask — do not spin.
+- [PARKED] Admin dynamic-config mass-assignment (conf 45): admin-creds-gated, no path to obtain; subsumed.
+- [PARKED] RackTables code findings (SSH StrictHostKeyChecking, AJAX reflected XSS): triage HOLD but deployment unconfirmed — no host in 33/33 classification maps to RackTables; not passively provable; do not spin.
+- [FINAL] 1. EdgePortal BOLA (conf 65, CRITICAL, HUMAN_ONLY) 2. NC AppAPI ExApp SSRF (conf 40, HIGH, HUMAN_ONLY)
+
+STEP 5 — NEXT ACTION
+[NEXT] HUMAN: re-issue credential escalation to program via bugs.olivermaicher.eu — concrete ask: TWO attacker-owned low-priv EdgePortal tenant accounts (different tenants) + ONE NC test user; on grant, read-only BOLA sweep (GET /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N, <=1 rps, tenant-A Token vs tenant-B IDs) then NC ExApp enumeration (GET /ocs/v2.php/apps/app_api/apps/list, OCS-APIRequest: true) + unauth re-probe of returned ExApp routes. Note NC patch cadence (34.0.4) as freshness signal to justify the ask.
+
+STEP 6 — LEARNING
+- [LEARN] ACCEPTED MISC @ *.ipb.de: 54th consecutive converged cycle — passive getent (my own, no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/reposcan/triage empty; no new unauth vector; "do not re-probe" constraints honored.
+- [LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC core patched 34.0.3→34.0.4 while app_api locked at 34.0.0 (OCS caps re-probe) — version-skew + active maintenance; still app_api 34.0.0 ONLY, provisioning_api/impersonate NOT confirmed; unchanged otherwise.
+- [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY; triage (2026-09-17-01-07) re-verdict HOLD CVSS ~8.6 pending human PoC.
+- [LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated (401, WWW-Authenticate: Token), no unauth config/schema leak — unchanged, 30+ stable cycles.
+- [LEARN] REJECTED MISC @ gold/event/www.ipb.de: Jitsi config.js + pretix /control 403 + /redirect allowlist + .env/server-info 403 — saturated/mature-hardened/OOS-class, do not re-probe.
+- [LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback (354606) — do not re-probe.
+- [LEARN] ACCEPTED MISCONFIG @ guest.gold/focus.gold/auth.gold.my/prod/app/survey.ipb.de: NXDOMAIN (own getent) — wildcard mask stable, no hidden vhost.
+- [LEARN] ACCEPTED MISCONFIG @ cloud/piwik/webcam.ipb.de: 194.29.230.41 → shared Plesk login vhost; login-only out-of-scope class.
+- [LEARN] REJECTED MISCONFIG @ ipberlin/racktables (reposcan): code-level findings (SHA-1, StrictHostKeyChecking, AJAX XSS) HOLD only if deployed — no live host maps to RackTables in 33/33 classification; SHA-1 class also OOS as "outdated software"; not reportable without deployment proof.
+
+STEP 7 — RISK
+[RISK] ipb: **83** — 54th consecutive converged cycle at credential-acquisition plateau. Only live-infra change in 53 cycles is the NC 34.0.4 patch (informational; app_api 34.0.0 unchanged); my own getent + full channel sweep confirm dry. Both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI SSRF conf 40) and both parked sub-hypotheses (avatar XSS, admin mass-assignment) are HUMAN-gated with no self-service credential path — 3 HOLD verdicts (CVSS 8.6/8.8/8.1) pending human PoC, 0 validated bugs. Discovery rate zero for 52+ cycles; engagement value fully contingent on the credential unlock at bugs.olivermaicher.eu, which remains the only productive next step. If the ask is declined, residual value approaches zero.
