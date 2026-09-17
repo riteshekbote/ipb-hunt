@@ -257,3 +257,12 @@ TARGET_ORG not configured for ipb; skipping public-org deep scan.
 TARGET_ORG not configured for ipb; skipping public-org deep scan.
 ## REPOSCAN 2026-09-17 17:09:17 UTC
 TARGET_ORG not configured for ipb; skipping public-org deep scan.
+## REPOSCAN 2026-09-17 20:24:23 UTC
+[HYP] N/A — No Org Candidates
+class: OTHER
+asset: cands.txt / scope.yml
+confidence: 100
+reasoning: scope.yml explicitly sets github_orgs to none-configured; cands.txt contains "no org candidates". Zero public repositories have been identified for IPB Internet Provider in Berlin GmbH. No repos to clone or audit for secrets, hardcoded credentials, or insecure patterns.
+impact: None
+verify_steps: None — no action required; no in-scope repos identified.
+TARGET_ORG not configured for ipb; skipping public-org deep scan.
