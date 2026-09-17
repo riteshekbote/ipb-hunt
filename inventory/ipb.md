@@ -532,3 +532,9 @@ www.survey.ipb.de
 ## 2026-09-16 23:51:00 UTC
 
 ## 2026-09-17 02:23:03 UTC
+
+## 2026-09-17 08:00:06 UTC
+- CHANGED nc.ipb.de OCS capabilities → Nextcloud 34.0.4 (was 34.0.3), app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps — unchanged
+- CHANGED pluto.portal.ipb.de/api/system/ → HTTP 401 stable across 30+ consecutive cycles (byte-stable SPA fallback 354606 on schema endpoints)
+- CHANGED *.ipb.de wildcard DNS masking → 53rd consecutive converged cycle; passive getent/ahosts re-confirmed identical IPv4+IPv6 map, zero surface drift
+- CHANGED crt.sh CT aggregation recovered — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy/Plesk); passive subdomain-discovery 
