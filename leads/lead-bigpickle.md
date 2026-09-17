@@ -4300,3 +4300,37 @@ impact: SSRF to 169.254.169.254 / internal services or authz bypass — HIGH
 testability: HUMAN_ONLY
 [NEXT] HUMAN: re-issue credential escalation to program via bugs.olivermaicher.eu — concrete ask: TWO attacker-owned low-priv EdgePortal tenant accounts (different tenants) + ONE NC test user; on grant, read-only BOLA sweep (GET /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N, <=1 rps, tenant-A Token vs tenant-B IDs) then NC ExApp enumeration (GET /ocs/v2.php/apps/app_api/apps/list, OCS-APIRequest: true) + unauth re-probe of returned ExApp routes. Note NC patch cadence (34.0.4) as freshness signal to justify the ask.
 [RISK] ipb: **83** — 54th consecutive converged cycle at credential-acquisition plateau. Only live-infra change in 53 cycles is the NC 34.0.4 patch (informational; app_api 34.0.0 unchanged); my own getent + full channel sweep confirm dry. Both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI SSRF conf 40) and both parked sub-hypotheses (avatar XSS, admin mass-assignment) are HUMAN-gated with no self-service credential path — 3 HOLD verdicts (CVSS 8.6/8.8/8.1) pending human PoC, 0 validated bugs. Discovery rate zero for 52+ cycles; engagement value fully contingent on the credential unlock at bugs.olivermaicher.eu, which remains the only productive next step. If the ask is declined, residual value approaches zero.
+## 2026-09-17 17:39:35 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy exposes seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg API 401 / tenant-reg 403 (no self-service path); surface byte-stable 55 cycles; triage HOLD verdict CVSS ~8.6 pending human PoC; DNS map stable this cycle
+evidence_needed: two attacker-owned tenant accounts (different tenants); tenant-A Token reading tenant-B object via seq-ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET /api/multi-tenancy/v1/user/1..N/ (read-only, <=1 rps) → diff cross-tenant 200 vs 403/404; repeat tenant/association-request/membership; then /api/admin/ equivalents
+impact: cross-tenant PII dump — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp SSRF / auth mis-scoping
+class: SSRF
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); core patched 34.0.3→34.0.4 while app_api stayed 34.0.0 (version-skew = active ops, fresh attack-layout); unauth apps/list → 404 (route registered) vs cloud/apps → 401 confirms session-gated routing; triage HOLD confirms session block; NC host IP unchanged (194.29.226.157)
+evidence_needed: valid NC session; enumerate ExApps then re-probe returned routes unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes without session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or authz bypass — HIGH
+testability: HUMAN_ONLY
+[PARKED] EdgePortal avatar stored-XSS (conf 45) + admin mass-assignment: below 50, auth-gated, same credential unlock as BOLA — subsumed under credential ask, do not spin.
+[PARKED] kiosk_login token oracle: low impact, WAF risk — parked indefinitely.
+[FINAL] 1. EdgePortal BOLA (conf 65, CRITICAL, HUMAN_ONLY) 2. NC AppAPI ExApp SSRF (conf 40, HIGH, HUMAN_ONLY)
+[NEXT] HUMAN: re-issue credential escalation to program via bugs.olivermaicher.eu — concrete ask: TWO attacker-owned low-priv EdgePortal tenant accounts (different tenants) + ONE NC test user; on grant, read-only BOLA sweep (GET /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N, <=1 rps, tenant-A Token vs tenant-B IDs) then NC ExApp enumeration (GET /ocs/v2.php/apps/app_api/apps/list, OCS-APIRequest: true) + unauth re-probe of returned ExApp routes. Reference NC core 34.0.4 / app_api 34.0.0 version-skew as the freshness signal justifying the ask; note zero-validated-bug status and 55 converged cycles.
+[LEARN] ACCEPTED MISC @ *.ipb.de: 55th consecutive converged cycle — passive getent/ahosts (no HTTP) re-confirmed identical IPv4 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+[LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+[LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 30+ consecutive stable cycles.
+[LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.4 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged.
+[LEARN] ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged.
+[LEARN] REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+[LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost.
+[LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class.
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift.
+[RISK] ipb: **83** — 55th consecutive converged cycle at credential-acquisition plateau: passive DNS identical and channel-dry (probe-results/triage/reposcan empty); both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI SSRF conf 40) and both parked sub-hypotheses (avatar XSS, admin mass-assignment) are HUMAN-gated with no self-service credential path — 3 HOLD verdicts pending human PoC, 0 validated bugs. Discovery rate zero for 52+ cycles; engagement value fully contingent on the credential unlock at bugs.olivermaicher.eu, which remains the only productive next step. If declined, residual value approaches zero.
