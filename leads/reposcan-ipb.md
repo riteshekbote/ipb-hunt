@@ -242,3 +242,12 @@ TARGET_ORG not configured for ipb; skipping public-org deep scan.
 TARGET_ORG not configured for ipb; skipping public-org deep scan.
 ## REPOSCAN 2026-09-16 23:03:44 UTC
 TARGET_ORG not configured for ipb; skipping public-org deep scan.
+## REPOSCAN 2026-09-17 01:32:41 UTC
+[HYP] <title>
+class: SECRET|MISCONFIG|IDOR|SSRF|OTHER
+asset: <repo/path>
+confidence: <0-100>
+reasoning: <facts>
+impact: <severity>
+verify_steps: <how to confirm it is live/in-scope, passive>
+TARGET_ORG not configured for ipb; skipping public-org deep scan.
