@@ -4433,3 +4433,22 @@ testability: HUMAN_ONLY
 [LEARN] ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost.
 [LEARN] ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class.
 [RISK] ipb: **85** — 58th consecutive converged cycle at the credential-acquisition plateau: passive DNS identical, NC caps byte-stable (core 34.0.4, app_api 34.0.0 unchanged), all channels dry (probe-results/triage/reposcan empty). Both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI SSRF conf 40) plus both parked sub-hypotheses are HUMAN-gated with no self-service credential path — 3 HOLD verdicts pending human PoC, 0 validated bugs. Discovery rate zero for 56+ cycles; engagement value fully contingent on the credential unlock at bugs.olivermaicher.eu, which remains the only productive next step. If the ask is declined or ignored, residual value approaches zero.
+## 2026-09-18 10:41:41 UTC [target] (model bigpickle)
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg API 401 / tenant-reg 403 = no self-service path; surface byte-stable 58+ cycles; triage HOLD CVSS ~8.6 pending human PoC; unchanged this cycle
+evidence_needed: two attacker-owned tenant accounts (different tenants); tenant-A Token reading tenant-B object by seq-ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET /api/multi-tenancy/v1/user/1..N/ (read-only, <=1 rps) → diff 200 vs 403/404; repeat tenant/association-request/membership; then /api/admin/ equivalents
+impact: cross-tenant PII dump — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp SSRF / auth mis-scoping via version-skew
+class: SSRF
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 re-confirmed 06:00:56 (core 34/0/4, app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (routed) vs cloud/apps → 401 confirms session-gated; ExApp routes execute server-side → SSRF surface; version-skew remains only active-ops freshness signal
+evidence_needed: valid NC session; enumerate ExApps then re-probe returned routes unauth vs authed
+verify_steps: with NC session GET /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true); re-request returned routes w/o session → status diff; probe ExApp routes unauth for metadata fetch/SSRF
+impact: SSRF to 169.254.169.254 / internal services or authz bypass — HIGH
+testability: HUMAN_ONLY
