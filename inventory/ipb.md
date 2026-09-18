@@ -576,3 +576,5 @@ www.survey.ipb.de
 - CHANGED pluto.portal.ipb.de/api/system/ → HTTP 401 stable across 30+ consecutive cycles (byte-stable SPA fallback 354606 on schema endpoints)
 - CHANGED *.ipb.de wildcard DNS masking → 55th+ consecutive converged cycle; passive getent/ahosts re-confirmed identical IPv4+IPv6 map, zero surface drift
 - CHANGED crt.sh CT aggregation recovered — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy/Plesk)
+
+## 2026-09-18 14:46:57 UTC

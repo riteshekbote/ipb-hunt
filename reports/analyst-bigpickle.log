@@ -20609,3 +20609,64 @@ STEP 6 — LEARNING
 
 STEP 7 — RISK
 - [RISK] ipb: **86** — third 09-18 check with zero new data; discovery rate zero for 56+ cycles; both living hypotheses plus both parked sub-hypotheses remain HUMAN-gated; engagement value fully contingent on the credential unlock at bugs.olivermaicher.eu.
+===== ANALYST bigpickle 2026-09-18 14:46:57 UTC =====
+[0m
+> build · big-pickle
+[0m
+[0m$ [0mfor h in pluto.portal.ipb.de nc.ipb.de gold.ipb.de cloud.ipb.de event.ipb.de eticket.ipb.de www.ipb.de cic.ipb.de piwik.ipb.de webcam.ipb.de my.ipb.de prod.ipb.de app.ipb.de survey.ipb.de guest.gold.ipb.de focus.gold.ipb.de auth.gold.ipb.de; do printf "%-22s %s\n" "$h" "$(getent ahosts "$h" 2>/dev/null | awk '/STREAM/{print $1; exit}')"; done
+pluto.portal.ipb.de    194.29.225.140
+nc.ipb.de              194.29.226.157
+gold.ipb.de            194.29.226.155
+cloud.ipb.de           194.29.230.41
+event.ipb.de           194.29.230.43
+eticket.ipb.de         194.29.230.43
+www.ipb.de             194.29.230.44
+cic.ipb.de             194.29.226.24
+piwik.ipb.de           194.29.230.41
+webcam.ipb.de          194.29.230.41
+my.ipb.de              
+prod.ipb.de            
+app.ipb.de             
+survey.ipb.de          
+guest.gold.ipb.de      
+focus.gold.ipb.de      
+auth.gold.ipb.de
+[0m
+STEP 1 — DELTA: NO_DELTA (59th cycle — getent/ahosts re-confirmed identical IPv4 map: pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.155, cloud/piwik/webcam=194.29.230.41, event/eticket=194.29.230.43, www=194.29.230.44, cic=194.29.226.24; my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN)
+
+STEP 2 — PRIORITIZE
+[PRIO] pluto.portal.ipb.de,5.65,attack_surface=8/business=9/tech=7/gate=1/cloud=1/refresh=1 — unchanged, only cred-gated BOLA candidate
+[PRIO] nc.ipb.de,4.55,attack_surface=6/business=5/tech=5/gate=1/cloud=6/refresh=3 — only active-ops freshness signal (core 34.0.4 vs app_api 34.0.0)
+[PRIO] gold.ipb.de,3.20,attack_surface=4/business=4/tech=4/gate=2/cloud=2/refresh=1 — saturated Jitsi
+
+STEP 3 — HYPOTHESES
+[HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/ + /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg API 401 / tenant-reg 403 = no self-service path; surface byte-stable 58+ cycles; /api/system/ 401@58 (WWW-Authenticate: Token); triage HOLD CVSS ~8.6 pending human PoC; DNS identical this cycle
+evidence_needed: two attacker-owned tenant accounts (different tenants); tenant-A Token reading tenant-B object by seq-ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET /api/multi-tenancy/v1/user/1..N/ (read-only, <=1 rps) → diff 200 vs 403/404; repeat tenant/association-request/membership; then /api/admin/ equivalents
+impact: cross-tenant PII dump — CRITICAL
+testability: HUMAN_ONLY
+[HYP] NC AppAPI ExApp SSRF / auth mis-scoping via version-skew
+class: SSRF
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 re-confirmed 06:00:56 (core 34/0/4, app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); unauth apps/list → 404 (routed) vs cloud/apps → 401 confirms session-gated; ExApp routes execute server-side → SSRF surface; version-skew is sole active-ops freshness signal
+evidence_needed: valid NC session; enumerate ExApps then re-probe returned routes unauth vs authed
+verify_steps: with NC session GET /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true); re-request returned routes w/o session → status diff; probe ExApp routes unauth for metadata fetch/SSRF
+impact: SSRF to 169.254.169.254 / internal services or authz bypass — HIGH
+testability: HUMAN_ONLY
+
+STEP 4 — SELF-CRITIQUE: BOLA — borderline (no new evidence this cycle; 60%+ confidence from 58-cycle stability + triage HOLD); retained. NC SSRF — at the 40% floor, salvaged only by the live version-skew signal; retained with confidence unchanged, no CO2 spent. Both require credentials the engagement does not yet possess.
+
+STEP 5 — NEXT ACTION
+[PROBE] HUMAN: re-issue the credential-escalation ask to the program at bugs.olivermaicher.eu — unchanged concrete ask, still the only productive step: TWO attacker-owned low-priv EdgePortal tenant accounts (different tenants) + ONE NC test user. On grant: (1) read-only BOLA sweep GET /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N, <=1 rps, tenant-A Token vs tenant-B IDs, then /api/admin/ equivalents; (2) NC ExApp enumeration GET /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true) + unauth re-probe of returned ExApp routes. Cite 59 converged cycles, 0 validated bugs, 3 HOLD verdicts pending PoC, and the still-active NC core 34.0.4 / app_api 34.0.0 divergence.
+
+STEP 6 — LEARNING
+[LEARN] ACCEPTED MISCONFIG @ *.ipb.de: 59th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4 map (live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; all channels dry; no new unauth vector; "do not re-probe" constraints honored.
+[LEARN] REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+
+STEP 7 — RISK
+[RISK] ipb: **86** — 59th consecutive converged cycle at the credential-acquisition plateau: passive DNS identical, no surface drift, all channels dry. Both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI SSRF conf 40) plus both parked sub-hypotheses remain HUMAN-gated with no self-service credential path — 3 HOLD verdicts pending PoC, 0 validated bugs. Discovery rate zero for 57+ cycles; engagement value fully contingent on the credential unlock at bugs.olivermaicher.eu, which remains the only productive next step. If the ask is declined or ignored, residual value approaches zero.
