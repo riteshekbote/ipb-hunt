@@ -1,9 +1,9 @@
-## 2026-09-18 20:21:39 UTC [target] (model nemotron3)
-[CHANGED] nc.ipb.de: Nextcloud version bump 34.0.3 → 34.0.4 (OCS caps live re-confirmed this cycle); app_api 34.0.0 ONLY still confirmed; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
+## 2026-09-18 22:48:41 UTC [target] (model nemotron3)
+[CHANGED] nc.ipb.de: Nextcloud version bump 34.0.3 → 34.0.4 (OCS caps live re-confirmed); app_api 34.0.0 ONLY still confirmed; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
 [CHANGED] *.ipb.de: 60th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4 map (live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; all channels dry
 [CHANGED] crt.sh CT aggregation recovered from multi-cycle outage — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy/Plesk); passive subdomain-discovery channel confirmed dry
 [PRIO] pluto.portal.ipb.de,6.40,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=3,freshness=1
-[PRIO] nc.ipb.de,5.05,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=2
+[PRIO] nc.ipb.de,5.10,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=3
 [PRIO] gold.ipb.de,3.80,attack_surface=4,business_value=4,tech_exposure=4,gate_ease=6,cloud_surface=2,freshness=1
 [PRIO] cloud.ipb.de,2.40,attack_surface=2,business_value=2,tech_exposure=2,gate_ease=6,cloud_surface=1,freshness=1
 [HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API

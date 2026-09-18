@@ -585,3 +585,8 @@ www.survey.ipb.de
 - CHANGED nc.ipb.de: Nextcloud version bump 34.0.3 → 34.0.4 (OCS caps live re-confirmed this cycle); app_api 34.0.0 ONLY still confirmed; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
 - CHANGED *.ipb.de: 60th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4 map (live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; all channels dry
 - CHANGED crt.sh CT aggregation recovered from multi-cycle outage — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy/Plesk); pass
+
+## 2026-09-18 22:48:52 UTC
+- CHANGED nc.ipb.de: Nextcloud version bump 34.0.3 → 34.0.4 (OCS caps live re-confirmed); app_api 34.0.0 ONLY still confirmed; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
+- CHANGED *.ipb.de: 60th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4 map (live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; all channels dry
+- CHANGED crt.sh CT aggregation recovered from multi-cycle outage — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy/Plesk); pass
