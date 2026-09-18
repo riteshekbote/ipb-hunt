@@ -578,3 +578,5 @@ www.survey.ipb.de
 - CHANGED crt.sh CT aggregation recovered — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy/Plesk)
 
 ## 2026-09-18 14:46:57 UTC
+
+## 2026-09-18 17:59:43 UTC
