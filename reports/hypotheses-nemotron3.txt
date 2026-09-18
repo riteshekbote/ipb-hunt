@@ -1,8 +1,11 @@
-## 2026-09-18 17:59:33 UTC [target] (model nemotron3)
+## 2026-09-18 20:21:39 UTC [target] (model nemotron3)
+[CHANGED] nc.ipb.de: Nextcloud version bump 34.0.3 → 34.0.4 (OCS caps live re-confirmed this cycle); app_api 34.0.0 ONLY still confirmed; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
+[CHANGED] *.ipb.de: 60th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4 map (live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; all channels dry
+[CHANGED] crt.sh CT aggregation recovered from multi-cycle outage — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy/Plesk); passive subdomain-discovery channel confirmed dry
 [PRIO] pluto.portal.ipb.de,6.40,attack_surface=9,business_value=9,tech_exposure=8,gate_ease=2,cloud_surface=3,freshness=1
 [PRIO] nc.ipb.de,5.05,attack_surface=6,business_value=6,tech_exposure=6,gate_ease=3,cloud_surface=5,freshness=2
 [PRIO] gold.ipb.de,3.80,attack_surface=4,business_value=4,tech_exposure=4,gate_ease=6,cloud_surface=2,freshness=1
-[PRIO] cloud.ipb.de,2.10,attack_surface=2,business_value=2,tech_exposure=2,gate_ease=6,cloud_surface=1,freshness=1
+[PRIO] cloud.ipb.de,2.40,attack_surface=2,business_value=2,tech_exposure=2,gate_ease=6,cloud_surface=1,freshness=1
 [HYP] Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API
 class: IDOR
 asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/{id}/, /api/admin/multi-tenancy/v1/{user,tenant}/{id}/
@@ -34,7 +37,7 @@ testability: HUMAN_ONLY
 [FINAL] 1. Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (confidence 65) — CRITICAL impact, clear verify path with credentials, AUTH_HELPED testability
 [FINAL] 2. EdgePortal profile-picture uploaded-SVG stored-XSS via content-type confusion (confidence 45) — HIGH impact if upload accepts SVG, AUTH_HELPED testability, requires auth
 [NEXT] HUMAN: re-issue credential escalation to program via bugs.olivermaicher.eu with concrete PoC plan — request TWO attacker-owned low-priv EdgePortal tenant accounts (different tenants) + one NC test user. With EdgePortal tokens, run cross-tenant seq-ID BOLA sweep on /api/multi-tenancy/v1/{user,tenant,association-request,membership,check-in}/1..N AND /api/admin/multi-tenancy/v1/{user,tenant}/{id}/ (read-only GET) + profile-picture SVG upload test. With NC session, enumerate ExApps via /ocs/v2.php/apps/app_api/apps/list (OCS-APIRequest: true) and probe each route for SSRF.
-[LEARN] ACCEPTED MISC @ *.ipb.de: 59th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4 map (live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored
+[LEARN] ACCEPTED MISC @ *.ipb.de: 60th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4 map (live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored
 [LEARN] ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
 [LEARN] ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 30+ consecutive stable cycles
 [LEARN] ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.4 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged
