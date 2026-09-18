@@ -430,3 +430,10 @@
 - 2026-09-18 ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost
 - 2026-09-18 ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class
 - 2026-09-18 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift
+- 2026-09-18 ACCEPTED framework-recon @ nc.ipb.de: OCS caps re-confirmed live this cycle — 200@1630, core 34/0/4, app_api 34.0.0, bruteforce.delay=0; single read-only GET only; unchanged from prior 2 cycles.
+- 2026-09-18 ACCEPTED MISC @ *.ipb.de: 58th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4+IPv6 map, zero surface drift; probe-results/triage/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-18 ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY.
+- 2026-09-18 REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+- 2026-09-18 REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+- 2026-09-18 ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost.
+- 2026-09-18 ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class.

@@ -2177,3 +2177,25 @@
 - LEARN: ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost
 - LEARN: ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class
 - LEARN: ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-sta
+
+## RANKED HYPOTHESES 2026-09-18 06:01:40 UTC
+- [65] pluto.portal.ipb.de: Cross-tenant BOLA via sequential IDs on EdgePortal multi-tenancy API (from art/lead_nemotron3.txt)
+- NEXT(hypotheses-bigpickle.txt): HUMAN: re-issue the credential-escalation ask to the program at bugs.olivermaicher.eu — unchanged concrete ask, still the only productive step: TWO attacker-own
+- NEXT(hypotheses-nemotron3.txt): HUMAN: re-issue credential escalation to program via bugs.olivermaicher.eu with concrete PoC plan — request TWO attacker-owned low-priv EdgePortal tenant accoun
+- LEARN: ACCEPTED framework-recon @ nc.ipb.de: OCS caps re-confirmed live this cycle — 200@1630, core 34/0/4, app_api 34.0.0, bruteforce.delay=0; single read-only GET on
+- LEARN: ACCEPTED MISC @ *.ipb.de: 58th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4+IPv6 map, zero surface drift; probe-results/triag
+- LEARN: ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
+- LEARN: REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe.
+- LEARN: REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe.
+- LEARN: ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost.
+- LEARN: ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class.
+- LEARN: ACCEPTED MISC @ *.ipb.de: 55th+ consecutive converged cycle — passive getent/ahosts (no HTTP) re-confirmed identical IPv4+IPv6 map, zero surface drift; probe-re
+- LEARN: ACCEPTED BOLA-IDOR @ pluto.portal.ipb.de: unchanged — DRF multi-tenancy prime cross-tenant chokepoint, all seq-ID endpoints auth-gated, top priority, HUMAN_ONLY
+- LEARN: ACCEPTED framework-recon @ pluto.portal.ipb.de: full DRF data surface uniformly auth-gated, no unauth config/schema leak — unchanged, 30+ consecutive stable cyc
+- LEARN: ACCEPTED framework-recon @ nc.ipb.de: NC 34.0.4 with app_api 34.0.0 ONLY confirmed live; provisioning_api/impersonate NOT confirmed by live caps — unchanged
+- LEARN: ACCEPTED framework-recon @ gold.ipb.de: Jitsi config.js public, anonymous guest by-design, unguessable roomName, no room-URL leak path — unchanged
+- LEARN: REJECTED MISC @ event/www.ipb.de: pretix /control 403, /redirect allowlisted, .env/server-info 403 blocked — saturated, do not re-probe
+- LEARN: REJECTED MISC @ pluto.portal.ipb.de: /api/config/, /sites, /schema/, /swagger, /openapi all SPA fallback — do not re-probe
+- LEARN: ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost
+- LEARN: ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class
+- LEARN: ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-sta
