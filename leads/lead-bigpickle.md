@@ -4385,3 +4385,20 @@ impact: SSRF to 169.254.169.254 / internal services or authz bypass — HIGH
 testability: HUMAN_ONLY
 [NEXT] HUMAN: re-issue credential escalation to program via bugs.olivermaicher.eu — concrete ask unchanged and still the only productive step: TWO attacker-owned low-priv EdgePortal tenant accounts (different tenants) + ONE NC test user. On grant: read-only BOLA sweep (GET /api/multi-tenancy/v1/{user,tenant,association-request,membership}/1..N, <=1 rps, tenant-A Token vs tenant-B IDs) then NC ExApp enumeration (GET /ocs/v2.php/apps/app_api/apps/list, OCS-APIRequest: true) + unauth re-probe of returned ExApp routes. Cite 57 converged cycles, 0 validated bugs, 3 HOLD verdicts pending PoC, and NC 34.0.4 core vs app_api 34.0.0 version-skew as active-ops freshness.
 [RISK] ipb: **84** — 57th consecutive converged cycle at the credential-acquisition plateau: passive DNS identical and all channels dry (triage gated nothing, probe-results blank, reposcan skipped). Only infra change in 55+ cycles is the informational NC core patch (34.0.4; app_api 34.0.0 unchanged). Both living hypotheses (EdgePortal BOLA conf 65, NC AppAPI SSRF conf 40) plus both parked sub-hypotheses (avatar XSS conf 45, admin mass-assignment) are HUMAN-gated with no self-service credential path — 3 HOLD verdicts pending human PoC, 0 validated bugs. Discovery rate zero for 54+ cycles; engagement value fully contingent on the credential unlock at bugs.olivermaicher.eu, which remains the only productive next step. If the ask is declined or ignored, residual value approaches zero.
+## 2026-09-18 01:17:49 UTC [target] (model bigpickle)
+class: IDOR
+asset: pluto.portal.ipb.de /api/multi-tenancy/v1/{user,tenant,association-request,membership}/{id}/
+confidence: 65
+reasoning: DRF multi-tenancy seq-int-ID objects; per-tenant Token is sole cross-tenant authz control; user-reg 401 / tenant-reg 403 = no self-service path; surface byte-stable 55+ cycles; triage HOLD CVSS ~8.6 pending human PoC
+evidence_needed: two attacker-owned tenant accounts (different tenants); tenant-A Token reading tenant-B object by seq-ID → 200 vs 403/404
+verify_steps: with tenant-A Token GET /api/multi-tenancy/v1/user/1..N/ (read-only, <=1 rps) → diff 200 vs 403/404; repeat tenant/association-request/membership; then /api/admin/ equivalents
+impact: cross-tenant PII dump — CRITICAL
+testability: HUMAN_ONLY
+class: SSRF
+asset: nc.ipb.de /ocs/v2.php/apps/app_api/apps/list
+confidence: 40
+reasoning: OCS caps 200@1630 (app_api 34.0.0, bruteforce.delay=0, OCS-APIRequest: true required); core patched 34.0.3→34.0.4 while app_api stayed 34.0.0 (active ops, fresh attack-layout); unauth apps/list → 404 (routed) vs cloud/apps → 401 confirms session-gated
+evidence_needed: valid NC session; enumerate ExApps then re-probe returned routes unauth vs authed
+verify_steps: with NC session GET apps/list (OCS-APIRequest: true); re-request returned routes w/o session → status diff; probe ExApp routes unauth for metadata/SSRF
+impact: SSRF to 169.254.169.254 / internal services or authz bypass — HIGH
+testability: HUMAN_ONLY
