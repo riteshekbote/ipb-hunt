@@ -481,3 +481,4 @@
 - 2026-09-19 ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost.
 - 2026-09-19 ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class.
 - 2026-09-19 ACCEPTED MISC @ *.ipb.de: 65th consecutive converged cycle — passive getent/ahosts (no HTTP) re-confirmed identical IPv4 map (10 live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; triage/probe-results/reposcan empty; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-19 ACCEPTED MISC @ *.ipb.de: 66th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4 map (10 live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; all channels dry; no new unauth vector; "do not re-probe" constraints honored.
