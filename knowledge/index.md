@@ -477,3 +477,6 @@
 - 2026-09-19 ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost
 - 2026-09-19 ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class
 - 2026-09-19 ACCEPTED MISCONFIG @ *.ipb.de wildcard DNS masking: closed hypothesis, stable — my/prod/app/survey/guest.gold/focus.gold/auth.gold NXDOMAIN, live hosts byte-stable; no surface drift
+- 2026-09-19 ACCEPTED MISC @ *.ipb.de: 64th consecutive converged cycle — passive getent/ahosts (no HTTP) re-confirmed identical IPv4 map (10 live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; all channels dry; no new unauth vector; "do not re-probe" constraints honored.
+- 2026-09-19 ACCEPTED MISCONFIG @ guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost.
+- 2026-09-19 ACCEPTED MISCONFIG @ cloud.ipb.de: 194.29.230.41 → Plesk login vhost; login-only out-of-scope class.
