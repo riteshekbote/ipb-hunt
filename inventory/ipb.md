@@ -590,3 +590,29 @@ www.survey.ipb.de
 - CHANGED nc.ipb.de: Nextcloud version bump 34.0.3 → 34.0.4 (OCS caps live re-confirmed); app_api 34.0.0 ONLY still confirmed; provisioning_api/impersonate/oauth2/circles NOT confirmed by live caps
 - CHANGED *.ipb.de: 60th consecutive converged cycle — passive getent/ahosts re-confirmed identical IPv4 map (live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; all channels dry
 - CHANGED crt.sh CT aggregation recovered from multi-cycle outage — 15 unique LE cert names all within known inventory; gold/cloud/piwik/webcam/cic absent from CT (self-signed behind wildcard proxy/Plesk); pass
+
+## 2026-09-19 00:49:00 UTC
+- NEW nc.ipb.de: Nextcloud version bump 34.0.3 → 34.0.4 confirmed via live OCS capabilities probe (2026-09-17+ cycles); app_api 34.0.0 ONLY remains sole confirmed capability; provisioning_api/impersonate/oa
+- NEW *.ipb.de: 60th+ consecutive converged cycle — passive DNS (getent/ahosts) re-confirms identical IPv4+IPv6 map (10 live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; crt.sh CT aggregati
+- CHANGED pluto.portal.ipb.de/api/system/: HTTP 401 stable across 30+ consecutive cycles (byte-stable 354606 SPA fallback on schema endpoints) — DRF endpoint stability re-confirmed
+- CHANGED nc.ipb.de OCS capabilities: requires OCS-APIRequest: true header (without → {"message":"CSRF check failed"}); caps body unchanged (core 34.0.4, app_api 34.0.0, bruteforce.delay=0)
+- CHANGED event.ipb.de pretix REST /api/v1/: 401 Token-gated — mature hardening saturated, no new surface
+- CHANGED gold.ipb.de/config.js: 200 via curl -k (SSL cert fails in automated probes) — Jitsi config.js public, anonymous guest by-design, unguessable roomName
+- CHANGED cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class confirmed
+- CHANGED guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost
+- NEW nc.ipb.de: Nextcloud version bump 34.0.3 → 34.0.4 confirmed via live OCS capabilities probe (2026-09-17+ cycles); app_api 34.0.0 ONLY remains sole confirmed capability; provisioning_api/impersonate/oa
+- NEW *.ipb.de: 60th+ consecutive converged cycle — passive DNS (getent/ahosts) re-confirms identical IPv4+IPv6 map (10 live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; crt.sh CT aggregati
+- CHANGED pluto.portal.ipb.de/api/system/: HTTP 401 stable across 30+ consecutive cycles (byte-stable 354606 SPA fallback on schema endpoints) — DRF endpoint stability re-confirmed
+- CHANGED nc.ipb.de OCS capabilities: requires OCS-APIRequest: true header (without → {"message":"CSRF check failed"}); caps body unchanged (core 34.0.4, app_api 34.0.0, bruteforce.delay=0)
+- CHANGED event.ipb.de pretix REST /api/v1/: 401 Token-gated — mature hardening saturated, no new surface
+- CHANGED gold.ipb.de/config.js: 200 via curl -k (SSL cert fails in automated probes) — Jitsi config.js public, anonymous guest by-design, unguessable roomName
+- CHANGED cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class confirmed
+- CHANGED guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost
+- NEW nc.ipb.de: Nextcloud version bump 34.0.3 → 34.0.4 confirmed via live OCS capabilities probe (2026-09-17+ cycles); app_api 34.0.0 ONLY remains sole confirmed capability; provisioning_api/impersonate/oa
+- NEW *.ipb.de: 60th+ consecutive converged cycle — passive DNS (getent/ahosts) re-confirms identical IPv4+IPv6 map (10 live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; crt.sh CT aggregati
+- CHANGED pluto.portal.ipb.de/api/system/: HTTP 401 stable across 30+ consecutive cycles (byte-stable 354606 SPA fallback on schema endpoints) — DRF endpoint stability re-confirmed
+- CHANGED nc.ipb.de OCS capabilities: requires OCS-APIRequest: true header (without → {"message":"CSRF check failed"}); caps body unchanged (core 34.0.4, app_api 34.0.0, bruteforce.delay=0)
+- CHANGED event.ipb.de pretix REST /api/v1/: 401 Token-gated — mature hardening saturated, no new surface
+- CHANGED gold.ipb.de/config.js: 200 via curl -k (SSL cert fails in automated probes) — Jitsi config.js public, anonymous guest by-design, unguessable roomName
+- CHANGED cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class confirmed
+- CHANGED guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost
