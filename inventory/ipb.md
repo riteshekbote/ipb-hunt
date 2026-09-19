@@ -628,3 +628,8 @@ www.survey.ipb.de
 - CHANGED pluto.portal.ipb.de/api/system/: HTTP 401 stable (58 bytes, 30+ consecutive cycles re-confirmed this probe)
 - CHANGED event.ipb.de/api/v1/: HTTP 401 Token-gated stable (58 bytes, mature hardening saturated)
 - CHANGED *.ipb.de: 63rd+ consecutive converged cycle — passive DNS (getent/ahosts) re-confirms identical IPv4+IPv6 map (10 live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; crt.sh CT aggregati
+
+## 2026-09-19 13:23:49 UTC
+- CHANGED nc.ipb.de OCS capabilities: Nextcloud core 34.0.3 → 34.0.4 confirmed live via probe (200, 1630 bytes, OCS-APIRequest: true required); app_api 34.0.0 ONLY remains sole confirmed capability; provisionin
+- CHANGED pluto.portal.ipb.de/api/system/: HTTP 401 stable (58 bytes, 30+ consecutive cycles re-confirmed)
+- CHANGED *.ipb.de: 64th consecutive converged cycle — passive DNS (getent/ahosts) re-confirms identical IPv4+IPv6 map (10 live hosts byte-stable IPs, 7 names NXDOMAIN), zero surface drift; crt.sh CT aggregatio
