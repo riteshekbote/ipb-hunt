@@ -636,3 +636,13 @@ www.survey.ipb.de
 
 ## 2026-09-19 16:49:55 UTC
 - CHANGED nc.ipb.de OCS capabilities: Nextcloud core 34.0.3 → 34.0.4 confirmed live via probe (200, 1630 bytes, OCS-APIRequest: true required); app_api 34.0.
+
+## 2026-09-19 19:07:21 UTC
+- NEW nc.ipb.de: Nextcloud core version bump 34.0.3 → 34.0.4 confirmed live via OCS capabilities probe (200, 1630 bytes, `OCS-APIRequest: true` required); app_api 34.0.0 ONLY remains sole confirmed capabili
+- CHANGED *.ipb.de: 64th+ consecutive converged cycle — passive DNS (getent/ahosts) re-confirms identical IPv4+IPv6 map (10 live hosts byte-stable IPs: pluto=194.29.225.140, nc=194.29.226.157, gold=194.29.226.1
+- CHANGED pluto.portal.ipb.de/api/system/: HTTP 401 stable across 30+ consecutive cycles (58 bytes, WWW-Authenticate: Token), byte-stable 354606 SPA fallback on schema endpoints — DRF endpoint stability re-conf
+- CHANGED nc.ipb.de OCS capabilities: requires `OCS-APIRequest: true` header (without → `{"message":"CSRF check failed"}`); caps body unchanged (core 34.0.4, app_api 34.0.0, bruteforce.delay=0)
+- CHANGED event.ipb.de pretix REST /api/v1/: 401 Token-gated — mature hardening saturated, no new surface
+- CHANGED gold.ipb.de/config.js: 200 via curl -k (SSL cert fails in automated probes) — Jitsi config.js public, anonymous guest by-design, unguessable roomName
+- CHANGED cloud.ipb.de: resolves 194.29.230.41 → 3rd "I/P/B/ Cloudhosting Panel" Plesk login vhost (same as piwik/webcam); login-only out-of-scope class confirmed
+- CHANGED guest.gold.ipb.de: NXDOMAIN; Jitsi anonymousdomain config-only, not a live vhost
